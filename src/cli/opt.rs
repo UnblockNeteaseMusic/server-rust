@@ -1,12 +1,13 @@
 pub use structopt::StructOpt;
 
+
 /// The options of the CLI of UNM (Rust)
 #[derive(StructOpt, Debug)]
 #[structopt(name = "unm-server-rust")]
 pub struct Opt {
     /// Specify the server port of UNM.
-    #[structopt(short, long, default_value = "8080:8081")]
-    pub port: u16,
+    #[structopt(short, long, default_value = "8080;8081", use_delimiter=true, value_delimiter=";")]
+    pub port: Vec<u16>,
 
     /// Specify the server host of UNM.
     #[structopt(short, long, default_value = "127.0.0.1")]
