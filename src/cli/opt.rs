@@ -9,9 +9,9 @@ pub struct Opt {
     #[structopt(
         short,
         long,
-        default_value = "8080;8081",
+        default_value = "8080:8081",
         use_delimiter = true,
-        value_delimiter = ";"
+        value_delimiter = ":"
     )]
     pub port: Vec<u16>,
 
