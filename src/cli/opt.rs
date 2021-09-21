@@ -154,21 +154,14 @@ mod test {
     use super::*;
 
     fn new_default_opt() -> Opt {
-        use Provider::*;
-        Opt {
-            port: vec![8080, 8081],
-            host: String::from("127.0.0.1"),
-            proxy_url: None,
-            force_netease_host: None,
-            source: vec![Kugou, Kuwo, Migu, Bilibili],
-            endpoint: None,
-            strict: false,
-        }
+        let args: Vec<std::ffi::OsString> = Vec::new();
+        return Opt::from_iter(args);
     }
 
     #[test]
     fn default_is_valid() {
         let op = new_default_opt();
+        // println!("{:#?}", op);
         assert_eq!(op.is_valid(), None);
     }
     #[test]
