@@ -98,6 +98,10 @@ pub struct Opt {
     /// Enable the proxy limitation. (Not implemented)
     #[structopt(short, long)]
     pub strict: bool,
+
+    #[structopt(short, long)]
+    /// set up proxy authentication
+    pub token: Option<String>,
 }
 
 impl Opt {
@@ -134,6 +138,17 @@ impl Opt {
             return rst;
         }
 
+        rst = self.token.as_ref().and_then(|t| {
+            let re = Regex::new(r"^\S+:\S+$").expect("wrong regex of token");
+            match re.is_match(&t) {
+                true => None,
+                false => Some(String::from("Please check the authentication token.")),
+            }
+        });
+        if rst.is_some() {
+            return rst;
+        }
+
         let len = self.source.len();
         for i1 in 0..len {
             for i2 in i1 + 1..len {
@@ -163,6 +178,16 @@ mod test {
         let op = new_default_opt();
         // println!("{:#?}", op);
         assert_eq!(op.is_valid(), None);
+    }
+    #[test]
+    fn token_check() {
+        let mut op = new_default_opt();
+        op.token = Some(String::from("abcd:123"));
+        assert!(op.is_valid().is_none());
+        op.token = Some(String::from("abcd123"));
+        assert!(op.is_valid().is_some());
+        op.token = Some(String::from("ab cd:123"));
+        assert!(op.is_valid().is_some());
     }
     #[test]
     fn dump_source_is_invalid() {
