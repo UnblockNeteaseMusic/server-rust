@@ -100,7 +100,7 @@ pub struct OptEnv {
 
     /// 日志输出的文件位置
     #[structopt(long, env = "LOG_FILE")]
-    pub log_file: Option<String>,
+    pub log_file: Option<PathBuf>,
 
     /// JOOX 音源的 wmid 和 session_key cookie "wmid=<your_wmid>; session_key=<your_session_key>"
     #[structopt(long, env = "JOOX_COOKIE")]
