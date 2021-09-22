@@ -1,3 +1,4 @@
+use crate::logger::LevelFilter;
 use regex::Regex;
 use std::path::PathBuf;
 pub use structopt::StructOpt;
@@ -96,7 +97,7 @@ pub struct OptEnv {
 
     /// 日志输出等级。请见〈日志等级〉部分。
     #[structopt(long, env = "LOG_LEVEL", default_value = "debug")]
-    pub log_level: String,
+    pub log_level: LevelFilter,
 
     /// 日志输出的文件位置
     #[structopt(long, env = "LOG_FILE")]

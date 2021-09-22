@@ -11,4 +11,7 @@ fn main() {
         }
     }
     init_logger(&opt);
+    info!("Info log!");
+    warn!("Warn log with value {}", "test");
+    error!("ERROR!");
 }

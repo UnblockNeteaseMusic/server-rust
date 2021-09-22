@@ -24,7 +24,11 @@ pub fn init_logger(setting: &Opt) {
 			let stdout: ConsoleAppender = ConsoleAppender::builder().encoder(encoder).build();
 			log4rs::config::Config::builder()
 				.appender(Appender::builder().build("stdout", Box::new(stdout)))
-				.build(Root::builder().appender("stdout").build(LevelFilter::Info)) // TODO: change level via Opt
+				.build(
+					Root::builder()
+						.appender("stdout")
+						.build(setting.env.log_level),
+				)
 		}
 		Some(log_path) => {
 			// Logging to log file.
@@ -35,12 +39,12 @@ pub fn init_logger(setting: &Opt) {
 				.unwrap();
 			log4rs::config::Config::builder()
 				.appender(Appender::builder().build("logfile", Box::new(logfile)))
-				.build(Root::builder().appender("logfile").build(LevelFilter::Info)) // TODO: change level via Opt
+				.build(
+					Root::builder()
+						.appender("logfile")
+						.build(setting.env.log_level),
+				)
 		}
 	};
 	log4rs::init_config(log_config.unwrap()).unwrap();
-
-	info!("Info log!");
-	warn!("Warn log with value {}", "test");
-	error!("ERROR!");
 }
