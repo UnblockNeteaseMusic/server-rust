@@ -171,8 +171,8 @@ pub struct Opt {
     pub endpoint: Option<String>,
 
     /// Enable the proxy limitation. (Not implemented)
-    #[structopt(short, long)]
-    pub strict: bool,
+    #[structopt(short, long, parse(try_from_str=parse_bool))]
+    pub strict: Option<bool>,
 
     #[structopt(short, long)]
     /// set up proxy authentication
