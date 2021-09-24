@@ -1,5 +1,5 @@
 use crate::logger::LevelFilter;
-use crate::providers::Provider;
+use crate::providers::identifiers::Provider;
 use regex::Regex;
 use std::path::PathBuf;
 pub use structopt::StructOpt;
