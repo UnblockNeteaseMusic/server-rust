@@ -1,31 +1,22 @@
 //! The port of `crypto.js`. Commit `eb8e5691272e0b5ee7f70b317ebbce32403ea6b4`.
 
-use openssl::error::ErrorStack;
-use openssl::symm::{decrypt as symm_decrypt, encrypt as symm_encrypt, Cipher};
-use serde::Serialize;
 use std::error::Error;
 
+use regex::Regex;
+use serde::Serialize;
+
+use super::common;
+
+// Developers should be responsible to the panic which is because of this regex.
+const EAPI_PATH_REPLACE_REGEX: Regex = Regex::new("\\w*api").unwrap();
 const EAPI_KEY: &[u8; 16] = b"e82ckenh8dichen8";
-const LINUX_API_KEY: &[u8; 16] = b"rFgB&h#%2?^eDg:Q";
 
-type CryptResponse = Result<Vec<u8>, ErrorStack>;
-
-fn decrypt(data: &[u8], key: &[u8]) -> CryptResponse {
-    let cipher = Cipher::aes_128_ecb();
-    symm_decrypt(cipher, key, None, data)
+pub fn decrypt(data: &[u8]) -> common::CryptResponse {
+    common::decrypt(data, EAPI_KEY)
 }
 
-fn encrypt(data: &[u8], key: &[u8]) -> CryptResponse {
-    let cipher = Cipher::aes_128_ecb();
-    symm_encrypt(cipher, key, None, data)
-}
-
-pub fn decrypt_eapi(data: &[u8]) -> CryptResponse {
-    decrypt(data, EAPI_KEY)
-}
-
-pub fn encrypt_eapi(data: &[u8]) -> CryptResponse {
-    encrypt(data, EAPI_KEY)
+pub fn encrypt(data: &[u8]) -> common::CryptResponse {
+    common::encrypt(data, EAPI_KEY)
 }
 
 pub struct EncryptRequestResponse {
@@ -46,7 +37,12 @@ pub fn encrypt_request<T: Serialize>(
     );
 
     Ok(EncryptRequestResponse {
-        url: url.to_string(),
-        body: hex::encode(encrypt_eapi(data.as_bytes())?),
+        url: EAPI_PATH_REPLACE_REGEX.replace(url, "eapi").to_string(),
+        // Since there is no special chars in the uppercase hex string,
+        // we don't need to use something like serde_qs to serialize it.
+        body: format!(
+            "params={}",
+            hex::encode(encrypt(data.as_bytes())?).to_uppercase()
+        ),
     })
 }
