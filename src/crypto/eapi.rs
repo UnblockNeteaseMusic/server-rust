@@ -7,8 +7,6 @@ use serde::Serialize;
 
 use super::common;
 
-// Developers should be responsible to the panic which is because of this regex.
-const EAPI_PATH_REPLACE_REGEX: Regex = Regex::new("\\w*api").unwrap();
 const EAPI_KEY: &[u8; 16] = b"e82ckenh8dichen8";
 
 pub fn decrypt(data: &[u8]) -> common::CryptResponse {
@@ -37,7 +35,10 @@ pub fn encrypt_request<T: Serialize>(
     );
 
     Ok(EncryptRequestResponse {
-        url: EAPI_PATH_REPLACE_REGEX.replace(url, "eapi").to_string(),
+        url: Regex::new("\\w*api")
+            .unwrap()
+            .replace(url, "eapi")
+            .to_string(),
         // Since there is no special chars in the uppercase hex string,
         // we don't need to use something like serde_qs to serialize it.
         body: format!(
