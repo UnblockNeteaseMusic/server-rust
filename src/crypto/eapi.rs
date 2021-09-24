@@ -8,21 +8,23 @@ use std::error::Error;
 const EAPI_KEY: &[u8; 16] = b"e82ckenh8dichen8";
 const LINUX_API_KEY: &[u8; 16] = b"rFgB&h#%2?^eDg:Q";
 
-fn decrypt(data: &[u8], key: &[u8]) -> Result<Vec<u8>, ErrorStack> {
+type CryptResponse = Result<Vec<u8>, ErrorStack>;
+
+fn decrypt(data: &[u8], key: &[u8]) -> CryptResponse {
     let cipher = Cipher::aes_128_ecb();
     symm_decrypt(cipher, key, None, data)
 }
 
-fn encrypt(data: &[u8], key: &[u8]) -> Result<Vec<u8>, ErrorStack> {
+fn encrypt(data: &[u8], key: &[u8]) -> CryptResponse {
     let cipher = Cipher::aes_128_ecb();
     symm_encrypt(cipher, key, None, data)
 }
 
-pub fn decrypt_eapi(data: &[u8]) -> Result<Vec<u8>, ErrorStack> {
+pub fn decrypt_eapi(data: &[u8]) -> CryptResponse {
     decrypt(data, EAPI_KEY)
 }
 
-pub fn encrypt_eapi(data: &[u8]) -> Result<Vec<u8>, ErrorStack> {
+pub fn encrypt_eapi(data: &[u8]) -> CryptResponse {
     encrypt(data, EAPI_KEY)
 }
 
