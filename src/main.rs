@@ -1,7 +1,8 @@
+use std::error::Error;
 use unm_server::cli::{Opt, StructOpt};
 use unm_server::logger::*;
 
-fn main() {
+fn main() -> Result<(), Box<dyn Error>> {
     let opt = Opt::from_args();
     println!("{:#?}", opt);
     match opt.is_valid() {
@@ -10,8 +11,11 @@ fn main() {
             println!("{}", msg);
         }
     }
-    init_logger(&opt);
+
+    init_logger(&opt)?;
     info!("Info log!");
     warn!("Warn log with value {}", "test");
     error!("ERROR!");
+
+    Ok(())
 }

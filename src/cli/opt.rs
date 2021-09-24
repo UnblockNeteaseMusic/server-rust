@@ -55,12 +55,12 @@ impl std::fmt::Debug for Provider {
 }
 
 fn parse_bool(src: &str) -> Result<bool, &str> {
-    if src == "0" || src == "false" {
-        return Ok(false);
+    return if src == "0" || src == "false" {
+        Ok(false)
     } else if src == "1" || src == "true" {
-        return Ok(true);
+        Ok(true)
     } else {
-        return Err("provided string was not `true`, `false`, `0` or `1`");
+        Err("provided string was not `true`, `false`, `0` or `1`")
     }
 }
 
@@ -187,7 +187,7 @@ impl Opt {
     pub fn is_valid(&self) -> Option<String> {
         let mut rst = self.proxy_url.as_ref().and_then(|url| {
             let proxy_url_re: Regex =
-                Regex::new(r"^http(s?):\/\/.+:\d+$").expect("wrong regex of proxy url");
+                Regex::new(r"^http(s?)://.+:\d+$").expect("wrong regex of proxy url");
             match proxy_url_re.is_match(&url) {
                 true => None,
                 false => Some(String::from("lease check the proxy url.")),
@@ -198,7 +198,7 @@ impl Opt {
         }
 
         rst = self.endpoint.as_ref().and_then(|url| {
-            let re = Regex::new(r"^http(s?):\/\/.+$").expect("wrong regex of endpoint");
+            let re = Regex::new(r"^http(s?)://.+$").expect("wrong regex of endpoint");
             match re.is_match(&url) {
                 true => None,
                 false => Some(String::from("Please check the endpoint host.")),
