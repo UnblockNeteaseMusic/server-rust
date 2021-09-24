@@ -13,7 +13,7 @@ pub struct SongAlbumMetadata {
 pub struct SongMetadata {
     id: i32,
     name: String,
-    duration: Option<i64>,
+    duration: Option<u64>,
     artists: Option<SongArtistsMetadata>,
     album: Option<SongAlbumMetadata>,
 }
