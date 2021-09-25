@@ -4,14 +4,14 @@ use thiserror::Error as BaseErr;
 
 #[derive(BaseErr, Debug)]
 pub enum Error {
-	#[error("request fail {0}")]
-	RequestFail(ReqErr),
-	#[error("request headers is invalid")]
-	HeadersDataInvalid,
-	#[error("json parse fail {0}")]
-	JsonParseFail(JsonErr),
-	#[error("unknown data store error")]
-	Unknown,
+    #[error("Failed to request: {0}")]
+    RequestFail(ReqErr),
+    #[error("The request headers are invalid.")]
+    HeadersDataInvalid,
+    #[error("Failed to parse JSON: {0}")]
+    JsonParseFail(JsonErr),
+    #[error("Error storing unknown data.")]
+    Unknown,
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
