@@ -6,9 +6,10 @@ pub use tokio::sync::oneshot::Receiver;
 use url::Url;
 
 use header::default_headers;
-use proxy::copy_global_proxy;
 
 use crate::{Error, Result};
+
+use self::proxy::ProxyManager;
 
 pub mod header;
 pub mod proxy;
@@ -18,14 +19,13 @@ pub async fn request(
     received_url: Url,
     received_headers: Option<Json>,
     body: Option<String>,
-    proxy: Option<Proxy>,
+    proxy: Option<&ProxyManager>,
 ) -> Result<Response> {
     let mut _headers = received_headers.clone();
     let headers = _headers.get_or_insert(json!({})).as_object_mut();
     if headers.is_none() {
         return Err(Error::HeadersDataInvalid);
     }
-    let proxy = proxy.or(copy_global_proxy());
 
     let mut client_builder = reqwest::Client::builder()
 	.user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36")
@@ -33,7 +33,10 @@ pub async fn request(
 	.default_headers(default_headers());
     client_builder = match proxy {
         None => client_builder.no_proxy(),
-        Some(p) => client_builder.proxy(p),
+        Some(p) => match &p.get_proxy() {
+            Some(p) => client_builder.proxy(p.clone()),
+            None => client_builder.no_proxy(),
+        },
     };
     let client = client_builder.build().map_err(|e| Error::RequestFail(e))?;
     let mut client = client.request(method, received_url);
@@ -141,10 +144,10 @@ mod test {
     }
 
     #[test]
-    async fn request_with_baidu() {
+    async fn request_with_example_com() {
         let res: Response = request(
             Method::GET,
-            Url::parse("https://baidu.com").unwrap(),
+            Url::parse("https://example.com").unwrap(),
             None,
             None,
             None,
@@ -169,14 +172,15 @@ mod test {
             async { http::Response::default() }
         });
 
-        let proxy = format!("http://{}", server.addr());
+        let proxy = Proxy::http(format!("http://{}", server.addr())).unwrap();
+        let proxy_manager = ProxyManager { proxy: Some(proxy) };
 
         let res: Response = request(
             Method::GET,
             Url::parse(&url).unwrap(),
             None,
             None,
-            Some(Proxy::http(&proxy).unwrap()),
+            Some(&proxy_manager),
         )
         .await
         .unwrap();
