@@ -16,6 +16,26 @@ fn copy_global_proxy() -> Option<Proxy> {
 	}
 }
 
+pub fn setup_global_proxy(proxy: &Option<String>) -> Result<()> {
+	match proxy {
+		Some(p) => match Proxy::all(p) {
+			Ok(pp) => {
+				unsafe {
+					GLOBAL_PROXY = Some(pp);
+				}
+				Ok(())
+			}
+			Err(e) => Err(Error::RequestFail(e)),
+		},
+		None => {
+			unsafe {
+				GLOBAL_PROXY = None;
+			}
+			Ok(())
+		}
+	}
+}
+
 // accept: 'application/json, text/plain, */*',
 // 'accept-encoding': 'gzip, deflate',
 // 'accept-language': 'zh-CN,zh;q=0.9',
@@ -81,7 +101,7 @@ mod test {
 	use std::time::Duration;
 
 	use super::*;
-	use futures::stream::{self, StreamExt};
+	use futures::stream::StreamExt;
 	use tokio::runtime;
 	use tokio::sync::oneshot;
 	use tokio::test;
