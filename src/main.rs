@@ -1,8 +1,10 @@
 use std::error::Error;
 
-use unm_server::cli::{Opt, StructOpt};
-use unm_server::logger::*;
-use unm_server::request::proxy::ProxyManager;
+use unm_server::{
+    cli::{Opt, StructOpt},
+    logger::*,
+    request::proxy::ProxyManager,
+};
 
 fn main() -> Result<(), Box<dyn Error>> {
     let opt: Opt = Opt::from_args();
