@@ -16,7 +16,12 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     init_logger(&opt)?;
     let mut proxy_manager = ProxyManager { proxy: None };
-    proxy_manager.setup_proxy(&opt.proxy_url.unwrap())?;
+    match &opt.proxy_url {
+        Some(url) => {
+            proxy_manager.setup_proxy(&url)?;
+        },
+        _ => {},
+    };
 
     info!("Info log!");
     warn!("Warn log with value {}", "tests");
