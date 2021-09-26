@@ -8,11 +8,6 @@ on:
 jobs:
   cargo-check:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        toolchain:
-          - stable
-          - beta
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
@@ -32,14 +27,11 @@ jobs:
           - windows-latest
           - ubuntu-latest
           - macos-latest
-        toolchain:
-          - stable
-          - beta
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: ${{ matrix.toolchain }}
+          toolchain: beta
       - uses: Swatinem/rust-cache@v1
       - uses: actions-rs/cargo@v1
         with:
