@@ -1,10 +1,9 @@
-use std::error::Error;
-
 use crate::crypto::base64::encode_crypto_base64;
+use crate::Error;
 
 const URI_KEY: &'static [u8] = b"3go8&$8*3*3h0k(2)2";
 
-fn id_xor_key(id: &str, key: &[u8]) -> Result<String, Box<dyn Error>> {
+fn id_xor_key(id: &str, key: &[u8]) -> Result<String, Error> {
     let mut xor_id = String::from("");
     let id_c = id.clone().chars();
     let key_n = key.len();
@@ -13,16 +12,14 @@ fn id_xor_key(id: &str, key: &[u8]) -> Result<String, Box<dyn Error>> {
         let c_id = c as u32;
         let c_key = key[pos % key_n] as u32;
 
-        xor_id.push(std::char::from_u32(c_id ^ c_key).ok_or(format!(
-            "Failed to XOR this ID char (u32) {} with this key char (u32) {}",
-            c, c_key
-        ))?);
+        xor_id
+            .push(std::char::from_u32(c_id ^ c_key).ok_or(Error::UriEncryptXorFail(c_id, c_key))?);
     }
 
     Ok(xor_id)
 }
 
-pub fn retrieve(id: &str) -> Result<String, Box<dyn Error>> {
+pub fn retrieve(id: &str) -> Result<String, Error> {
     let id = id.trim();
     let result = id_xor_key(id, URI_KEY)?;
     let result = md5::compute(result).0;
