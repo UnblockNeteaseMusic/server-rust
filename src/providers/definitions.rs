@@ -1,21 +1,21 @@
 use std::any::Any;
 
 pub struct SongArtistsMetadata {
-    id: i32,
-    name: String,
+    pub id: i32,
+    pub name: String,
 }
 
 pub struct SongAlbumMetadata {
-    id: i32,
-    name: String,
+    pub id: i32,
+    pub name: String,
 }
 
 pub struct SongMetadata {
-    id: i32,
-    name: String,
-    duration: Option<u64>,
-    artists: Option<SongArtistsMetadata>,
-    album: Option<SongAlbumMetadata>,
+    pub id: i32,
+    pub name: String,
+    pub duration: Option<u64>,
+    pub artists: Option<SongArtistsMetadata>,
+    pub album: Option<SongAlbumMetadata>,
 }
 
 pub trait Provider {
