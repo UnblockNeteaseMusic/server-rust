@@ -1,4 +1,4 @@
-use reqwest::{self, Method, Proxy, Response, StatusCode};
+use reqwest::{self, Method, Response};
 use serde_json::{json, Value as Json};
 pub use tokio::sync::oneshot::Receiver;
 use url::Url;

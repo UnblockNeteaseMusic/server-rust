@@ -15,6 +15,7 @@ pub fn encrypt(data: &[u8]) -> common::CryptResponse {
     common::encrypt(data, EAPI_KEY)
 }
 
+#[allow(dead_code)]
 pub struct EncryptRequestResponse {
     url: String,
     body: String,

@@ -1,5 +1,5 @@
 use core::option::Option;
-use core::option::Option::{None, Some};
+use core::option::Option::Some;
 use core::result::Result::{Err, Ok};
 
 use reqwest::Proxy;
