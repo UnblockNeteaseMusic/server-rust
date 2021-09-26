@@ -1,4 +1,6 @@
-use std::any::Any;
+use async_trait::async_trait;
+pub use serde_json::Value as Json;
+
 
 pub struct SongArtistsMetadata {
     pub id: i32,
@@ -18,9 +20,10 @@ pub struct SongMetadata {
     pub album: Option<SongAlbumMetadata>,
 }
 
+#[async_trait]
 pub trait Provider {
     type SearchResultType;
 
-    fn check(info: Box<dyn Any>) -> SongMetadata;
-    fn track(search_result: Self::SearchResultType) -> SongMetadata;
+    async fn check(info: &Json) -> SongMetadata;
+    async fn track(search_result: Self::SearchResultType) -> SongMetadata;
 }
