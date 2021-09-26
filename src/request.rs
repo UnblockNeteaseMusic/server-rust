@@ -1,7 +1,7 @@
-use reqwest::{self, Method, Proxy, Response, StatusCode};
-use serde_json::{json, Value as Json};
+pub use reqwest::{self, Method, Proxy, Response, StatusCode};
+pub use serde_json::{json, Value as Json};
 pub use tokio::sync::oneshot::Receiver;
-use url::Url;
+pub use url::Url;
 
 use crate::{Error, Result};
 
