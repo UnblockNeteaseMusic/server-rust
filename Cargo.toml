@@ -24,3 +24,4 @@ reqwest = { version = "0.11", features = ["blocking", "json", "gzip", "deflate",
 tokio = { version = "1", features = ["full"] }
 hex = "0.4.3"
 url = "2.2.2"
+urlencoding = "2.1"
