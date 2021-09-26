@@ -1,0 +1,19 @@
+name: Check if the code has formatted
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  cargo-fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: beta
+      - uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: -- --check
