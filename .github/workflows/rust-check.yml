@@ -14,13 +14,11 @@ jobs:
         with:
           toolchain: beta
       - uses: Swatinem/rust-cache@v1
-        with:
-          key: ubuntu-latest-beta-v1
       - uses: actions-rs/cargo@v1
         with:
           command: check
 
-  cargo-build:
+  cargo-test:
     needs: cargo-check
     runs-on: ${{ matrix.os }}
     strategy:
@@ -35,30 +33,6 @@ jobs:
         with:
           toolchain: beta
       - uses: Swatinem/rust-cache@v1
-        with:
-          key: ${{ matrix.os }}-beta-v1
       - uses: actions-rs/cargo@v1
         with:
-          command: build
-
-  cargo-build-release:
-    if: github.ref == 'refs/heads/main'
-    needs: cargo-check
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os:
-          - windows-latest
-          - ubuntu-latest
-          - macos-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-      - uses: Swatinem/rust-cache@v1
-        with:
-          key: ${{ matrix.os }}-stable-v1
-      - uses: actions-rs/cargo@v1
-        with:
-          command: build
+          command: test
