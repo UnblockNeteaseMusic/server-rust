@@ -1,26 +1,29 @@
-use std::any::Any;
+use async_trait::async_trait;
+pub use serde_json::Value as Json;
+
 
 pub struct SongArtistsMetadata {
-    id: i32,
-    name: String,
+    pub id: i32,
+    pub name: String,
 }
 
 pub struct SongAlbumMetadata {
-    id: i32,
-    name: String,
+    pub id: i32,
+    pub name: String,
 }
 
 pub struct SongMetadata {
-    id: i32,
-    name: String,
-    duration: Option<u64>,
-    artists: Option<SongArtistsMetadata>,
-    album: Option<SongAlbumMetadata>,
+    pub id: i32,
+    pub name: String,
+    pub duration: Option<u64>,
+    pub artists: Option<SongArtistsMetadata>,
+    pub album: Option<SongAlbumMetadata>,
 }
 
+#[async_trait]
 pub trait Provider {
     type SearchResultType;
 
-    fn check(info: Box<dyn Any>) -> SongMetadata;
-    fn track(search_result: Self::SearchResultType) -> SongMetadata;
+    async fn check(info: &Json) -> SongMetadata;
+    async fn track(search_result: Self::SearchResultType) -> SongMetadata;
 }
