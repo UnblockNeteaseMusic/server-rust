@@ -6,6 +6,7 @@ use reqwest::Proxy;
 
 use crate::error::{Error, Result};
 
+#[derive(Clone)]
 pub struct ProxyManager {
     pub proxy: Option<Proxy>,
 }
