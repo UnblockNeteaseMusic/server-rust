@@ -10,6 +10,8 @@ pub enum Error {
     HeadersDataInvalid,
     #[error("Failed to parse JSON: {0}")]
     JsonParseFail(JsonErr),
+    #[error("Failed to XOR this ID char (u32) {} with this key char (u32) {}")]
+    UriEncryptXorFail(u32, u32),
     #[error("Error storing unknown data.")]
     Unknown,
 }
