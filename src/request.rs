@@ -29,7 +29,7 @@ pub async fn request(
 	.default_headers(default_headers());
     client_builder = match proxy {
         None => client_builder.no_proxy(),
-        Some(p) => match &p.get_proxy() {
+        Some(p) => match &p.as_ref() {
             Some(p) => client_builder.proxy(p.clone()),
             None => client_builder.no_proxy(),
         },

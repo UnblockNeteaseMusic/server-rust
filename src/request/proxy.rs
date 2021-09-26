@@ -23,8 +23,10 @@ impl ProxyManager {
 
         Ok(&self.proxy)
     }
+}
 
-    pub fn get_proxy(&self) -> &Option<Proxy> {
+impl AsRef<Option<Proxy>> for ProxyManager {
+    fn as_ref(&self) -> &Option<Proxy> {
         &self.proxy
     }
 }
