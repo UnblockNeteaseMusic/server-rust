@@ -19,8 +19,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     match &opt.proxy_url {
         Some(url) => {
             proxy_manager.setup_proxy(&url)?;
-        },
-        _ => {},
+        }
+        _ => {}
     };
 
     info!("Info log!");

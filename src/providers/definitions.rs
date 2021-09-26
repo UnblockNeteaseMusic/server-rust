@@ -1,7 +1,6 @@
 use async_trait::async_trait;
 pub use serde_json::Value as Json;
 
-
 pub struct SongArtistsMetadata {
     pub id: i32,
     pub name: String,
