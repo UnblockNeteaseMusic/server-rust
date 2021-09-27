@@ -166,9 +166,11 @@ where
             .enable_all()
             .build()
             .expect("new rt");
+
+        #[allow(clippy::async_yields_async)]
         let srv = rt.block_on(async move {
-            hyper::Server::bind(&([127, 0, 0, 1], 0).into())
-                .serve(hyper::service::make_service_fn(move |_| {
+            hyper::Server::bind(&([127, 0, 0, 1], 0).into()).serve(hyper::service::make_service_fn(
+                move |_| {
                     let func = func.clone();
                     async move {
                         Ok::<_, Infallible>(hyper::service::service_fn(move |req| {
@@ -176,8 +178,8 @@ where
                             async move { Ok::<_, Infallible>(fut.await) }
                         }))
                     }
-                }))
-                .await
+                },
+            ))
         });
 
         let addr = srv.local_addr();
