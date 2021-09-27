@@ -3,7 +3,7 @@ pub use serde_json::Value as Json;
 use crate::error::*;
 
 
-pub struct SongArtistsMetadata {
+pub struct SongArtistMetadata {
     pub id: i32,
     pub name: String,
 }
@@ -17,7 +17,7 @@ pub struct SongMetadata {
     pub id: i32,
     pub name: String,
     pub duration: Option<u64>,
-    pub artists: Vec<SongArtistsMetadata>,
+    pub artists: Vec<SongArtistMetadata>,
     pub album: Option<SongAlbumMetadata>,
 }
 
