@@ -1,3 +1,4 @@
+pub use crate::crypto::CryptoError;
 pub use log4rs::config::runtime::ConfigErrors as LogConfErr;
 pub use reqwest::Error as ReqErr;
 pub use serde_json::Error as JsonErr;
@@ -15,8 +16,8 @@ pub enum Error {
     LogConfigFailed(#[from] LogConfErr),
     #[error("Failed to setup log: {0}")]
     LogSetupFailed(String),
-    #[error("Failed to XOR this ID char (u32) {0} with this key char (u32) {1}")]
-    UriEncryptXorFail(u32, u32),
+    #[error("Failed to crypto: {0}")]
+    CryptoFailed(CryptoError),
     #[error("Error storing unknown data.")]
     Unknown,
 }

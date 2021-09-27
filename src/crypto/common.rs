@@ -1,5 +1,14 @@
 use openssl::error::ErrorStack;
 use openssl::symm::{decrypt as symm_decrypt, encrypt as symm_encrypt, Cipher};
+use thiserror::Error as BaseErr;
+
+#[derive(BaseErr, Debug)]
+pub enum CryptoError {
+    #[error("Failed in OpenSSL: {0}")]
+    OpenSSLFail(ErrorStack),
+    #[error("Failed to XOR this ID char (u32) {0} with this key char (u32) {1}")]
+    UriEncryptXorFail(u32, u32),
+}
 
 pub type CryptResponse = Result<Vec<u8>, ErrorStack>;
 
