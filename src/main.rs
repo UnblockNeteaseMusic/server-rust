@@ -1,12 +1,11 @@
-use std::error::Error;
-
 use unm_server::{
     cli::{Opt, StructOpt},
+    error::*,
     logger::*,
     request::proxy::ProxyManager,
 };
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() -> Result<()> {
     let opt: Opt = Opt::from_args();
     println!("{:#?}", opt);
     match opt.is_valid() {
