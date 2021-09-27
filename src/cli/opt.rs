@@ -1,17 +1,19 @@
-use crate::logger::LevelFilter;
-use crate::providers::identifiers::Provider;
-use regex::Regex;
 use std::path::PathBuf;
+
+use regex::Regex;
 pub use structopt::StructOpt;
 
+use crate::logger::LevelFilter;
+use crate::providers::identifiers::Provider;
+
 fn parse_bool(src: &str) -> Result<bool, &str> {
-    return if src == "0" || src == "false" {
+    if src == "0" || src == "false" {
         Ok(false)
     } else if src == "1" || src == "true" {
         Ok(true)
     } else {
         Err("provided string was not `true`, `false`, `0` or `1`")
-    };
+    }
 }
 
 #[derive(StructOpt, PartialEq, Clone, Debug)]
@@ -138,7 +140,7 @@ impl Opt {
         let mut rst = self.proxy_url.as_ref().and_then(|url| {
             let proxy_url_re: Regex =
                 Regex::new(r"^http(s?)://.+:\d+$").expect("wrong regex of proxy url");
-            match proxy_url_re.is_match(&url) {
+            match proxy_url_re.is_match(url) {
                 true => None,
                 false => Some(String::from("lease check the proxy url.")),
             }
@@ -149,7 +151,7 @@ impl Opt {
 
         rst = self.endpoint.as_ref().and_then(|url| {
             let re = Regex::new(r"^http(s?)://.+$").expect("wrong regex of endpoint");
-            match re.is_match(&url) {
+            match re.is_match(url) {
                 true => None,
                 false => Some(String::from("Please check the endpoint host.")),
             }
@@ -169,7 +171,7 @@ impl Opt {
 
         rst = self.token.as_ref().and_then(|t| {
             let re = Regex::new(r"^\S+:\S+$").expect("wrong regex of token");
-            match re.is_match(&t) {
+            match re.is_match(t) {
                 true => None,
                 false => Some(String::from("Please check the authentication token.")),
             }
@@ -182,10 +184,10 @@ impl Opt {
         for i1 in 0..len {
             for i2 in i1 + 1..len {
                 if self.source[i1] == self.source[i2] {
-                    return Some(String::from(format!(
+                    return Some(format!(
                         "Please check the duplication item({:#?}) in match order.",
                         self.source[i1]
-                    )));
+                    ));
                 }
             }
         }
@@ -199,7 +201,7 @@ mod test {
 
     fn new_default_opt() -> Opt {
         let args: Vec<std::ffi::OsString> = Vec::new();
-        return Opt::from_iter(args);
+        Opt::from_iter(args)
     }
 
     #[test]

@@ -15,5 +15,5 @@ pub fn default_headers() -> HeaderMap {
         "accept-language",
         HeaderValue::from_static("zh-CN,zh;q=0.9"),
     );
-    return headers;
+    headers
 }
