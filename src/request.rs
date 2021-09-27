@@ -48,5 +48,5 @@ pub async fn request(
         client = client.body(body.unwrap());
     }
     let ans = client.send().await;
-    ans.map_err(|e: reqwest::Error| Error::RequestFail(e))
+    ans.map_err(Error::RequestFail)
 }
