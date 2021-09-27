@@ -13,6 +13,19 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: beta
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: v0-${{ runner.os }}-cargo-check-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            v0-${{ runner.os }}-cargo-check-${{ hashFiles('**/Cargo.lock') }}
+            v0-${{ runner.os }}-cargo-check-
+            v0-${{ runner.os }}-cargo-
       - uses: actions-rs/cargo@v1
         with:
           command: check
@@ -31,6 +44,19 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: beta
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: v0-${{ runner.os }}-cargo-test-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            v0-${{ runner.os }}-cargo-test-${{ hashFiles('**/Cargo.lock') }}
+            v0-${{ runner.os }}-cargo-test-
+            v0-${{ runner.os }}-cargo-
       - uses: actions-rs/cargo@v1
         with:
           command: test
