@@ -34,7 +34,7 @@ pub async fn request(
             None => client_builder.no_proxy(),
         },
     };
-    let client = client_builder.build().map_err(|e| Error::RequestFail(e))?;
+    let client = client_builder.build().map_err(Error::RequestFail)?;
     let mut client = client.request(method, received_url);
 
     for (key, val) in headers.unwrap() {
@@ -48,5 +48,5 @@ pub async fn request(
         client = client.body(body.unwrap());
     }
     let ans = client.send().await;
-    ans.map_err(|e| Error::RequestFail(e))
+    ans.map_err(Error::RequestFail)
 }

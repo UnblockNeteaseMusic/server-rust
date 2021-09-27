@@ -25,7 +25,7 @@ impl std::str::FromStr for Provider {
             "youtubedl" => Ok(Provider::YoutubeDL),
             "bilibili" => Ok(Provider::Bilibili),
             "pyncmd" => Ok(Provider::Pyncmd),
-            _ => Err(String::from(format!("{}", src))),
+            _ => Err(src.to_string()),
         }
     }
 }
