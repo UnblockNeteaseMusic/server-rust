@@ -1,7 +1,9 @@
-use super::definitions::*;
+use urlencoding::encode;
+
 use crate::error::*;
 use crate::request::*;
-use urlencoding::encode;
+
+use super::definitions::*;
 
 pub struct BilibiliResult {}
 pub struct BilibiliProvider {}
@@ -15,13 +17,9 @@ impl BilibiliProvider {
 			keyword=${0}",
             encode(info.keyword().as_str())
         );
-        let url = Url::parse(url_str.as_str()).map_err(|e| Error::UrlParseFail(e))?;
+        let url = Url::parse(url_str.as_str()).map_err(Error::UrlParseFail)?;
         let res = request(Method::GET, url, None, None, None).await?;
-        // println!("{}", jsonbody);
-        let jsonbody = res
-            .json::<Json>()
-            .await
-            .map_err(|e| Error::RequestFail(e))?;
+        let jsonbody = res.json::<Json>().await.map_err(Error::RequestFail)?;
         let mut list: Vec<SongMetadata> = Vec::new();
         for item in jsonbody["data"]["result"]
             .as_array()
@@ -30,7 +28,7 @@ impl BilibiliProvider {
         {
             list.push(format(item)?);
         }
-        let matched = select_similar_song(&list, &info);
+        let matched = select_similar_song(&list, info);
         match matched {
             None => Ok(None),
             Some(song) => Ok(Some(song.id)),
@@ -42,11 +40,11 @@ impl BilibiliProvider {
 impl Provide for BilibiliProvider {
     type SearchResultType = Json;
 
-    async fn check(info: &SongMetadata) -> Result<()> {
+    async fn check(_info: &SongMetadata) -> Result<()> {
         todo!()
     }
 
-    async fn track(search_result: Self::SearchResultType) -> Result<()> {
+    async fn track(_search_result: Self::SearchResultType) -> Result<()> {
         todo!()
     }
 }
@@ -74,13 +72,14 @@ fn format(song: &Json) -> Result<SongMetadata> {
             name: String::from(author),
         }],
     };
-    return Ok(x);
+    Ok(x)
 }
 
 #[cfg(test)]
 mod test {
+    use tokio::test;
+
     use super::*;
-    use tokio::{runtime, sync::oneshot, test};
 
     fn get_info_1() -> SongMetadata {
         // https://music.163.com/api/song/detail?ids=[385552]
