@@ -3,7 +3,7 @@ use serde_json::{json, Value as Json};
 pub use tokio::sync::oneshot::Receiver;
 use url::Url;
 
-use crate::{Error, Result};
+use crate::error::*;
 
 use self::{header::default_headers, proxy::ProxyManager};
 
@@ -34,7 +34,7 @@ pub async fn request(
             None => client_builder.no_proxy(),
         },
     };
-    let client = client_builder.build().map_err(Error::RequestFail)?;
+    let client = client_builder.build()?;
     let mut client = client.request(method, received_url);
 
     for (key, val) in headers.unwrap() {

@@ -6,3 +6,4 @@ pub mod eapi;
 pub mod linux;
 pub mod md5;
 pub mod uri;
+pub use common::CryptoError;
