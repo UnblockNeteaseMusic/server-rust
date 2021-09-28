@@ -1,10 +1,11 @@
-use std::error::Error;
+use unm_server::{
+    cli::{Opt, StructOpt},
+    error::*,
+    logger::*,
+    request::proxy::ProxyManager,
+};
 
-use unm_server::cli::{Opt, StructOpt};
-use unm_server::logger::*;
-use unm_server::request::proxy::ProxyManager;
-
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() -> Result<()> {
     let opt: Opt = Opt::from_args();
     println!("{:#?}", opt);
     match opt.is_valid() {
@@ -16,11 +17,8 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     init_logger(&opt)?;
     let mut proxy_manager = ProxyManager { proxy: None };
-    match &opt.proxy_url {
-        Some(url) => {
-            proxy_manager.setup_proxy(&url)?;
-        },
-        _ => {},
+    if let Some(url) = &opt.proxy_url {
+        proxy_manager.setup_proxy(url)?;
     };
 
     info!("Info log!");

@@ -1,7 +1,6 @@
+use crate::error::*;
 pub use async_trait::async_trait;
 pub use serde_json::Value as Json;
-use crate::error::*;
-
 
 pub struct SongArtistMetadata {
     pub id: i32,
@@ -29,13 +28,12 @@ pub trait Provide {
     async fn track(search_result: Self::SearchResultType) -> Result<()>;
 }
 
-
 impl SongMetadata {
     pub fn keyword(&self) -> String {
         let mut ret: String = String::new();
         ret.push_str(self.name.as_str());
         ret.push_str(" - ");
-        
+
         let mut len = 0;
         for (idx, artist) in self.artists.iter().enumerate() {
             ret.push_str(artist.name.as_str());
@@ -49,5 +47,4 @@ impl SongMetadata {
         }
         return ret;
     }
-
 }

@@ -3,7 +3,6 @@ use std::{
 };
 
 use futures::stream::StreamExt;
-use reqwest;
 use reqwest::{Method, Proxy, Response};
 use serde_json::json;
 use tokio::{runtime, sync::oneshot, test};
@@ -117,7 +116,7 @@ async fn test_request_proxy() {
 
     let res: Response = request(
         Method::GET,
-        Url::parse(&url).unwrap(),
+        Url::parse(url).unwrap(),
         None,
         None,
         Some(&proxy_manager),
@@ -167,6 +166,8 @@ where
             .enable_all()
             .build()
             .expect("new rt");
+
+        #[allow(clippy::async_yields_async)]
         let srv = rt.block_on(async move {
             hyper::Server::bind(&([127, 0, 0, 1], 0).into()).serve(hyper::service::make_service_fn(
                 move |_| {

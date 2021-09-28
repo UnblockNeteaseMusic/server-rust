@@ -1,10 +1,10 @@
 use core::option::Option;
-use core::option::Option::{None, Some};
-use core::result::Result::{Err, Ok};
+use core::option::Option::Some;
+use core::result::Result::Ok;
 
 use reqwest::Proxy;
 
-use crate::error::{Error, Result};
+use crate::error::*;
 
 #[derive(Clone)]
 pub struct ProxyManager {
@@ -13,14 +13,8 @@ pub struct ProxyManager {
 
 impl ProxyManager {
     pub fn setup_proxy(&mut self, proxy: &str) -> Result<&Option<Proxy>> {
-        match Proxy::all(proxy) {
-            Ok(pp) => {
-                self.proxy = Some(pp);
-                Ok(())
-            }
-            Err(e) => Err(Error::RequestFail(e)),
-        }?;
-
+        let p = Proxy::all(proxy)?;
+        self.proxy = Some(p);
         Ok(&self.proxy)
     }
 }

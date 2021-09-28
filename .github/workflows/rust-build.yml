@@ -1,0 +1,48 @@
+name: Build binaries for UNM
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  cargo-build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+          - os: macos-11
+            target: x86_64-apple-darwin
+          - os: macos-11
+            target: aarch64-apple-darwin
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: beta
+          target: ${{ matrix.target }}
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: v0-${{ matrix.os }}-${{ matrix.target }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            v0-${{ matrix.os }}-${{ matrix.target }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
+            v0-${{ matrix.os }}-${{ matrix.target }}-cargo-build-
+      - uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: build
+          args: --target ${{ matrix.target }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: unm-server-${{ matrix.os }}-${{ matrix.target }}
+          path: |
+            ./target/${{ matrix.target }}/debug/*unm_server*

@@ -1,15 +1,16 @@
-use crate::cli::Opt;
+use std::path::Path;
+
+use crate::error::*;
 pub use log::{debug, error, info, warn, LevelFilter};
 pub use log4rs;
-
 use log4rs::{
     append::{console::ConsoleAppender, file::FileAppender},
-    config::{runtime::ConfigErrors, Appender, Root},
+    config::{Appender, Root},
     encode::{json::JsonEncoder, pattern::PatternEncoder, Encode},
     Config,
 };
-use std::error::Error;
-use std::path::PathBuf;
+
+use crate::cli::Opt;
 
 /// Construct a new encoder.
 fn new_encoder(json_log: Option<bool>) -> Box<dyn Encode> {
@@ -29,20 +30,18 @@ struct GetConfigBase {
 }
 
 /// Get the configuration for logging to stdout.
-fn get_stdout_config(conf_base: GetConfigBase) -> Result<Config, ConfigErrors> {
+fn get_stdout_config(conf_base: GetConfigBase) -> Result<Config> {
     let GetConfigBase { encoder, log_level } = conf_base;
 
     let stdout = ConsoleAppender::builder().encoder(encoder).build();
-    return log4rs::config::Config::builder()
+    let config = log4rs::config::Config::builder()
         .appender(Appender::builder().build("stdout", Box::new(stdout)))
-        .build(Root::builder().appender("stdout").build(log_level));
+        .build(Root::builder().appender("stdout").build(log_level))?;
+    Ok(config)
 }
 
 /// Get the configuration for logging to a file.
-fn get_log_path_config(
-    conf_base: GetConfigBase,
-    log_path: &PathBuf,
-) -> Result<Config, ConfigErrors> {
+fn get_log_path_config(conf_base: GetConfigBase, log_path: &Path) -> Result<Config> {
     let GetConfigBase { encoder, log_level } = conf_base;
 
     let logfile = FileAppender::builder()
@@ -51,16 +50,17 @@ fn get_log_path_config(
         .build(log_path)
         .unwrap();
 
-    log4rs::config::Config::builder()
+    let config = log4rs::config::Config::builder()
         .appender(Appender::builder().build("logfile", Box::new(logfile)))
-        .build(Root::builder().appender("logfile").build(log_level))
+        .build(Root::builder().appender("logfile").build(log_level))?;
+    Ok(config)
 }
 
 /// Initiate the logger.
-pub fn init_logger(setting: &Opt) -> Result<(), Box<dyn Error>> {
+pub fn init_logger(setting: &Opt) -> Result<()> {
     let cfg_ctx = GetConfigBase {
         encoder: new_encoder(setting.env.json_log),
-        log_level: setting.env.log_level.clone(),
+        log_level: setting.env.log_level,
     };
 
     let log_config = match &setting.env.log_file {
@@ -68,6 +68,6 @@ pub fn init_logger(setting: &Opt) -> Result<(), Box<dyn Error>> {
         Some(log_path) => get_log_path_config(cfg_ctx, log_path),
     }?;
 
-    log4rs::init_config(log_config)?;
+    log4rs::init_config(log_config).map_err(|e| Error::LogSetupFailed(format!("{}", e)))?;
     Ok(())
 }

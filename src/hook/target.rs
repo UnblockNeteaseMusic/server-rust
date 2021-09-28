@@ -1,6 +1,6 @@
 //! The port of `hook.js`. Commit `3b94b5f13468d01ee4cbb413eb6ddb0f10dcb45a`.
 
-pub const HOOK_TARGET_HOST: [&'static str; 5] = [
+pub const HOOK_TARGET_HOST: [&str; 5] = [
     "music.163.com",
     "interface.music.163.com",
     "interface3.music.163.com",
@@ -8,7 +8,7 @@ pub const HOOK_TARGET_HOST: [&'static str; 5] = [
     "apm3.music.163.com",
 ];
 
-pub const HOOK_TARGET_PATH: [&'static str; 34] = [
+pub const HOOK_TARGET_PATH: [&str; 34] = [
     "/api/v3/playlist/detail",
     "/api/v3/song/detail",
     "/api/v6/playlist/detail",
