@@ -7,7 +7,8 @@ pub struct BilibiliResult {}
 pub struct BilibiliProvider {}
 
 impl BilibiliProvider {
-    async fn search(&self, info: &SongMetadata) -> Result<()> {
+    // find music id in bilibili
+    async fn search(&self, info: &SongMetadata) -> Result<Option<i64>> {
         let url_str = format!(
             "https://api.bilibili.com/audio/music-service-c/s?\
 			search_type=music&page=1&pagesize=30&\
@@ -16,13 +17,24 @@ impl BilibiliProvider {
         );
         let url = Url::parse(url_str.as_str()).map_err(|e| Error::UrlParseFail(e))?;
         let res = request(Method::GET, url, None, None, None).await?;
-        // res.json().map(); // unimplement
-        let res_json = res
+        // println!("{}", jsonbody);
+        let jsonbody = res
             .json::<Json>()
             .await
             .map_err(|e| Error::RequestFail(e))?;
-        println!("{}", res_json);
-        return Ok(());
+        let mut list: Vec<SongMetadata> = Vec::new();
+        for item in jsonbody["data"]["result"]
+            .as_array()
+            .ok_or(JsonErr::ParseError("data.result", "array"))?
+            .iter()
+        {
+            list.push(format(item)?);
+        }
+        let matched = select_similar_song(&list, &info);
+        match matched {
+            None => Ok(None),
+            Some(song) => Ok(Some(song.id)),
+        }
     }
 }
 
@@ -37,6 +49,32 @@ impl Provide for BilibiliProvider {
     async fn track(search_result: Self::SearchResultType) -> Result<()> {
         todo!()
     }
+}
+
+fn format(song: &Json) -> Result<SongMetadata> {
+    let id = &song["id"]
+        .as_i64()
+        .ok_or(JsonErr::ParseError("id", "i64"))?;
+    let name = song["title"]
+        .as_str()
+        .ok_or(JsonErr::ParseError("name", "string"))?;
+    let mid = &song["mid"]
+        .as_i64()
+        .ok_or(JsonErr::ParseError("mid", "i64"))?;
+    let author = song["author"]
+        .as_str()
+        .ok_or(JsonErr::ParseError("author", "string"))?;
+    let x = SongMetadata {
+        id: *id,
+        name: String::from(name),
+        duration: None,
+        album: None,
+        artists: vec![SongArtistMetadata {
+            id: *mid,
+            name: String::from(author),
+        }],
+    };
+    return Ok(x);
 }
 
 #[cfg(test)]
@@ -62,6 +100,8 @@ mod test {
     async fn bilibili_search() {
         let p = BilibiliProvider {};
         let info = get_info_1();
-        p.search(&info).await.unwrap();
+        let id = p.search(&info).await.unwrap();
+        println!("{:#?}", id);
+        assert_eq!(id, Some(349595));
     }
 }
