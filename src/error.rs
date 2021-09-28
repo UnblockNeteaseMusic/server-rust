@@ -1,9 +1,17 @@
 pub use crate::crypto::CryptoError;
 pub use log4rs::config::runtime::ConfigErrors as LogConfErr;
 pub use reqwest::Error as ReqErr;
-pub use serde_json::Error as JsonErr;
+pub use serde_json::Error as SerdeJsonErr;
 use thiserror::Error as BaseErr;
 pub use url::ParseError as UrlErr;
+
+#[derive(BaseErr, Debug)]
+pub enum JsonErr {
+    #[error("{0}")]
+    SerdeJsonError(#[from] SerdeJsonErr),
+    #[error("`{0}` not found or is not {1} type")]
+    ParseError(&'static str, &'static str),
+}
 
 #[derive(BaseErr, Debug)]
 pub enum Error {
@@ -21,6 +29,8 @@ pub enum Error {
     LogSetupFailed(String),
     #[error("Failed to crypto: {0}")]
     CryptoFailed(CryptoError),
+    #[error("{0}")]
+    CustomError(String),
     #[error("Error storing unknown data.")]
     Unknown,
 }
