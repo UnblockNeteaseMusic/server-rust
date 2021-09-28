@@ -5,6 +5,8 @@
 Rust 版本的 [UnblockNeteaseMusic/server](https://github.com/UnblockNeteaseMusic/server)
 ，以效能、穩定性及可維護性為目標。
 
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FUnblockNeteaseMusic%2Fserver-rust.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FUnblockNeteaseMusic%2Fserver-rust?ref=badge_shield)
+
 ## 安裝
 
 ### 最新版本
@@ -47,3 +49,9 @@ cargo clippy # Rust linter
 
 `unm-server-rust` 的 CI 也會在程式碼 push 後自動執行上述命令，
 進行程式碼測試與檢查。
+
+## 授權條款
+
+This project is licensed under [LGPL-3.0-only](https://spdx.org/licenses/LGPL-3.0-only.html).
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FUnblockNeteaseMusic%2Fserver-rust.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FUnblockNeteaseMusic%2Fserver-rust?ref=badge_large)
