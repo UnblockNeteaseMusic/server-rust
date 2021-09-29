@@ -50,3 +50,14 @@ pub async fn request(
     let ans = client.send().await;
     ans.map_err(Error::RequestFail)
 }
+
+pub async fn request_str(
+    method: Method,
+    received_url: &str,
+    received_headers: Option<Json>,
+    body: Option<String>,
+    proxy: Option<&ProxyManager>,
+) -> Result<Response> {
+    let url = Url::parse(received_url).map_err(Error::UrlParseFail)?;
+    return request(method, url, received_headers, body, proxy).await;
+}
