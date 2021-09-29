@@ -26,7 +26,7 @@ pub struct SongMetadata {
 
 #[async_trait]
 pub trait Provide {
-    async fn check(info: &SongMetadata) -> Result<()>;
+    async fn check(&self, info: &SongMetadata) -> Result<Option<String>>;
 }
 
 impl SongMetadata {
