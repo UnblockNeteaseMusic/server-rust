@@ -5,11 +5,10 @@ use crate::request::*;
 
 use super::definitions::*;
 
-pub struct BilibiliResult {}
 pub struct BilibiliProvider {}
 
 impl BilibiliProvider {
-    // find music id in bilibili
+    /// find music id in bilibili
     async fn search(&self, info: &SongMetadata) -> Result<Option<i64>> {
         let url_str = format!(
             "https://api.bilibili.com/audio/music-service-c/s?\
@@ -35,8 +34,8 @@ impl BilibiliProvider {
         }
     }
 
-    // trace music id and find out music link
-    async fn track(id: i64) -> Result<Option<String>> {
+    /// trace music id and find out music link
+    async fn track(&self, id: i64) -> Result<Option<String>> {
         let url_str = format!(
             "https://www.bilibili.com/audio/music-service-c/web/url?rivilege=2&quality=2&sid={0}",
             id
@@ -60,8 +59,11 @@ impl BilibiliProvider {
 
 #[async_trait]
 impl Provide for BilibiliProvider {
-    async fn check(_info: &SongMetadata) -> Result<()> {
-        todo!()
+    async fn check(&self, info: &SongMetadata) -> Result<Option<String>> {
+        match self.search(&info).await? {
+            None => Ok(None),
+            Some(id) => Ok(self.track(id).await?),
+        }
     }
 }
 
@@ -118,5 +120,20 @@ mod test {
         let id = p.search(&info).await.unwrap();
         println!("{:#?}", id);
         assert_eq!(id, Some(349595));
+    }
+
+    #[test]
+    async fn bilibili_track() {
+        let p = BilibiliProvider {};
+        let url = p.track(349595).await.unwrap().unwrap();
+        println!("{}", url);
+    }
+
+    #[test]
+    async fn bilibili_check() {
+        let p = BilibiliProvider {};
+        let info = get_info_1();
+        let url = p.check(&info).await.unwrap().unwrap();
+        println!("{}", url);
     }
 }
