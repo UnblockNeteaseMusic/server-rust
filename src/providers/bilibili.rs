@@ -34,17 +34,33 @@ impl BilibiliProvider {
             Some(song) => Ok(Some(song.id)),
         }
     }
+
+    // trace music id and find out music link
+    async fn track(id: i64) -> Result<Option<String>> {
+        let url_str = format!(
+            "https://www.bilibili.com/audio/music-service-c/web/url?rivilege=2&quality=2&sid={0}",
+            id
+        );
+        let url = Url::parse(url_str.as_str()).map_err(Error::UrlParseFail)?;
+        let res = request(Method::GET, url, None, None, None).await?;
+        let jsonbody = res.json::<Json>().await.map_err(Error::RequestFail)?;
+        let links = jsonbody["data"]["cdns"]
+            .as_array()
+            .ok_or(JsonErr::ParseError("data.cdns", "array"))?;
+        if links.len() == 0 {
+            return Ok(None);
+        }
+        let link = links[0]
+            .as_str()
+            .ok_or(JsonErr::ParseError("data.cdns[0]", "string"))?
+            .replace("https", "http");
+        return Ok(Some(link));
+    }
 }
 
 #[async_trait]
 impl Provide for BilibiliProvider {
-    type SearchResultType = Json;
-
     async fn check(_info: &SongMetadata) -> Result<()> {
-        todo!()
-    }
-
-    async fn track(_search_result: Self::SearchResultType) -> Result<()> {
         todo!()
     }
 }
