@@ -2,6 +2,11 @@
 name = "unm_server"
 version = "0.1.0"
 edition = "2018"
+readme = "README.md"
+repository = "https://github.com/UnblockNeteaseMusic/server-rust"
+license = "LGPL-3.0-only"
+license-file = "COPYING"
+publish = false
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -11,7 +16,6 @@ thiserror = "1.0"
 regex = "1.x"
 log = "0.4"
 log4rs = {version = "1.0", features = ["json_encoder", "file_appender", "console_appender"]}
-#rocket = "0.5.0-rc.1"
 openssl = "0.10.36"
 md5 = "0.7.0"
 serde = { version = "1.0", features = ["derive"] }
