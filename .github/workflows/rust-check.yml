@@ -60,3 +60,8 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: test
+          args: -p unm_server
+      - uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: -p unm_macro
