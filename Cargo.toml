@@ -28,3 +28,4 @@ tokio = { version = "1", features = ["full"] }
 hex = "0.4.3"
 url = "2.2.2"
 urlencoding = "2.1"
+unm_macro = { path = "./unm_macro" }
