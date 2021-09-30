@@ -3,19 +3,19 @@ pub use serde_json::Value as Json;
 
 use crate::error::*;
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct SongArtistMetadata {
     pub id: i64,
     pub name: String,
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct SongAlbumMetadata {
     pub id: i64,
     pub name: String,
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct SongMetadata {
     pub id: i64,
     pub name: String,
