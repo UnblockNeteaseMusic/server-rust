@@ -44,21 +44,21 @@ impl BilibiliProvider {
         let links = jsonbody["data"]["cdns"]
             .as_array()
             .ok_or(JsonErr::ParseError("data.cdns", "array"))?;
-        if links.len() == 0 {
+        if links.is_empty() {
             return Ok(None);
         }
         let link = links[0]
             .as_str()
             .ok_or(JsonErr::ParseError("data.cdns[0]", "string"))?
             .replace("https", "http");
-        return Ok(Some(link));
+        Ok(Some(link))
     }
 }
 
 #[async_trait]
 impl Provide for BilibiliProvider {
     async fn check(&self, info: &SongMetadata) -> Result<Option<String>> {
-        match self.search(&info).await? {
+        match self.search(info).await? {
             None => Ok(None),
             Some(id) => Ok(self.track(id).await?),
         }
