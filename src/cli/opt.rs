@@ -136,7 +136,7 @@ pub struct Opt {
 }
 
 impl Opt {
-    pub fn is_valid(&self) -> Option<String> {
+    pub fn arg_check(&self) -> Option<String> {
         let mut rst = self.proxy_url.as_ref().and_then(|url| {
             let proxy_url_re: Regex =
                 Regex::new(r"^http(s?)://.+:\d+$").expect("wrong regex of proxy url");
@@ -191,6 +191,7 @@ impl Opt {
                 }
             }
         }
+
         None
     }
 }
@@ -208,17 +209,17 @@ mod test {
     fn default_is_valid() {
         let op = new_default_opt();
         // println!("{:#?}", op);
-        assert_eq!(op.is_valid(), None);
+        assert_eq!(op.arg_check(), None);
     }
     #[test]
     fn token_check() {
         let mut op = new_default_opt();
         op.token = Some(String::from("abcd:123"));
-        assert!(op.is_valid().is_none());
+        assert!(op.arg_check().is_none());
         op.token = Some(String::from("abcd123"));
-        assert!(op.is_valid().is_some());
+        assert!(op.arg_check().is_some());
         op.token = Some(String::from("ab cd:123"));
-        assert!(op.is_valid().is_some());
+        assert!(op.arg_check().is_some());
     }
     #[test]
     fn dump_source_is_invalid() {
@@ -227,7 +228,7 @@ mod test {
         op.source[0] = Provider::Bilibili;
         op.source[1] = Provider::Bilibili;
         assert_eq!(
-            op.is_valid(),
+            op.arg_check(),
             Some(String::from(
                 "Please check the duplication item(bilibili) in match order."
             ))

@@ -7,8 +7,8 @@ use unm_server::{
 
 fn main() -> Result<()> {
     let opt: Opt = Opt::from_args();
-    println!("{:#?}", opt);
-    match opt.is_valid() {
+
+    match opt.arg_check() {
         None => {}
         Some(msg) => {
             println!("{}", msg);
