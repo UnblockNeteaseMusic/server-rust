@@ -1,8 +1,13 @@
+use std::convert::Infallible;
+use std::net::SocketAddr;
+
+use hyper::service::{make_service_fn, service_fn};
+use hyper::Server;
+
+use unm_server::server::{root_handler, shutdown_signal};
 use unm_server::{
     cli::{Opt, StructOpt},
-    error::*,
     logger::*,
-    request::proxy::ProxyManager,
 };
 
 fn init_opt() -> Opt {
@@ -15,23 +20,34 @@ fn init_opt() -> Opt {
     opt
 }
 
-fn init_proxy_manager(opt: &Opt) -> Result<ProxyManager> {
-    let mut proxy_manager = ProxyManager { proxy: None };
-    if let Some(url) = &opt.proxy_url {
-        proxy_manager.setup_proxy(url)?;
-    };
+// fn init_proxy_manager(opt: &Opt) -> Result<ProxyManager> {
+//     let mut proxy_manager = ProxyManager { proxy: None };
+//     if let Some(url) = &opt.proxy_url {
+//         proxy_manager.setup_proxy(url)?;
+//     };
+//
+//     Ok(proxy_manager)
+// }
 
-    Ok(proxy_manager)
-}
-
-fn main() -> Result<()> {
+#[tokio::main]
+async fn main() {
     let opt = init_opt();
-    init_logger(&opt)?;
-    let proxy_manager = init_proxy_manager(&opt)?;
+    init_logger(&opt).expect("should be able to initiate loggers");
+    // let proxy_manager =
+    //     init_proxy_manager(&opt).expect("should be able to initiate the proxy manager");
 
-    info!("Info log!");
-    warn!("Warn log with value {}", "tests");
-    error!("ERROR!");
+    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
+    let service = make_service_fn(|_conn| async { Ok::<_, Infallible>(service_fn(root_handler)) });
+    let server = Server::bind(&addr)
+        .serve(service)
+        .with_graceful_shutdown(shutdown_signal());
 
-    Ok(())
+    info!(
+        "Welcome! You can access UNM service on: {}",
+        addr.to_string()
+    );
+    // Run this server for... forever!
+    if let Err(e) = server.await {
+        error!("Server Error: {}", e);
+    }
 }
