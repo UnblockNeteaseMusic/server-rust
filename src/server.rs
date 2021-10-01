@@ -1,4 +1,6 @@
-async fn shutdown_signal() {
+pub mod proxy_pac;
+
+pub async fn shutdown_signal() {
     // Wait for the CTRL+C signal
     tokio::signal::ctrl_c()
         .await
