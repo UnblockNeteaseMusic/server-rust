@@ -71,7 +71,7 @@ fn format(song: &Json) -> Result<SongMetadata> {
         .ok_or(JsonErr::ParseError("id", "i64"))?;
     let name = song["title"]
         .as_str()
-        .ok_or(JsonErr::ParseError("name", "string"))?;
+        .ok_or(JsonErr::ParseError("title", "string"))?;
     let mid = &song["mid"]
         .as_i64()
         .ok_or(JsonErr::ParseError("mid", "i64"))?;
