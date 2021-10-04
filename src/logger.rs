@@ -1,5 +1,6 @@
 use std::path::Path;
 
+use crate::error::*;
 pub use log::{debug, error, info, warn, LevelFilter};
 pub use log4rs;
 use log4rs::{
@@ -10,18 +11,15 @@ use log4rs::{
 };
 
 use crate::cli::Opt;
-use crate::error::*;
-
-const ENCODER_PATTERN: &str = "\x1b[1m[{l}]\x1b[0m {m}\n";
 
 /// Construct a new encoder.
 fn new_encoder(json_log: Option<bool>) -> Box<dyn Encode> {
     match json_log {
         Some(v) => match v {
             true => Box::new(JsonEncoder::new()),
-            false => Box::new(PatternEncoder::new(ENCODER_PATTERN)),
+            false => Box::new(PatternEncoder::new("{l} - {m}\n")),
         },
-        None => Box::new(PatternEncoder::new(ENCODER_PATTERN)),
+        None => Box::new(PatternEncoder::new("{l} - {m}\n")),
     }
 }
 

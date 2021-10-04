@@ -43,7 +43,7 @@ async fn main() {
         .with_graceful_shutdown(shutdown_signal());
 
     info!(
-        "Welcome! You can access UNM service on: \x1b[1m{}\x1b[0m",
+        "Welcome! You can access UNM service on: {}",
         addr.to_string()
     );
     // Run this server for... forever!
