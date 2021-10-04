@@ -5,7 +5,6 @@ edition = "2018"
 readme = "README.md"
 repository = "https://github.com/UnblockNeteaseMusic/server-rust"
 license = "LGPL-3.0-only"
-license-file = "COPYING"
 publish = false
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -29,3 +28,4 @@ tokio = { version = "1", features = ["full"] }
 hex = "0.4.3"
 url = "2.2.2"
 urlencoding = "2.1"
+unm_macro = { path = "./unm_macro" }

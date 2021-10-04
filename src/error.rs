@@ -1,9 +1,13 @@
-pub use crate::crypto::CryptoError;
+use http::header::ToStrError;
+pub use http::Error as HttpErr;
 pub use log4rs::config::runtime::ConfigErrors as LogConfErr;
 pub use reqwest::Error as ReqErr;
 pub use serde_json::Error as SerdeJsonErr;
 use thiserror::Error as BaseErr;
 pub use url::ParseError as UrlErr;
+
+pub use crate::crypto::CryptoError as CryptoErr;
+use crate::server::error::ServerError as ServerErr;
 
 #[derive(BaseErr, Debug)]
 pub enum JsonErr {
@@ -28,7 +32,11 @@ pub enum Error {
     #[error("Failed to setup log: {0}")]
     LogSetupFailed(String),
     #[error("Failed to crypto: {0}")]
-    CryptoFailed(CryptoError),
+    CryptoFailed(#[from] CryptoErr),
+    #[error("[ServerError] Server Error: {0}")]
+    ServerError(#[from] ServerErr),
+    #[error("Failed to convert a string: {0}")]
+    StringConvertFailed(#[from] ToStrError),
     #[error("{0}")]
     CustomError(String),
     #[error("Error storing unknown data.")]

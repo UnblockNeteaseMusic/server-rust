@@ -44,3 +44,11 @@ pub const HOOK_TARGET_PATH: [&str; 34] = [
     "/api/usertool/sound/mobile/all",
     "/api/usertool/sound/mobile/detail",
 ];
+
+pub const HOOK_DOMAIN_LIST: [&str; 5] = [
+    "music.163.com",
+    "music.126.net",
+    "iplay.163.com",
+    "look.163.com",
+    "y.163.com",
+];
