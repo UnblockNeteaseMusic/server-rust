@@ -17,7 +17,7 @@ pub struct SongAlbumMetadata {
 
 #[derive(Clone)]
 pub struct SongMetadata {
-    pub id: i64,
+    pub id: String,
     pub name: String,
     pub duration: Option<i64>,
     pub artists: Vec<SongArtistMetadata>,
@@ -109,7 +109,7 @@ mod test {
             album: None,
             artists: Vec::new(),
             duration: d,
-            id: 0,
+            id: String::from("0"),
             name: String::new(),
         }
     }

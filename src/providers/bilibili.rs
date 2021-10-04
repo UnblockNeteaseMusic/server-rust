@@ -9,7 +9,7 @@ pub struct BilibiliProvider {}
 
 impl BilibiliProvider {
     /// find music id in bilibili
-    async fn search(&self, info: &SongMetadata) -> Result<Option<i64>> {
+    async fn search(&self, info: &SongMetadata) -> Result<Option<String>> {
         let url_str = format!(
             "https://api.bilibili.com/audio/music-service-c/s?\
 			search_type=music&page=1&pagesize=30&\
@@ -29,12 +29,12 @@ impl BilibiliProvider {
         let matched = select_similar_song(&list, info);
         match matched {
             None => Ok(None),
-            Some(song) => Ok(Some(song.id)),
+            Some(song) => Ok(Some(format!("{}", song.id))),
         }
     }
 
     /// trace music id and find out music link
-    async fn track(&self, id: i64) -> Result<Option<String>> {
+    async fn track(&self, id: String) -> Result<Option<String>> {
         let url_str = format!(
             "https://www.bilibili.com/audio/music-service-c/web/url?rivilege=2&quality=2&sid={0}",
             id
@@ -79,7 +79,7 @@ fn format(song: &Json) -> Result<SongMetadata> {
         .as_str()
         .ok_or(JsonErr::ParseError("author", "string"))?;
     let x = SongMetadata {
-        id: *id,
+        id: format!("{}", id),
         name: String::from(name),
         duration: None,
         album: None,
@@ -100,7 +100,7 @@ mod test {
     fn get_info_1() -> SongMetadata {
         // https://music.163.com/api/song/detail?ids=[385552]
         SongMetadata {
-            id: 385552,
+            id: "385552".to_string(),
             name: String::from("干杯"),
             album: None,
             artists: vec![SongArtistMetadata {
@@ -117,13 +117,13 @@ mod test {
         let info = get_info_1();
         let id = p.search(&info).await.unwrap();
         println!("{:#?}", id);
-        assert_eq!(id, Some(349595));
+        assert_eq!(id, Some("349595".to_string()));
     }
 
     #[test]
     async fn bilibili_track() {
         let p = BilibiliProvider {};
-        let url = p.track(349595).await.unwrap().unwrap();
+        let url = p.track("349595".to_string()).await.unwrap().unwrap();
         println!("{}", url);
     }
 
