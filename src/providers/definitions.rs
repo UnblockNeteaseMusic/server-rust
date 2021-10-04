@@ -9,7 +9,7 @@ pub struct SongArtistMetadata {
     pub name: String,
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct SongAlbumMetadata {
     pub id: i64,
     pub name: String,
