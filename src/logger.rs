@@ -1,6 +1,6 @@
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
-pub use log::{debug, error, info, warn, LevelFilter};
+pub use log::{trace, debug, error, info, warn, LevelFilter};
 pub use log4rs;
 use log4rs::{
     append::{console::ConsoleAppender, file::FileAppender},
@@ -9,7 +9,6 @@ use log4rs::{
     Config,
 };
 
-use crate::cli::Opt;
 use crate::error::*;
 
 const ENCODER_PATTERN: &str = "\x1b[1m[{l}]\x1b[0m {m}\n";
@@ -59,13 +58,17 @@ fn get_log_path_config(conf_base: GetConfigBase, log_path: &Path) -> Result<Conf
 }
 
 /// Initiate the logger.
-pub fn init_logger(setting: &Opt) -> Result<()> {
+pub fn init_logger(
+    log_level: LevelFilter,
+    json_log: &Option<bool>,
+    log_file: &Option<PathBuf>,
+) -> Result<()> {
     let cfg_ctx = GetConfigBase {
-        encoder: new_encoder(setting.env.json_log),
-        log_level: setting.env.log_level,
+        encoder: new_encoder(*json_log),
+        log_level,
     };
 
-    let log_config = match &setting.env.log_file {
+    let log_config = match log_file {
         None => get_stdout_config(cfg_ctx),
         Some(log_path) => get_log_path_config(cfg_ctx, log_path),
     }?;
