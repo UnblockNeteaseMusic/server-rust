@@ -1,6 +1,6 @@
 use std::path::{Path, PathBuf};
 
-pub use log::{trace, debug, error, info, warn, LevelFilter};
+pub use log::{debug, error, info, trace, warn, LevelFilter};
 pub use log4rs;
 use log4rs::{
     append::{console::ConsoleAppender, file::FileAppender},
