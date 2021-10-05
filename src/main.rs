@@ -32,7 +32,8 @@ fn init_opt() -> Opt {
 #[tokio::main]
 async fn main() {
     let opt = init_opt();
-    init_logger(&opt).expect("should be able to initiate loggers");
+    init_logger(opt.env.log_level, &opt.env.json_log, &opt.env.log_file)
+        .expect("should be able to initiate loggers");
     // let proxy_manager =
     //     init_proxy_manager(&opt).expect("should be able to initiate the proxy manager");
 
