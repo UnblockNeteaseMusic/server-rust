@@ -15,7 +15,8 @@ fn init_opt() -> Opt {
     let opt: Opt = Opt::from_args();
 
     if let Err(Error::ArgumentError(msg)) = opt.arg_check() {
-        panic!("\x1b[1;31mERROR:\x1b[0m {}", msg);
+        eprintln!("\x1b[1;31mARGUMENT ERROR:\x1b[0m {}", msg);
+        std::process::exit(1);
     }
 
     opt
