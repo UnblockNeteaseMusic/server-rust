@@ -5,6 +5,7 @@ pub use structopt::StructOpt;
 
 use crate::logger::LevelFilter;
 use crate::providers::identifiers::Provider;
+use crate::Error;
 
 fn parse_bool(src: &str) -> Result<bool, &str> {
     if src == "0" || src == "false" {
@@ -135,64 +136,81 @@ pub struct Opt {
     pub env: OptEnv,
 }
 
-impl Opt {
-    pub fn arg_check(&self) -> Option<String> {
-        let mut rst = self.proxy_url.as_ref().and_then(|url| {
-            let proxy_url_re: Regex =
-                Regex::new(r"^http(s?)://.+:\d+$").expect("wrong regex of proxy url");
-            match proxy_url_re.is_match(url) {
-                true => None,
-                false => Some(String::from("lease check the proxy url.")),
-            }
-        });
-        if rst.is_some() {
-            return rst;
-        }
+type CheckerReturnType<'a> = Result<(), String>;
 
-        rst = self.endpoint.as_ref().and_then(|url| {
-            let re = Regex::new(r"^http(s?)://.+$").expect("wrong regex of endpoint");
-            match re.is_match(url) {
-                true => None,
-                false => Some(String::from("Please check the endpoint host.")),
-            }
-        });
-        if rst.is_some() {
-            return rst;
-        }
+struct Checker {}
 
-        rst = self
-            .host
-            .parse::<std::net::IpAddr>()
-            .err()
-            .map(|_| String::from("Please check the server host."));
-        if rst.is_some() {
-            return rst;
+impl Checker {
+    pub fn proxy_url(proxy_url: &str) -> CheckerReturnType {
+        let proxy_url_re: Regex =
+            Regex::new(r"^http(s?)://.+:\d+$").expect("wrong regex of proxy url");
+        match proxy_url_re.is_match(proxy_url) {
+            true => Ok(()),
+            false => Err("Please check the proxy url.".to_string()),
         }
+    }
 
-        rst = self.token.as_ref().and_then(|t| {
-            let re = Regex::new(r"^\S+:\S+$").expect("wrong regex of token");
-            match re.is_match(t) {
-                true => None,
-                false => Some(String::from("Please check the authentication token.")),
-            }
-        });
-        if rst.is_some() {
-            return rst;
+    pub fn host(host: &str) -> CheckerReturnType {
+        match host.parse::<std::net::IpAddr>() {
+            Ok(_) => Ok(()),
+            Err(_) => Err("Please check the server host.".to_string()),
         }
+    }
 
-        let len = self.source.len();
+    pub fn token(token: &str) -> CheckerReturnType {
+        let re = Regex::new(r"^\S+:\S+$").expect("wrong regex of token");
+        match re.is_match(token) {
+            true => Ok(()),
+            false => Err("Please check the authentication token.".to_string()),
+        }
+    }
+
+    pub fn source(sources: &[Provider]) -> CheckerReturnType {
+        let len = sources.len();
         for i1 in 0..len {
             for i2 in i1 + 1..len {
-                if self.source[i1] == self.source[i2] {
-                    return Some(format!(
+                if sources[i1] == sources[i2] {
+                    return Err(format!(
                         "Please check the duplication item({:#?}) in match order.",
-                        self.source[i1]
+                        sources[i1]
                     ));
                 }
             }
         }
+        Ok(())
+    }
+}
 
-        None
+impl Opt {
+    fn build_arg_error(reason: &str) -> Error {
+        Error::ArgumentError(reason.to_string())
+    }
+
+    fn execute_optional_checker<F, V>(value_to_check: &Option<V>, checker: F) -> Result<(), Error>
+    where
+        F: Fn(&V) -> CheckerReturnType,
+    {
+        if let Some(v) = value_to_check {
+            checker(v).map_err(|s| Self::build_arg_error(s.as_str()))
+        } else {
+            Ok(())
+        }
+    }
+
+    fn execute_checker<F, V>(value_to_check: &V, checker: F) -> Result<(), Error>
+    where
+        F: Fn(&V) -> CheckerReturnType,
+    {
+        checker(value_to_check).map_err(|s| Self::build_arg_error(s.as_str()))
+    }
+
+    pub fn arg_check(&self) -> Result<(), Error> {
+        Self::execute_checker(&self.host, |v| Checker::host(v.as_str()))?;
+        Self::execute_checker(&self.source, |v| Checker::source(v.as_slice()))?;
+        Self::execute_optional_checker(&self.proxy_url, |v| Checker::proxy_url(v.as_str()))?;
+        Self::execute_optional_checker(&self.token, |v| Checker::token(v.as_str()))?;
+
+        Ok(())
     }
 }
 
@@ -208,18 +226,18 @@ mod test {
     #[test]
     fn default_is_valid() {
         let op = new_default_opt();
-        // println!("{:#?}", op);
-        assert_eq!(op.arg_check(), None);
+
+        assert!(op.arg_check().is_ok());
     }
     #[test]
     fn token_check() {
         let mut op = new_default_opt();
         op.token = Some(String::from("abcd:123"));
-        assert!(op.arg_check().is_none());
+        assert!(op.arg_check().is_ok());
         op.token = Some(String::from("abcd123"));
-        assert!(op.arg_check().is_some());
+        assert!(op.arg_check().is_err());
         op.token = Some(String::from("ab cd:123"));
-        assert!(op.arg_check().is_some());
+        assert!(op.arg_check().is_err());
     }
     #[test]
     fn dump_source_is_invalid() {
@@ -227,11 +245,17 @@ mod test {
         op.source.resize(2, Provider::Bilibili);
         op.source[0] = Provider::Bilibili;
         op.source[1] = Provider::Bilibili;
-        assert_eq!(
-            op.arg_check(),
-            Some(String::from(
-                "Please check the duplication item(bilibili) in match order."
-            ))
-        );
+
+        let check_result = op.arg_check();
+        assert!(check_result.is_err());
+
+        if let Err(Error::ArgumentError(msg)) = check_result {
+            assert_eq!(
+                msg,
+                "Please check the duplication item(bilibili) in match order.".to_string()
+            );
+        } else {
+            panic!("Not: Error::ArgumentError");
+        }
     }
 }
