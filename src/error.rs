@@ -37,6 +37,8 @@ pub enum Error {
     ServerError(#[from] ServerErr),
     #[error("Failed to convert a string: {0}")]
     StringConvertFailed(#[from] ToStrError),
+    #[error("Failed to parse the arguments: {0}")]
+    ArgumentError(String),
     #[error("{0}")]
     CustomError(String),
     #[error("Error storing unknown data.")]
