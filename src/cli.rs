@@ -1,2 +1,4 @@
-pub mod opt;
 pub use self::opt::*;
+
+pub mod checker;
+mod opt;

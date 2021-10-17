@@ -1,11 +1,13 @@
 use std::path::PathBuf;
 
-use regex::Regex;
 pub use structopt::StructOpt;
 
+use crate::cli::checker::checkers;
 use crate::logger::LevelFilter;
 use crate::providers::identifiers::Provider;
 use crate::Error;
+
+use super::checker::{execute_checker, execute_optional_checker};
 
 fn parse_bool(src: &str) -> Result<bool, &str> {
     if src == "0" || src == "false" {
@@ -136,79 +138,12 @@ pub struct Opt {
     pub env: OptEnv,
 }
 
-type CheckerReturnType<'a> = Result<(), String>;
-
-struct Checker {}
-
-impl Checker {
-    pub fn proxy_url(proxy_url: &str) -> CheckerReturnType {
-        let proxy_url_re: Regex =
-            Regex::new(r"^http(s?)://.+:\d+$").expect("wrong regex of proxy url");
-        match proxy_url_re.is_match(proxy_url) {
-            true => Ok(()),
-            false => Err("Please check the proxy url.".to_string()),
-        }
-    }
-
-    pub fn host(host: &str) -> CheckerReturnType {
-        match host.parse::<std::net::IpAddr>() {
-            Ok(_) => Ok(()),
-            Err(_) => Err("Please check the server host.".to_string()),
-        }
-    }
-
-    pub fn token(token: &str) -> CheckerReturnType {
-        let re = Regex::new(r"^\S+:\S+$").expect("wrong regex of token");
-        match re.is_match(token) {
-            true => Ok(()),
-            false => Err("Please check the authentication token.".to_string()),
-        }
-    }
-
-    pub fn source(sources: &[Provider]) -> CheckerReturnType {
-        let len = sources.len();
-        for i1 in 0..len {
-            for i2 in i1 + 1..len {
-                if sources[i1] == sources[i2] {
-                    return Err(format!(
-                        "Please check the duplication item({:#?}) in match order.",
-                        sources[i1]
-                    ));
-                }
-            }
-        }
-        Ok(())
-    }
-}
-
 impl Opt {
-    fn build_arg_error(reason: &str) -> Error {
-        Error::ArgumentError(reason.to_string())
-    }
-
-    fn execute_optional_checker<F, V>(value_to_check: &Option<V>, checker: F) -> Result<(), Error>
-    where
-        F: Fn(&V) -> CheckerReturnType,
-    {
-        if let Some(v) = value_to_check {
-            checker(v).map_err(|s| Self::build_arg_error(s.as_str()))
-        } else {
-            Ok(())
-        }
-    }
-
-    fn execute_checker<F, V>(value_to_check: &V, checker: F) -> Result<(), Error>
-    where
-        F: Fn(&V) -> CheckerReturnType,
-    {
-        checker(value_to_check).map_err(|s| Self::build_arg_error(s.as_str()))
-    }
-
     pub fn arg_check(&self) -> Result<(), Error> {
-        Self::execute_checker(&self.host, |v| Checker::host(v.as_str()))?;
-        Self::execute_checker(&self.source, |v| Checker::source(v.as_slice()))?;
-        Self::execute_optional_checker(&self.proxy_url, |v| Checker::proxy_url(v.as_str()))?;
-        Self::execute_optional_checker(&self.token, |v| Checker::token(v.as_str()))?;
+        execute_checker(&self.host, |v| checkers::host(v.as_str()))?;
+        execute_checker(&self.source, |v| checkers::source(v.as_slice()))?;
+        execute_optional_checker(&self.proxy_url, |v| checkers::proxy_url(v.as_str()))?;
+        execute_optional_checker(&self.token, |v| checkers::token(v.as_str()))?;
 
         Ok(())
     }
@@ -229,16 +164,7 @@ mod test {
 
         assert!(op.arg_check().is_ok());
     }
-    #[test]
-    fn token_check() {
-        let mut op = new_default_opt();
-        op.token = Some(String::from("abcd:123"));
-        assert!(op.arg_check().is_ok());
-        op.token = Some(String::from("abcd123"));
-        assert!(op.arg_check().is_err());
-        op.token = Some(String::from("ab cd:123"));
-        assert!(op.arg_check().is_err());
-    }
+
     #[test]
     fn dump_source_is_invalid() {
         let mut op = new_default_opt();
@@ -248,14 +174,8 @@ mod test {
 
         let check_result = op.arg_check();
         assert!(check_result.is_err());
-
-        if let Err(Error::ArgumentError(msg)) = check_result {
-            assert_eq!(
-                msg,
-                "Please check the duplication item(bilibili) in match order.".to_string()
-            );
-        } else {
-            panic!("Not: Error::ArgumentError");
-        }
+        assert!(
+            matches!(check_result, Err(Error::ArgumentError(e)) if e == "Please check the duplication item(bilibili) in match order.")
+        );
     }
 }
