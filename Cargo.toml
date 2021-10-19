@@ -10,7 +10,7 @@ publish = false
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-structopt = "0.3.23"
+structopt = "0.3.25"
 thiserror = "1.0"
 regex = "1.5"
 log = "0.4"
