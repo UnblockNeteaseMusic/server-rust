@@ -7,9 +7,11 @@ use log::error;
 
 use crate::server::controllers::proxy_pac_controller;
 
+mod connect_handler;
 mod controllers;
 pub mod error;
-pub mod proxy_pac;
+mod middleware;
+mod proxy_pac;
 
 pub async fn shutdown_signal() {
     // Wait for the CTRL+C signal
@@ -44,11 +46,13 @@ fn error_handler(route: &str, error: impl Error + Debug) -> Response<Body> {
 pub async fn root_handler(req: Request<Body>) -> Result<Response<Body>, Infallible> {
     let route = (req.method(), req.uri().path());
 
-    Ok(if let (&Method::GET, "/proxy.pac") = route {
+    let response = if let (&Method::GET, "/proxy.pac") = route {
         proxy_pac_controller(req)
             .await
             .unwrap_or_else(|error| error_handler("/proxy.pac", error))
     } else {
         unimplemented_response()
-    })
+    };
+
+    Ok(response)
 }
