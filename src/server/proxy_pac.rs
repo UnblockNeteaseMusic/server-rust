@@ -1,7 +1,7 @@
 fn gen_js_host_if_condition(tgt_host: &[&str]) -> String {
     let mut conditions = Vec::new();
 
-    for ip in tgt_host.iter() {
+    for ip in tgt_host {
         conditions.push(format!("host === '{ip}'", ip = ip))
     }
 
@@ -9,27 +9,21 @@ fn gen_js_host_if_condition(tgt_host: &[&str]) -> String {
 }
 
 pub fn gen_proxy_pac(url: &str, tgt_host: &[&str]) -> String {
-    let mut buf = String::new();
     let if_cond = gen_js_host_if_condition(tgt_host);
 
-    // SECTION: function FindProxyForURL(url, host) {
-    buf.push_str("function FindProxyForURL(url, host) {\n");
-    // SECTION:   if (<&if_cond>) {
-    buf.push_str("\tif (");
-    buf.push_str(&if_cond);
-    buf.push_str(") {\n");
-    // SECTION:     return 'PROXY <url>';
-    buf.push_str("\t\treturn 'PROXY ");
-    buf.push_str(url);
-    buf.push_str("';\n");
-    // SECTION:   }
-    buf.push_str("\t}\n");
-    // SECTION:   return 'DIRECT';
-    buf.push_str("\treturn 'DIRECT';\n");
-    // SECTION: }
-    buf.push_str("}\n");
-
-    buf
+    format!(
+        "\
+function FindProxyForURL(url, host) {{
+    if ({cond}) {{
+        return 'PROXY {url}';
+    }}
+    
+    return 'DIRECT';
+}}
+",
+        cond = if_cond,
+        url = url,
+    )
 }
 
 #[cfg(test)]
@@ -65,10 +59,11 @@ mod tests {
                 gen_proxy_pac("localhost:8080", &tgt_host),
                 concat!(
                     "function FindProxyForURL(url, host) {\n",
-                    "\tif (host === '1.2.3.4' || host === '5.6.7.8') {\n",
-                    "\t\treturn 'PROXY localhost:8080';\n",
-                    "\t}\n",
-                    "\treturn 'DIRECT';\n",
+                    "    if (host === '1.2.3.4' || host === '5.6.7.8') {\n",
+                    "        return 'PROXY localhost:8080';\n",
+                    "    }\n",
+                    "    \n",
+                    "    return 'DIRECT';\n",
                     "}\n",
                 )
             );
