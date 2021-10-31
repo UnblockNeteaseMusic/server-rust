@@ -1,3 +1,4 @@
+use hyper::Body;
 use thiserror::Error as BaseErr;
 
 #[derive(BaseErr, Debug)]
@@ -6,4 +7,6 @@ pub enum ServerError {
     ExtractHostFailed,
     #[error("The request is invalid.")]
     InvalidRequest,
+    #[error("Failed to aggregate body.")]
+    BodyAggregateError,
 }

@@ -1,8 +1,8 @@
 use hyper::{Body, Request, Response};
 
-use crate::hook::consts::HOOK_TARGET_HOST;
 use crate::request::reqwest::StatusCode;
 use crate::server::error::ServerError;
+use crate::server::hook::consts::HOOK_TARGET_HOST;
 use crate::server::proxy_pac::gen_proxy_pac;
 use crate::ErrorResult;
 

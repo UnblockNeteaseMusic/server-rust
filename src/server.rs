@@ -13,6 +13,7 @@ pub mod error;
 mod hook;
 mod middleware;
 mod proxy_pac;
+mod utils;
 
 pub async fn shutdown_signal() {
     // Wait for the CTRL+C signal

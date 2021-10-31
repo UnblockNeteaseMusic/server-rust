@@ -1,3 +1,6 @@
+use std::io;
+use std::str::Utf8Error;
+
 use http::header::ToStrError;
 pub use http::Error as HttpErr;
 pub use log4rs::config::runtime::ConfigErrors as LogConfErr;
@@ -33,6 +36,10 @@ pub enum Error {
     CryptoFailed(#[from] CryptoErr),
     #[error("Failed to convert a string: {0}")]
     StringConvertFailed(#[from] ToStrError),
+    #[error("Failed to decode UTF-8 array: {0}")]
+    DecodeUtf8Failed(#[from] Utf8Error),
+    #[error("I/O Error: {0}")]
+    IOError(#[from] io::Error),
     #[error("Failed to parse the arguments: {0}")]
     ArgumentError(String),
     #[error("{0}")]

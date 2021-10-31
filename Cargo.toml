@@ -28,6 +28,8 @@ tokio = { version = "1", features = ["full"] }
 hex = "0.4.3"
 url = "2.2.2"
 urlencoding = "2.1"
+flate2 = "1.0.22"
+bytes = "1.1.0"
 unm_macro = { path = "./unm_macro" }
 
 [profile.release]
