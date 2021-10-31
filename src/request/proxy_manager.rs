@@ -4,15 +4,13 @@ use core::result::Result::Ok;
 
 use reqwest::Proxy;
 
-use crate::error::*;
-
 #[derive(Clone)]
 pub struct ProxyManager {
     pub proxy: Option<Proxy>,
 }
 
 impl ProxyManager {
-    pub fn setup_proxy(&mut self, proxy: &str) -> ErrorResult<&Option<Proxy>> {
+    pub fn setup_proxy(&mut self, proxy: &str) -> reqwest::Result<&Option<Proxy>> {
         let p = Proxy::all(proxy)?;
         self.proxy = Some(p);
         Ok(&self.proxy)

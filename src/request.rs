@@ -4,9 +4,11 @@ pub use tokio::sync::oneshot::Receiver;
 pub use url::Url;
 
 use crate::error::*;
+use crate::request::error::RequestError;
 
 use self::{header::default_headers, proxy_manager::ProxyManager};
 
+pub mod error;
 pub mod header;
 pub mod proxy_manager;
 
@@ -20,7 +22,7 @@ pub async fn request(
     let mut _headers = received_headers.clone();
     let headers = _headers.get_or_insert(json!({})).as_object_mut();
     if headers.is_none() {
-        return Err(Error::HeadersDataInvalid);
+        return Err(RequestError::HeadersDataInvalid.into());
     }
 
     let mut client_builder = reqwest::Client::builder()
@@ -34,7 +36,7 @@ pub async fn request(
             None => client_builder.no_proxy(),
         },
     };
-    let client = client_builder.build()?;
+    let client = client_builder.build().map_err(RequestError::RequestFail)?;
     let mut client = client.request(method, received_url);
 
     for (key, val) in headers.unwrap() {
@@ -48,7 +50,7 @@ pub async fn request(
         client = client.body(body.unwrap());
     }
     let ans = client.send().await;
-    ans.map_err(Error::RequestFail)
+    ans.map_err(|e| RequestError::RequestFail(e).into())
 }
 
 pub async fn request_str(
@@ -58,6 +60,6 @@ pub async fn request_str(
     body: Option<String>,
     proxy: Option<&ProxyManager>,
 ) -> ErrorResult<Response> {
-    let url = Url::parse(received_url).map_err(Error::UrlParseFail)?;
+    let url = Url::parse(received_url).map_err(RequestError::UrlParseFail)?;
     return request(method, url, received_headers, body, proxy).await;
 }

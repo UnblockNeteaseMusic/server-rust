@@ -1,6 +1,7 @@
 use urlencoding::encode;
 
 use crate::error::*;
+use crate::request::error::RequestError;
 use crate::request::*;
 
 use super::definitions::*;
@@ -17,7 +18,10 @@ impl BilibiliProvider {
             encode(info.keyword().as_str())
         );
         let res = request_str(Method::GET, url_str.as_str(), None, None, None).await?;
-        let jsonbody = res.json::<Json>().await.map_err(Error::RequestFail)?;
+        let jsonbody = res
+            .json::<Json>()
+            .await
+            .map_err(RequestError::RequestFail)?;
         let mut list: Vec<SongMetadata> = Vec::new();
         for item in jsonbody["data"]["result"]
             .as_array()
@@ -40,7 +44,10 @@ impl BilibiliProvider {
             id
         );
         let res = request_str(Method::GET, url_str.as_str(), None, None, None).await?;
-        let jsonbody = res.json::<Json>().await.map_err(Error::RequestFail)?;
+        let jsonbody = res
+            .json::<Json>()
+            .await
+            .map_err(RequestError::RequestFail)?;
         let links = jsonbody["data"]["cdns"]
             .as_array()
             .ok_or(JsonErr::ParseError("data.cdns", "array"))?;

@@ -1,11 +1,13 @@
 use hyper::{Body, Request, Response, Uri};
 
-use crate::{error, ErrorResult};
+use crate::ErrorResult;
+
+use super::error::ServerError;
 
 fn host_addr(url: &Uri) -> ErrorResult<String> {
     url.authority()
         .map(|v| v.to_string())
-        .ok_or(error::Error::InvalidRequest)
+        .ok_or(ServerError::InvalidRequest.into())
 }
 
 pub async fn connect_handler(_req: Request<Body>) -> ErrorResult<Response<Body>> {
