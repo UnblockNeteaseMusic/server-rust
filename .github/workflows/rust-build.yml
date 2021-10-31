@@ -37,6 +37,9 @@ jobs:
           restore-keys: |
             v0-${{ matrix.os }}-${{ matrix.target }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
             v0-${{ matrix.os }}-${{ matrix.target }}-cargo-build-
+      - if: runner.os == 'Windows'
+        run: |
+          choco install openssl
       - uses: actions-rs/cargo@v1
         with:
           use-cross: true
