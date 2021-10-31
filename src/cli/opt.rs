@@ -151,6 +151,8 @@ impl Opt {
 
 #[cfg(test)]
 mod test {
+    use crate::error::Error;
+
     use super::*;
 
     fn new_default_opt() -> Opt {
