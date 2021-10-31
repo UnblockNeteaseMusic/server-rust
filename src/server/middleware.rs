@@ -1,7 +1,7 @@
 use crate::Error;
 
 pub trait Middleware {
-    type ContextT;
+    type Request;
 
-    fn execute(context: &mut Self::ContextT) -> Result<(), Error>;
+    fn execute(request: &mut Self::Request) -> Result<(), Error>;
 }
