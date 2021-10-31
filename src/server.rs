@@ -10,6 +10,7 @@ use crate::server::controllers::proxy_pac_controller;
 mod connect_handler;
 mod controllers;
 pub mod error;
+mod hook;
 mod middleware;
 mod proxy_pac;
 

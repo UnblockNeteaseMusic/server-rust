@@ -1,5 +1,3 @@
-//! The port of `hook.js`. Commit `3b94b5f13468d01ee4cbb413eb6ddb0f10dcb45a`.
-
 pub const HOOK_TARGET_HOST: [&str; 5] = [
     "music.163.com",
     "interface.music.163.com",
