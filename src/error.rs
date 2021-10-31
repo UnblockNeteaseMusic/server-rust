@@ -23,6 +23,8 @@ pub enum Error {
     RequestFail(#[from] ReqErr),
     #[error("The request headers are invalid.")]
     HeadersDataInvalid,
+    #[error("The request is invalid.")]
+    InvalidRequest,
     #[error("Failed to parse JSON: {0}")]
     JsonParseFail(#[from] JsonErr),
     #[error("Failed to parse URL: {0}")]
