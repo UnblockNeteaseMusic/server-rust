@@ -1,9 +1,11 @@
-use super::common::CryptoError as Error;
 use crate::crypto::base64::encode_crypto_base64;
+use crate::error::ErrorResult;
+
+use super::common::CryptoError as Error;
 
 const URI_KEY: &[u8] = b"3go8&$8*3*3h0k(2)2";
 
-fn id_xor_key(id: &str, key: &[u8]) -> Result<String, Error> {
+fn id_xor_key(id: &str, key: &[u8]) -> ErrorResult<String> {
     let mut xor_id = String::from("");
     let id_c = id.chars();
     let key_n = key.len();
@@ -19,7 +21,7 @@ fn id_xor_key(id: &str, key: &[u8]) -> Result<String, Error> {
     Ok(xor_id)
 }
 
-pub fn retrieve(id: &str) -> Result<String, Error> {
+pub fn retrieve(id: &str) -> ErrorResult<String> {
     let id = id.trim();
     let result = id_xor_key(id, URI_KEY)?;
     let result = md5::compute(result).0;

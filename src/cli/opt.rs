@@ -3,9 +3,9 @@ use std::path::PathBuf;
 pub use structopt::StructOpt;
 
 use crate::cli::checker::checkers;
+use crate::error::ErrorResult;
 use crate::logger::LevelFilter;
 use crate::providers::identifiers::Provider;
-use crate::Error;
 
 use super::checker::{execute_checker, execute_optional_checker};
 
@@ -139,7 +139,7 @@ pub struct Opt {
 }
 
 impl Opt {
-    pub fn arg_check(&self) -> Result<(), Error> {
+    pub fn arg_check(&self) -> ErrorResult<()> {
         execute_checker(&self.host, |v| checkers::host(v.as_str()))?;
         execute_checker(&self.source, |v| checkers::source(v.as_slice()))?;
         execute_optional_checker(&self.proxy_url, |v| checkers::proxy_url(v.as_str()))?;

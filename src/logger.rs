@@ -31,7 +31,7 @@ struct GetConfigBase {
 }
 
 /// Get the configuration for logging to stdout.
-fn get_stdout_config(conf_base: GetConfigBase) -> Result<Config> {
+fn get_stdout_config(conf_base: GetConfigBase) -> ErrorResult<Config> {
     let GetConfigBase { encoder, log_level } = conf_base;
 
     let stdout = ConsoleAppender::builder().encoder(encoder).build();
@@ -42,7 +42,7 @@ fn get_stdout_config(conf_base: GetConfigBase) -> Result<Config> {
 }
 
 /// Get the configuration for logging to a file.
-fn get_log_path_config(conf_base: GetConfigBase, log_path: &Path) -> Result<Config> {
+fn get_log_path_config(conf_base: GetConfigBase, log_path: &Path) -> ErrorResult<Config> {
     let GetConfigBase { encoder, log_level } = conf_base;
 
     let logfile = FileAppender::builder()
@@ -62,7 +62,7 @@ pub fn init_logger(
     log_level: LevelFilter,
     json_log: &Option<bool>,
     log_file: &Option<PathBuf>,
-) -> Result<()> {
+) -> ErrorResult<()> {
     let cfg_ctx = GetConfigBase {
         encoder: new_encoder(*json_log),
         log_level,

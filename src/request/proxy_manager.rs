@@ -12,7 +12,7 @@ pub struct ProxyManager {
 }
 
 impl ProxyManager {
-    pub fn setup_proxy(&mut self, proxy: &str) -> Result<&Option<Proxy>> {
+    pub fn setup_proxy(&mut self, proxy: &str) -> ErrorResult<&Option<Proxy>> {
         let p = Proxy::all(proxy)?;
         self.proxy = Some(p);
         Ok(&self.proxy)

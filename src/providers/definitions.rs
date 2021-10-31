@@ -28,7 +28,7 @@ pub struct SongMetadata {
 pub trait Provide {
     /// Search a audio similar with info from Provider,
     /// and return the audio link
-    async fn check(&self, info: &SongMetadata) -> Result<Option<String>>;
+    async fn check(&self, info: &SongMetadata) -> ErrorResult<Option<String>>;
 }
 
 impl SongMetadata {

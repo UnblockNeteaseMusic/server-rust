@@ -16,7 +16,7 @@ pub async fn request(
     received_headers: Option<Json>,
     body: Option<String>,
     proxy: Option<&ProxyManager>,
-) -> Result<Response> {
+) -> ErrorResult<Response> {
     let mut _headers = received_headers.clone();
     let headers = _headers.get_or_insert(json!({})).as_object_mut();
     if headers.is_none() {
@@ -57,7 +57,7 @@ pub async fn request_str(
     received_headers: Option<Json>,
     body: Option<String>,
     proxy: Option<&ProxyManager>,
-) -> Result<Response> {
+) -> ErrorResult<Response> {
     let url = Url::parse(received_url).map_err(Error::UrlParseFail)?;
     return request(method, url, received_headers, body, proxy).await;
 }

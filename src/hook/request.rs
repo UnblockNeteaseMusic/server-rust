@@ -3,7 +3,7 @@ use hyper::{Body, Request};
 
 use unm_macro::is_host_wrapper;
 
-use crate::Error;
+use crate::error::ErrorResult;
 
 const NETEASE_MOCK_IP: &str = "118.88.88.88";
 
@@ -17,7 +17,7 @@ pub struct Hook {
 }
 
 impl Hook {
-    pub fn before_req(&self, context: &Request<Body>) -> Result<BeforeReqContext, Error> {
+    pub fn before_req(&self, context: &Request<Body>) -> ErrorResult<BeforeReqContext> {
         let mut decision: &'static str = "";
         let url = context.uri().to_string();
         let header = context.headers();

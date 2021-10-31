@@ -1,4 +1,4 @@
-use crate::Error;
+use crate::error::{Error, ErrorResult};
 
 pub mod checkers;
 
@@ -8,14 +8,14 @@ fn build_arg_error(reason: &str) -> Error {
     Error::ArgumentError(reason.to_string())
 }
 
-pub fn execute_checker<F, V>(value_to_check: &V, checker: F) -> Result<(), Error>
+pub fn execute_checker<F, V>(value_to_check: &V, checker: F) -> ErrorResult<()>
 where
     F: Fn(&V) -> CheckerReturnType,
 {
     checker(value_to_check).map_err(|s| build_arg_error(s.as_str()))
 }
 
-pub fn execute_optional_checker<F, V>(value_to_check: &Option<V>, checker: F) -> Result<(), Error>
+pub fn execute_optional_checker<F, V>(value_to_check: &Option<V>, checker: F) -> ErrorResult<()>
 where
     F: Fn(&V) -> CheckerReturnType,
 {

@@ -1,5 +1,5 @@
 pub use error::Error;
-pub use error::Result;
+pub use error::ErrorResult;
 
 pub mod cli;
 pub mod crypto;

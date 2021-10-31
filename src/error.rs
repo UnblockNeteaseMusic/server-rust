@@ -45,4 +45,4 @@ pub enum Error {
     Unknown,
 }
 
-pub type Result<T> = std::result::Result<T, Error>;
+pub type ErrorResult<T> = std::result::Result<T, Error>;

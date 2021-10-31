@@ -9,7 +9,7 @@ pub struct BilibiliProvider {}
 
 impl BilibiliProvider {
     /// find music id in bilibili
-    async fn search(&self, info: &SongMetadata) -> Result<Option<i64>> {
+    async fn search(&self, info: &SongMetadata) -> ErrorResult<Option<i64>> {
         let url_str = format!(
             "https://api.bilibili.com/audio/music-service-c/s?\
 			search_type=music&page=1&pagesize=30&\
@@ -34,7 +34,7 @@ impl BilibiliProvider {
     }
 
     /// trace music id and find out music link
-    async fn track(&self, id: i64) -> Result<Option<String>> {
+    async fn track(&self, id: i64) -> ErrorResult<Option<String>> {
         let url_str = format!(
             "https://www.bilibili.com/audio/music-service-c/web/url?rivilege=2&quality=2&sid={0}",
             id
@@ -57,7 +57,7 @@ impl BilibiliProvider {
 
 #[async_trait]
 impl Provide for BilibiliProvider {
-    async fn check(&self, info: &SongMetadata) -> Result<Option<String>> {
+    async fn check(&self, info: &SongMetadata) -> ErrorResult<Option<String>> {
         match self.search(info).await? {
             None => Ok(None),
             Some(id) => Ok(self.track(id).await?),
@@ -65,7 +65,7 @@ impl Provide for BilibiliProvider {
     }
 }
 
-fn format(song: &Json) -> Result<SongMetadata> {
+fn format(song: &Json) -> ErrorResult<SongMetadata> {
     let id = &song["id"]
         .as_i64()
         .ok_or(JsonErr::ParseError("id", "i64"))?;
