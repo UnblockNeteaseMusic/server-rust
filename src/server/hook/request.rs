@@ -5,75 +5,79 @@ use unm_macro::is_host_wrapper;
 
 use crate::logger::debug;
 use crate::server::middleware::{Context, Decision, Middleware};
-use crate::{Error, ErrorResult};
+use crate::server::utils::extract_request_body;
+use crate::ErrorResult;
 
 const NETEASE_MOCK_IP: &str = "118.88.88.88";
 
 pub struct BeforeRequestHook;
 
-// fn hook_netease_api(request: &mut Self::Request, header: &mut HeaderMap) {
-// return request
-//     .read(req)
-//     .then((body) => (req.body = body))
-//     .then((body) => {
-//         if ('x-napm-retry' in req.headers)
-//         delete req.headers['x-napm-retry'];
-//         req.headers['X-Real-IP'] = '118.88.88.88';
-//         if (req.url.includes('stream')) return; // look living eapi can not be decrypted
-//         if (body) {
-//             let data;
-//             const netease = {};
-//             netease.pad = (body.match(/%0+$/) || [''])[0];
-//             netease.forward = url.path === '/api/linux/forward';
-//             if (netease.forward) {
-//                 data = JSON.parse(
-//                     crypto.linuxapi
-//                         .decrypt(
-//                             Buffer.from(
-//                                 body.slice(
-//                                     8,
-//                                     body.length - netease.pad.length
-//                                 ),
-//                                 'hex'
-//                             )
-//                         )
-//                         .toString()
-//                 );
-//                 netease.path = parse(data.url).path;
-//                 netease.param = data.params;
-//             } else {
-//                 data = crypto.eapi
-//                     .decrypt(
-//                         Buffer.from(
-//                             body.slice(
-//                                 7,
-//                                 body.length - netease.pad.length
-//                             ),
-//                             'hex'
-//                         )
-//                     )
-//                     .toString()
-//                     .split('-36cd479b6b5-');
-//                 netease.path = data[0];
-//                 netease.param = JSON.parse(data[1]);
-//             }
-//             netease.path = netease.path.replace(/\/\d*$/, '');
-//             ctx.netease = netease;
-//             // console.log(netease.path, netease.param)
-//
-//             if (netease.path === '/api/song/enhance/download/url')
-//             return pretendPlay(ctx);
-//         }
-//     })
-//     .catch(
-//         (error) =>
-//         error &&
-//             logger.error(
-//                 error,
-//                 `A error occurred in hook.request.before when hooking ${req.url}.`
-//             )
-//     );
-// }
+async fn hook_netease_api(request: &mut Request<Body>, _header: &mut HeaderMap) {
+    let _body = extract_request_body(request).await;
+
+    todo!()
+    // return request
+    //     .read(req)
+    //     .then((body) => (req.body = body))
+    //     .then((body) => {
+    //         if ('x-napm-retry' in req.headers)
+    //         delete req.headers['x-napm-retry'];
+    //         req.headers['X-Real-IP'] = '118.88.88.88';
+    //         if (req.url.includes('stream')) return; // look living eapi can not be decrypted
+    //         if (body) {
+    //             let data;
+    //             const netease = {};
+    //             netease.pad = (body.match(/%0+$/) || [''])[0];
+    //             netease.forward = url.path === '/api/linux/forward';
+    //             if (netease.forward) {
+    //                 data = JSON.parse(
+    //                     crypto.linuxapi
+    //                         .decrypt(
+    //                             Buffer.from(
+    //                                 body.slice(
+    //                                     8,
+    //                                     body.length - netease.pad.length
+    //                                 ),
+    //                                 'hex'
+    //                             )
+    //                         )
+    //                         .toString()
+    //                 );
+    //                 netease.path = parse(data.url).path;
+    //                 netease.param = data.params;
+    //             } else {
+    //                 data = crypto.eapi
+    //                     .decrypt(
+    //                         Buffer.from(
+    //                             body.slice(
+    //                                 7,
+    //                                 body.length - netease.pad.length
+    //                             ),
+    //                             'hex'
+    //                         )
+    //                     )
+    //                     .toString()
+    //                     .split('-36cd479b6b5-');
+    //                 netease.path = data[0];
+    //                 netease.param = JSON.parse(data[1]);
+    //             }
+    //             netease.path = netease.path.replace(/\/\d*$/, '');
+    //             ctx.netease = netease;
+    //             // console.log(netease.path, netease.param)
+    //
+    //             if (netease.path === '/api/song/enhance/download/url')
+    //             return pretendPlay(ctx);
+    //         }
+    //     })
+    //     .catch(
+    //         (error) =>
+    //         error &&
+    //             logger.error(
+    //                 error,
+    //                 `A error occurred in hook.request.before when hooking ${req.url}.`
+    //             )
+    //     );
+}
 
 fn get_header_host(header: &HeaderMap) -> ErrorResult<String> {
     let header_host_default_value = HeaderValue::from_static("");

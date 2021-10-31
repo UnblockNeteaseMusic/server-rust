@@ -21,7 +21,7 @@ fn decompress_data<T: Read>(mut decoder: T) -> ErrorResult<String> {
     Ok(data)
 }
 
-async fn extract_request_body(req: &mut Request<Body>) -> ErrorResult<String> {
+pub async fn extract_request_body(req: &mut Request<Body>) -> ErrorResult<String> {
     let header = req.headers();
     let encoding = get_encoding_from_header(header);
 
