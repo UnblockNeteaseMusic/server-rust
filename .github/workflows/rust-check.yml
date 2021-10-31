@@ -13,6 +13,7 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: beta
+          default: true
       - uses: actions/cache@v2
         with:
           path: |
@@ -44,6 +45,7 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: beta
+          default: true
       - uses: actions/cache@v2
         with:
           path: |

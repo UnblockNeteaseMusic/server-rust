@@ -13,6 +13,8 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: beta
+          default: true
+          profile: default
       - uses: actions-rs/cargo@v1
         with:
           command: fmt
@@ -25,6 +27,8 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: beta
+          default: true
+          profile: default
       - uses: actions/cache@v2
         with:
           path: |

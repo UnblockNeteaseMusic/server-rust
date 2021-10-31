@@ -23,6 +23,7 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: beta
+          default: true
           target: ${{ matrix.target }}
       - uses: actions/cache@v2
         with:
