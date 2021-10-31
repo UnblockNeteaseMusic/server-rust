@@ -5,10 +5,10 @@ pub use url::Url;
 
 use crate::error::*;
 
-use self::{header::default_headers, proxy::ProxyManager};
+use self::{header::default_headers, proxy_manager::ProxyManager};
 
 pub mod header;
-pub mod proxy;
+pub mod proxy_manager;
 
 pub async fn request(
     method: Method,

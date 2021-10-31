@@ -8,7 +8,7 @@ use serde_json::json;
 use tokio::{runtime, sync::oneshot, test};
 use url::Url;
 
-use unm_server::request::{proxy::ProxyManager, request};
+use unm_server::request::{proxy_manager::ProxyManager, request};
 
 #[test]
 async fn test_request_local_simple() {
