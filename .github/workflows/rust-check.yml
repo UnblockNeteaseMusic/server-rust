@@ -35,6 +35,7 @@ jobs:
     needs: cargo-check
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os:
           - windows-latest
@@ -59,9 +60,9 @@ jobs:
             v0-${{ runner.os }}-cargo-test-${{ hashFiles('**/Cargo.lock') }}
             v0-${{ runner.os }}-cargo-test-
             v0-${{ runner.os }}-cargo-
-      - if: runner.os == 'Windows'
-        run: |
-          choco install openssl
+#      - if: runner.os == 'Windows'
+#        run: |
+#          choco install openssl
       - uses: actions-rs/cargo@v1
         with:
           command: test

@@ -8,6 +8,7 @@ jobs:
   cargo-build:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         include:
           - os: windows-latest
@@ -37,9 +38,9 @@ jobs:
           restore-keys: |
             v0-${{ matrix.os }}-${{ matrix.target }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
             v0-${{ matrix.os }}-${{ matrix.target }}-cargo-build-
-      - if: runner.os == 'Windows'
-        run: |
-          choco install openssl
+#      - if: runner.os == 'Windows'
+#        run: |
+#          choco install openssl
       - uses: actions-rs/cargo@v1
         with:
           use-cross: true
