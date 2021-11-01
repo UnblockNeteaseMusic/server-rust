@@ -23,7 +23,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: beta
+          toolchain: stable
           default: true
           target: ${{ matrix.target }}
       - uses: actions/cache@v2
