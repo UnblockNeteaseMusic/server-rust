@@ -12,8 +12,11 @@ license = "LGPL-3.0-only"
 # Asynchronous - Core
 tokio = { version = "1", features = ["full"] }
 
+# Asynchronous - Utilities
+futures = "0.3"
+
 # HTTP - Core
-hyper = { version = "0.14" }
+hyper = { version = "0.14", features = ["full"] }
 
 # HTTP - Request
 reqwest = { version = "0.11", features = ["json", "gzip", "deflate", "native-tls-vendored"] }

@@ -5,7 +5,7 @@ use crate::server::error::{ServerError, ServerResult};
 fn host_addr(url: &Uri) -> ServerResult<String> {
     url.authority()
         .map(|v| v.to_string())
-        .ok_or(ServerError::InvalidRequest.into())
+        .ok_or(ServerError::InvalidRequest)
 }
 
 pub async fn connect_handler(_req: Request<Body>) -> ServerResult<Response<Body>> {

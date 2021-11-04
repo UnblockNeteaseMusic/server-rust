@@ -86,7 +86,7 @@ fn get_header_host(header: &HeaderMap) -> ServerResult<String> {
         .get("Host")
         .unwrap_or(&header_host_default_value)
         .to_str()
-        .map_err(|e| StringError::StringConvertFailed(e))?
+        .map_err(StringError::StringConvertFailed)?
         .to_string();
 
     Ok(header_host)

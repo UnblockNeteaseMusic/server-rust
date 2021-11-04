@@ -15,7 +15,7 @@ pub async fn request(
     let mut _headers = received_headers.clone();
     let headers = _headers.get_or_insert(json!({})).as_object_mut();
     if headers.is_none() {
-        return Err(RequestError::HeadersDataInvalid.into());
+        return Err(RequestError::HeadersDataInvalid);
     }
 
     let mut client_builder = reqwest::Client::builder()
@@ -43,7 +43,7 @@ pub async fn request(
         client = client.body(body.unwrap());
     }
     let ans = client.send().await;
-    ans.map_err(|e| RequestError::RequestFail(e).into())
+    ans.map_err(RequestError::RequestFail)
 }
 
 pub async fn request_str(

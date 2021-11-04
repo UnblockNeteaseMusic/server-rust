@@ -151,8 +151,6 @@ impl Opt {
 
 #[cfg(test)]
 mod test {
-    use crate::error::Error;
-
     use super::*;
 
     fn new_default_opt() -> Opt {
@@ -177,7 +175,7 @@ mod test {
         let check_result = op.arg_check();
         assert!(check_result.is_err());
         assert!(
-            matches!(check_result, Err(Error::ArgumentError(e)) if e == "Please check the duplication item(bilibili) in match order.")
+            matches!(check_result, Err(e) if e == "Please check the duplication item(bilibili) in match order.")
         );
     }
 }

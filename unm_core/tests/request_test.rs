@@ -8,8 +8,8 @@ use tokio::{runtime, sync::oneshot, test};
 use url::Url;
 
 use futures::stream::StreamExt;
-
-use crate::request::{proxy_manager::ProxyManager, request};
+use unm_core::request::proxy_manager::ProxyManager;
+use unm_core::request::request;
 
 #[test]
 async fn test_request_local_simple() {

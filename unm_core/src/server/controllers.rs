@@ -12,7 +12,7 @@ pub async fn proxy_pac_controller(req: Request<Body>) -> ServerResult<Response<B
         .get("Host")
         .ok_or(ServerError::ExtractHostFailed)?
         .to_str()
-        .map_err(|error| StringError::StringConvertFailed(error))?;
+        .map_err(StringError::StringConvertFailed)?;
 
     Ok(Response::builder()
         .status(StatusCode::OK)
