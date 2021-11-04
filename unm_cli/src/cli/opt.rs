@@ -4,7 +4,7 @@ pub use structopt::StructOpt;
 
 use unm_providers::identifiers::Provider;
 
-use crate::cli::checker::{CheckerReturnType, checkers};
+use crate::cli::checker::{checkers, CheckerReturnType};
 use crate::logger::LevelFilter;
 
 use super::checker::{execute_checker, execute_optional_checker};
