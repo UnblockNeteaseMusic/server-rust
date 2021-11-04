@@ -1,0 +1,42 @@
+[package]
+name = "unm_core"
+description = "The core of UNM."
+version = "0.1.0"
+edition = "2021"
+repository = "https://github.com/UnblockNeteaseMusic/server-rust"
+license = "LGPL-3.0-only"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+# Asynchronous - Core
+tokio = { version = "1", features = ["full"] }
+
+# HTTP - Core
+hyper = { version = "0.14" }
+
+# HTTP - Request
+reqwest = { version = "0.11", features = ["json", "gzip", "deflate", "native-tls-vendored"] }
+
+# HTTP - Utilities
+http = "0.2"
+url = "2"
+flate2 = "1"  # For decompressing data
+
+# Serialization - Core
+serde = { version = "1", features = ["derive"] }
+
+# Serialization - Extensions
+serde_json = "1"
+
+# Error - Core
+thiserror = "1"
+
+# Error - Modules
+unm_common = { path = "../unm_common" }
+
+# Macros
+unm_macro = { path = "../unm_macro" }
+
+# Utilities
+log = "0.4"

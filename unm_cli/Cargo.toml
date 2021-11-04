@@ -1,0 +1,32 @@
+[package]
+name = "unm_cli"
+version = "0.1.0"
+edition = "2021"
+repository = "https://github.com/UnblockNeteaseMusic/server-rust"
+license = "LGPL-3.0-only"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+# Asynchronous - Core
+tokio = { version = "1", features = ["full"] }
+
+# HTTP - Core
+hyper = { version = "0.14", features = ["full"] }
+
+# Loggers - Core
+log = "^0.4"
+log4rs = { version = "^1", features = ["json_encoder", "file_appender", "console_appender"] }
+
+# Error Handling - Core
+anyhow = "1"
+
+# CLI - Arguments Parser
+structopt = "^0.3"
+
+# CLI - Externals
+unm_providers = { path = "../unm_providers" }
+unm_core = { path = "../unm_core" }
+
+# Utilities
+regex = "1"
