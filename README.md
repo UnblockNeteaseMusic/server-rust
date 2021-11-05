@@ -6,6 +6,9 @@ Rust 版本的 [UnblockNeteaseMusic/server](https://github.com/UnblockNeteaseMus
 ，以效能、穩定性及可維護性為目標。
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FUnblockNeteaseMusic%2Fserver-rust.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FUnblockNeteaseMusic%2Fserver-rust?ref=badge_shield)
+[![Dependency Status](https://deps.rs/repo/github/UnblockNeteaseMusic/server-rust/status.svg)](https://deps.rs/repo/github/UnblockNeteaseMusic/server-rust)
+![License: LGPL-3.0](https://shields.io/github/license/UnblockNeteaseMusic/server-rust)
+![Line count](https://shields.io/tokei/lines/github/UnblockNeteaseMusic/server-rust)
 
 ## 安裝
 
@@ -31,12 +34,12 @@ Rust 版本的 [UnblockNeteaseMusic/server](https://github.com/UnblockNeteaseMus
    cd server-rust
    cargo build # 也可以加上 --production 編譯最佳化過的版本
     ```
-3. 進入 `target` 的 `debug` 資料夾，執行 `unm_server` 即可。
+3. 進入 `target` 的 `debug` 資料夾，執行 `unm_cli` 即可。
    ```bash
    cd ./target/debug
-   ./unm_server
+   ./unm_cli
    ```
-   
+
 ## 貢獻
 
 ### 檢查程式碼的相關命令
