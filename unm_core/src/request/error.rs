@@ -4,6 +4,8 @@ use url::ParseError as UrlErr;
 
 #[derive(BaseErr, Debug)]
 pub enum RequestError {
+    #[error("Failed to create the client: {0}")]
+    CreateClientFail(ReqErr),
     #[error("Failed to request: {0}")]
     RequestFail(#[from] ReqErr),
     #[error("The request headers are invalid.")]

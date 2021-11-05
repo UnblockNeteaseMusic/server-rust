@@ -1,9 +1,27 @@
 pub use self::error::*;
 use self::proxy_manager::ProxyManager;
 use crate::request::header::default_headers;
+use log::debug;
+use reqwest::Client;
 pub use reqwest::{self, Method, Response};
 pub use serde_json::{json, Value as Json};
 pub use url::Url;
+
+fn client_builder(proxy: Option<&ProxyManager>) -> RequestResult<Client> {
+    let mut client_builder = reqwest::Client::builder()
+        .gzip(true)
+        .deflate(true)
+        .default_headers(default_headers());
+    client_builder = match proxy {
+        None => client_builder.no_proxy(),
+        Some(p) => match &p.as_ref() {
+            Some(p) => client_builder.proxy(p.clone()),
+            None => client_builder.no_proxy(),
+        },
+    };
+
+    client_builder.build().map_err(RequestError::RequestFail)
+}
 
 pub async fn request(
     method: Method,
@@ -18,30 +36,24 @@ pub async fn request(
         return Err(RequestError::HeadersDataInvalid);
     }
 
-    let mut client_builder = reqwest::Client::builder()
-        .gzip(true)
-        .deflate(true)
-        .default_headers(default_headers());
-    client_builder = match proxy {
-        None => client_builder.no_proxy(),
-        Some(p) => match &p.as_ref() {
-            Some(p) => client_builder.proxy(p.clone()),
-            None => client_builder.no_proxy(),
-        },
-    };
-    let client = client_builder.build().map_err(RequestError::RequestFail)?;
+    let client = client_builder(proxy)?;
     let mut client = client.request(method, received_url);
 
-    for (key, val) in headers.unwrap() {
-        match val.as_str() {
-            None => {}
-            Some(v) => client = client.header(key, v),
-        };
+    if let Some(headers) = headers {
+        for (key, val) in headers {
+            match val.as_str() {
+                None => {}
+                Some(v) => client = client.header(key, v),
+            };
+        }
+    } else {
+        debug!("unm_core > request > request(): headers == None");
     }
 
-    if body.is_some() {
-        client = client.body(body.unwrap());
+    if let Some(body) = body {
+        client = client.body(body);
     }
+
     let ans = client.send().await;
     ans.map_err(RequestError::RequestFail)
 }
