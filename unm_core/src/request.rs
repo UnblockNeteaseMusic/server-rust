@@ -1,9 +1,9 @@
+pub use self::error::*;
+use self::proxy_manager::ProxyManager;
+use crate::request::header::default_headers;
 pub use reqwest::{self, Method, Response};
 pub use serde_json::{json, Value as Json};
 pub use url::Url;
-
-pub use self::error::*;
-use self::{header::default_headers, proxy_manager::ProxyManager};
 
 pub async fn request(
     method: Method,
@@ -19,9 +19,9 @@ pub async fn request(
     }
 
     let mut client_builder = reqwest::Client::builder()
-	.user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36")
-	.gzip(true).deflate(true)
-	.default_headers(default_headers());
+        .gzip(true)
+        .deflate(true)
+        .default_headers(default_headers());
     client_builder = match proxy {
         None => client_builder.no_proxy(),
         Some(p) => match &p.as_ref() {
