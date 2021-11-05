@@ -21,5 +21,3 @@ hex = "0.4"
 md5 = "0.7"
 url = "2"
 
-[build-dependencies]
-openssl-sys = { version = "^0.9", features = ["vendored"] }

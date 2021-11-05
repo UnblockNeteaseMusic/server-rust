@@ -1432,7 +1432,6 @@ dependencies = [
  "hex",
  "md5",
  "openssl",
- "openssl-sys",
  "regex",
  "serde",
  "serde_json",

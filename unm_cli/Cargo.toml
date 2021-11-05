@@ -1,5 +1,6 @@
 [package]
 name = "unm_cli"
+description = "The official UNM frontend."
 version = "0.1.0"
 edition = "2021"
 repository = "https://github.com/UnblockNeteaseMusic/server-rust"
