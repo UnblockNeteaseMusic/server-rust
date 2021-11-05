@@ -41,18 +41,51 @@ async fn main() {
     // let proxy_manager =
     //     init_proxy_manager(&opt).expect("should be able to initiate the proxy manager");
 
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
-    let service = make_service_fn(|_conn| async { Ok::<_, Infallible>(service_fn(root_handler)) });
-    let server = Server::bind(&addr)
-        .serve(service)
-        .with_graceful_shutdown(shutdown_signal());
+    let instantiate_server = |addr: SocketAddr| {
+        let service =
+            make_service_fn(|_conn| async { Ok::<_, Infallible>(service_fn(root_handler)) });
+        let server = Server::bind(&addr)
+            .serve(service)
+            .with_graceful_shutdown(shutdown_signal());
 
-    info!(
-        "Welcome! You can access UNM service on: \x1b[1m{}\x1b[0m",
-        addr.to_string()
-    );
-    // Run this server for... forever!
-    if let Err(e) = server.await {
-        error!("Server Error: {}", e);
+        server
+    };
+
+    let http = |port: u16| {
+        tokio::spawn(async move {
+            let addr = SocketAddr::from(([127, 0, 0, 1], port));
+            let server = instantiate_server(addr);
+
+            info!(
+                "[HTTP] Welcome! You can access UNM service on: \x1b[1m{}\x1b[0m",
+                addr.to_string()
+            );
+
+            server.await
+        })
+    };
+
+    let https = |port: u16| {
+        tokio::spawn(async move {
+            let addr = SocketAddr::from(([127, 0, 0, 1], port));
+            let server = instantiate_server(addr);
+
+            info!(
+                "[HTTPS] Welcome! You can access UNM service on: \x1b[1m{}\x1b[0m",
+                addr.to_string()
+            );
+
+            server.await
+        })
+    };
+
+    let (http, https) = tokio::join!(http(3000), https(3001));
+
+    if let Err(e) = http {
+        error!("[HTTP] Server Error: {}", e);
+    }
+
+    if let Err(e) = https {
+        error!("[HTTPS] Server Error: {}", e);
     }
 }
