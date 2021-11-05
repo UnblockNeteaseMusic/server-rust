@@ -12,12 +12,18 @@ const ENCODER_PATTERN: &str = "\x1b[1m[{l}]\x1b[0m {m}\n";
 
 /// Construct a new encoder.
 fn new_encoder(json_log: Option<bool>) -> Box<dyn Encode> {
+    let get_pattern_encoder = || Box::new(PatternEncoder::new(ENCODER_PATTERN));
+    let get_json_encoder = || Box::new(JsonEncoder::new());
+
     match json_log {
-        Some(v) => match v {
-            true => Box::new(JsonEncoder::new()),
-            false => Box::new(PatternEncoder::new(ENCODER_PATTERN)),
-        },
-        None => Box::new(PatternEncoder::new(ENCODER_PATTERN)),
+        Some(json_log_enabled) => {
+            if json_log_enabled {
+                get_json_encoder()
+            } else {
+                get_pattern_encoder()
+            }
+        }
+        None => get_pattern_encoder(),
     }
 }
 
