@@ -186,6 +186,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "56899898ce76aaf4a0f24d914c97ea6ed976d42fec6ad33fcbb0a1103e07b2b0"
 
 [[package]]
+name = "either"
+version = "1.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
+
+[[package]]
 name = "encoding_rs"
 version = "0.8.29"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1501,15 +1507,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "unm_common"
-version = "0.1.0"
-dependencies = [
- "http",
- "serde_json",
- "thiserror",
-]
-
-[[package]]
 name = "unm_crypto"
 version = "0.1.0"
 dependencies = [
@@ -1535,7 +1532,6 @@ dependencies = [
  "serde_json",
  "thiserror",
  "tokio",
- "unm_common",
  "unm_proxy_server",
  "unm_request",
  "urlencoding",
@@ -1545,7 +1541,10 @@ dependencies = [
 name = "unm_proxy_server"
 version = "0.1.0"
 dependencies = [
+ "async-trait",
+ "either",
  "flate2",
+ "hex",
  "http",
  "hyper",
  "log",
@@ -1555,8 +1554,9 @@ dependencies = [
  "thiserror",
  "tokio",
  "tokio-rustls",
- "unm_common",
+ "unm_crypto",
  "unm_macro",
+ "unm_utils",
 ]
 
 [[package]]
@@ -1574,6 +1574,10 @@ dependencies = [
  "tokio",
  "url",
 ]
+
+[[package]]
+name = "unm_utils"
+version = "0.1.0"
 
 [[package]]
 name = "unsafe-any"

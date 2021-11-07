@@ -1,6 +1,5 @@
 [workspace]
 members = [
-    "unm_common",
     "unm_request",
     "unm_proxy_server",
     "unm_cli",
