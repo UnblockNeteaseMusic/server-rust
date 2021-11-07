@@ -12,8 +12,8 @@ use serde_json::Value;
 use std::fmt::Formatter;
 use std::str::FromStr;
 
-use unm_macro::is_host_wrapper;
 use unm_utils::iter::Slice;
+use unm_utils::val_inside;
 
 use crate::error::ServerResult;
 use crate::middleware::{Context, Decision, Middleware, NeteaseApiContext};
@@ -195,7 +195,7 @@ impl Middleware for BeforeRequestHook {
         let header_host = get_header_host(&header)?;
 
         // &*String => &(str) => &str
-        let is_host = is_host_wrapper!(&*url_str, &*header_host);
+        let is_host = val_inside!(&*url_str, &*header_host);
 
         if is_host("music.163.com") {
             context.decision = Decision::Proxy;

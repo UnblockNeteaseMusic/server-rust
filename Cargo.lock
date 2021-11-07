@@ -1521,10 +1521,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "unm_macro"
-version = "0.1.0"
-
-[[package]]
 name = "unm_providers"
 version = "0.1.0"
 dependencies = [
@@ -1555,7 +1551,6 @@ dependencies = [
  "tokio",
  "tokio-rustls",
  "unm_crypto",
- "unm_macro",
  "unm_utils",
 ]
 

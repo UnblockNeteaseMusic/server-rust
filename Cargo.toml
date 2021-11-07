@@ -5,7 +5,6 @@ members = [
     "unm_cli",
     "unm_providers",
     "unm_crypto",
-    "unm_macro",
     "unm_utils",
 ]
 
