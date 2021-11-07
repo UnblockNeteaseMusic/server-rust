@@ -39,3 +39,4 @@ unm_macro = { path = "../unm_macro" }
 
 # Utilities
 log = "0.4"
+regex = "1"

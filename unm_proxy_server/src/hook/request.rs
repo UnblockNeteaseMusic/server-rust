@@ -1,6 +1,9 @@
-use hyper::header::HeaderValue;
+use hyper::header::{HeaderValue, CONTENT_LENGTH};
 use hyper::{Body, HeaderMap, Method, Request};
 use log::debug;
+use regex::Regex;
+use std::borrow::Borrow;
+use std::collections::HashMap;
 
 use unm_common::StringError;
 use unm_macro::is_host_wrapper;
@@ -10,13 +13,97 @@ use crate::middleware::{Context, Decision, Middleware};
 use crate::utils::extract_request_body;
 
 const NETEASE_MOCK_IP: &str = "118.88.88.88";
+const CONTENT_LENGTH_DEFAULTS: i32 = 0;
 
 pub struct BeforeRequestHook;
 
-async fn hook_netease_api(request: &mut Request<Body>, _header: &mut HeaderMap) {
-    let _body = extract_request_body(request).await;
+enum NeteaseApiHookResult {
+    SUCESSS,
+    UNHOOKABLE,
+}
 
-    todo!()
+async fn hook_netease_api(
+    request: &mut Request<Body>,
+    header: &mut HeaderMap,
+) -> ServerResult<NeteaseApiHookResult> {
+    let content_length = {
+        // Get the value of Content-Length in request.
+        let content_length_header = request.headers().get(CONTENT_LENGTH);
+
+        if let Some(value) = content_length_header {
+            value
+                .to_str() // Turn the Content-Length to &str.
+                .map(|v| {
+                    v.parse::<i32>() // Turn the Content-Length(&str) to i32.
+                        .unwrap_or(CONTENT_LENGTH_DEFAULTS)
+                })
+                .unwrap_or(CONTENT_LENGTH_DEFAULTS)
+        } else {
+            CONTENT_LENGTH_DEFAULTS
+        }
+    };
+
+    // Decompress the body.
+    let body = {
+        if content_length > 0 {
+            let body = extract_request_body(request).await?;
+            let body_clone = body.clone();
+            let mut_body = request.body_mut();
+            *mut_body = Body::from(body);
+
+            Some(body_clone)
+        } else {
+            None
+        }
+    };
+
+    // Clean up headers.
+    {
+        let headers = request.headers_mut();
+        headers.remove("x-napm-retry");
+        headers.insert(
+            "X-Real-IP",
+            NETEASE_MOCK_IP
+                .parse()
+                .expect("not able to parse NETEASE_MOCK_IP"),
+        );
+    }
+
+    // Check if the API is hook-able.
+    {
+        let url = request.uri();
+        if url.path().contains("stream") {
+            return Ok(NeteaseApiHookResult::UNHOOKABLE);
+        }
+    }
+
+    // Parse the Netease data.
+    {
+        // Return `UNHOOKABLE` if the body is empty.
+        if let Some(body) = body {
+            let mut data = String::new();
+            let netease_pad = {
+                let netease_pad_matcher = Regex::new("%0+$").unwrap();
+                let find_result = netease_pad_matcher.find(&body);
+
+                if let Some(matches) = find_result {
+                    matches.as_str().to_string()
+                } else {
+                    "".to_string()
+                }
+            };
+            let netease_forward = request.uri() == "/api/linux/forward";
+
+            if netease_forward {
+                todo!();
+            }
+        } else {
+            return Ok(NeteaseApiHookResult::UNHOOKABLE);
+        }
+    }
+    todo!();
+    Ok(NeteaseApiHookResult::SUCESSS)
+
     // return request
     //     .read(req)
     //     .then((body) => (req.body = body))
