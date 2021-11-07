@@ -5,7 +5,7 @@ use hyper::{Body, HeaderMap, Request};
 
 use unm_common::StringError;
 
-use crate::server::error::{ServerError, ServerResult};
+use crate::error::{ServerError, ServerResult};
 
 fn get_encoding_from_header(header: &HeaderMap) -> String {
     header

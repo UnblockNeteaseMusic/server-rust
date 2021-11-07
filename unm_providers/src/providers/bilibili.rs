@@ -1,7 +1,7 @@
 use urlencoding::encode;
 
 use unm_common::JsonErr;
-use unm_core::request::{request_str, Json, Method, RequestError};
+use unm_request::{request_str, Json, Method, RequestError};
 
 use crate::error::ProvidersResult;
 

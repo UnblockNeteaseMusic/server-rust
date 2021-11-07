@@ -1,6 +1,6 @@
 pub use self::error::*;
 use self::proxy_manager::ProxyManager;
-use crate::request::header::default_headers;
+use crate::header::default_headers;
 use log::debug;
 use reqwest::Client;
 pub use reqwest::{self, Method, Response};

@@ -1,4 +1,4 @@
-use crate::server::error::ServerError;
+use crate::error::ServerError;
 
 pub enum Decision {
     Proxy,

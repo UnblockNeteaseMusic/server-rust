@@ -24,7 +24,7 @@ structopt = "^0.3"
 
 # CLI - Externals
 unm_providers = { path = "../unm_providers" }
-unm_core = { path = "../unm_core" }
+unm_proxy_server = { path = "../unm_proxy_server" }
 
 # Utilities
 regex = "1"

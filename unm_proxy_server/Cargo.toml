@@ -1,6 +1,6 @@
 [package]
-name = "unm_core"
-description = "The core of UNM."
+name = "unm_proxy_server"
+description = "The proxy server of UNM."
 version = "0.1.0"
 edition = "2021"
 repository = "https://github.com/UnblockNeteaseMusic/server-rust"
@@ -12,18 +12,11 @@ license = "LGPL-3.0-only"
 # Asynchronous - Core
 tokio = { version = "1", features = ["full"] }
 
-# Asynchronous - Utilities
-futures = "0.3"
-
 # HTTP - Core
 hyper = { version = "0.14", features = ["full"] }
 
-# HTTP - Request
-reqwest = { version = "0.11", features = ["json", "gzip", "deflate", "native-tls-vendored"] }
-
 # HTTP - Utilities
 http = "0.2"
-url = "2"
 flate2 = "1"  # For decompressing data
 
 # Serialization - Core
@@ -43,4 +36,3 @@ unm_macro = { path = "../unm_macro" }
 
 # Utilities
 log = "0.4"
-phf = { version = "0.9", features = ["macros"] }

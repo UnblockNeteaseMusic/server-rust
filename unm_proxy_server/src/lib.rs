@@ -1,5 +1,5 @@
 pub use self::error::*;
-use crate::server::route::{root_handler, shutdown_signal};
+use crate::route::{root_handler, shutdown_signal};
 use hyper::service::{make_service_fn, service_fn};
 use log::info;
 use std::convert::Infallible;

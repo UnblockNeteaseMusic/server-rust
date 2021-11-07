@@ -1442,8 +1442,8 @@ dependencies = [
  "regex",
  "structopt",
  "tokio",
- "unm_core",
  "unm_providers",
+ "unm_proxy_server",
 ]
 
 [[package]]
@@ -1453,26 +1453,6 @@ dependencies = [
  "http",
  "serde_json",
  "thiserror",
-]
-
-[[package]]
-name = "unm_core"
-version = "0.1.0"
-dependencies = [
- "flate2",
- "futures",
- "http",
- "hyper",
- "log",
- "phf",
- "reqwest",
- "serde",
- "serde_json",
- "thiserror",
- "tokio",
- "unm_common",
- "unm_macro",
- "url",
 ]
 
 [[package]]
@@ -1502,8 +1482,41 @@ dependencies = [
  "thiserror",
  "tokio",
  "unm_common",
- "unm_core",
+ "unm_proxy_server",
+ "unm_request",
  "urlencoding",
+]
+
+[[package]]
+name = "unm_proxy_server"
+version = "0.1.0"
+dependencies = [
+ "flate2",
+ "http",
+ "hyper",
+ "log",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "tokio",
+ "unm_common",
+ "unm_macro",
+]
+
+[[package]]
+name = "unm_request"
+version = "0.1.0"
+dependencies = [
+ "futures",
+ "http",
+ "hyper",
+ "log",
+ "phf",
+ "reqwest",
+ "serde_json",
+ "thiserror",
+ "tokio",
+ "url",
 ]
 
 [[package]]

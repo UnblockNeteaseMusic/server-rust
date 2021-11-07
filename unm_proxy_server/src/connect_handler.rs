@@ -1,6 +1,6 @@
 use hyper::{Body, Request, Response, Uri};
 
-use crate::server::error::{ServerError, ServerResult};
+use crate::error::{ServerError, ServerResult};
 
 fn host_addr(url: &Uri) -> ServerResult<String> {
     url.authority()

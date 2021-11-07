@@ -1,6 +1,6 @@
 use log::error;
 use std::net::SocketAddr;
-use unm_core::server::{HttpServerConfig, HttpsServerConfig, Server};
+use unm_proxy_server::{HttpServerConfig, HttpsServerConfig, Server};
 
 use crate::cli::{Opt, StructOpt};
 use crate::logger::init_logger;

@@ -5,7 +5,7 @@ use std::fmt::Debug;
 use hyper::{Body, Method, Request, Response, StatusCode};
 use log::error;
 
-use crate::server::controllers::proxy_pac_controller;
+use crate::controllers::proxy_pac_controller;
 
 pub use super::error::*;
 

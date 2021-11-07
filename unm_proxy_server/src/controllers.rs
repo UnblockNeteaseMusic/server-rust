@@ -2,9 +2,9 @@ use hyper::{Body, Request, Response, StatusCode};
 
 use unm_common::StringError;
 
-use crate::server::error::{ServerError, ServerResult};
-use crate::server::hook::consts::HOOK_TARGET_HOST;
-use crate::server::proxy_pac::gen_proxy_pac;
+use crate::error::{ServerError, ServerResult};
+use crate::hook::consts::HOOK_TARGET_HOST;
+use crate::proxy_pac::gen_proxy_pac;
 
 pub async fn proxy_pac_controller(req: Request<Body>) -> ServerResult<Response<Body>> {
     let host = req

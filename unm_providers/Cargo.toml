@@ -12,7 +12,8 @@ license = "LGPL-3.0-only"
 thiserror = "1"
 
 unm_common = { path = "../unm_common" }
-unm_core = { path = "../unm_core" }
+unm_proxy_server = { path = "../unm_proxy_server" }
+unm_request = { path = "../unm_request" }
 
 serde_json = "1"
 async-trait = "0.1"

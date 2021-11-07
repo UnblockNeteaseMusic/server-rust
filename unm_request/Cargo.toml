@@ -1,0 +1,37 @@
+[package]
+name = "unm_request"
+description = "The request library for UNM."
+version = "0.1.0"
+edition = "2021"
+repository = "https://github.com/UnblockNeteaseMusic/server-rust"
+license = "LGPL-3.0-only"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+# HTTP - Request
+reqwest = { version = "0.11", features = ["json", "gzip", "deflate", "native-tls-vendored"] }
+
+# HTTP - Utilities
+http = "0.2"
+url = "2"
+
+# Error - Core
+thiserror = "1"
+
+# Serialization - Extensions
+serde_json = "1"
+
+# Utilities
+log = "0.4"
+phf = { version = "0.9", features = ["macros"] }
+
+[dev-dependencies]
+# HTTP - Core
+hyper = { version = "0.14", features = ["full"] }
+
+# Asynchronous - Core
+tokio = { version = "1", features = ["full"] }
+
+# Asynchronous - Utilities
+futures = "0.3"

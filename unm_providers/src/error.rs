@@ -1,8 +1,8 @@
 use thiserror::Error;
 
 use unm_common::JsonErr;
-use unm_core::request::RequestError;
-use unm_core::server::ServerError;
+use unm_proxy_server::ServerError;
+use unm_request::RequestError;
 
 #[derive(Error, Debug)]
 pub enum ProvidersError {
