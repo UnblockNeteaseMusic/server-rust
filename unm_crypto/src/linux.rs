@@ -1,9 +1,8 @@
-use std::error::Error;
-
 use serde::Serialize;
 use url::Url;
 
-use crate::common;
+use crate::aes_128;
+use crate::error::CryptoResult;
 
 const LINUX_API_KEY: &[u8; 16] = b"rFgB&h#%2?^eDg:Q";
 
@@ -16,12 +15,12 @@ struct LinuxApiResponse<'a, T: Serialize> {
     params: T,
 }
 
-pub fn decrypt(data: &[u8]) -> common::CryptResponse {
-    common::decrypt(data, LINUX_API_KEY)
+pub fn decrypt(data: &[u8]) -> CryptoResult<Vec<u8>> {
+    aes_128::decrypt(data, LINUX_API_KEY)
 }
 
-pub fn encrypt(data: &[u8]) -> common::CryptResponse {
-    common::encrypt(data, LINUX_API_KEY)
+pub fn encrypt(data: &[u8]) -> CryptoResult<Vec<u8>> {
+    aes_128::encrypt(data, LINUX_API_KEY)
 }
 
 pub struct EncryptRequestResponse {
@@ -32,8 +31,8 @@ pub struct EncryptRequestResponse {
 pub fn encrypt_request<T: Serialize>(
     url: &str,
     object: &T,
-) -> Result<EncryptRequestResponse, Box<dyn Error>> {
-    let response_url: Url = Url::parse(url).and_then(|url| url.join("/api/linux/forward"))?;
+) -> CryptoResult<EncryptRequestResponse> {
+    let response_url = Url::parse(url).and_then(|url| url.join("/api/linux/forward"))?;
     let response = LinuxApiResponse {
         method: "POST",
         url,

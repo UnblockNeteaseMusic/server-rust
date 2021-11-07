@@ -3,16 +3,17 @@ use std::error::Error;
 use regex::Regex;
 use serde::Serialize;
 
-use crate::common;
+use crate::aes_128;
+use crate::aes_128::AesResult;
 
 const EAPI_KEY: &[u8; 16] = b"e82ckenh8dichen8";
 
-pub fn decrypt(data: &[u8]) -> common::CryptResponse {
-    common::decrypt(data, EAPI_KEY)
+pub fn decrypt(data: &[u8]) -> AesResult {
+    aes_128::decrypt(data, EAPI_KEY)
 }
 
-pub fn encrypt(data: &[u8]) -> common::CryptResponse {
-    common::encrypt(data, EAPI_KEY)
+pub fn encrypt(data: &[u8]) -> AesResult {
+    aes_128::encrypt(data, EAPI_KEY)
 }
 
 #[allow(dead_code)]

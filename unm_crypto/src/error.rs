@@ -4,9 +4,13 @@ use thiserror::Error;
 #[derive(Error, Debug)]
 pub enum CryptoError {
     #[error("Failed in OpenSSL: {0}")]
-    OpenSSLFail(ErrorStack),
+    OpenSSLFail(#[from] ErrorStack),
     #[error("Failed to XOR this ID char (u32) {0} with this key char (u32) {1}")]
     UriEncryptXorFail(u32, u32),
+    #[error("Error in serde_json: {0}")]
+    SerdeError(#[from] serde_json::error::Error),
+    #[error("Failed to parse URI: {0}")]
+    UriParseError(#[from] url::ParseError),
 }
 
 pub type CryptoResult<T> = Result<T, CryptoError>;
