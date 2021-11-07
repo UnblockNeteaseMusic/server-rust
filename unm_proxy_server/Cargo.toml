@@ -28,11 +28,12 @@ serde = { version = "1", features = ["derive"] }
 # Serialization - Extensions
 serde_json = "1"
 
+# Crypto / Encode related
+unm_crypto = { path = "../unm_crypto" }
+hex = "0.4.3"
+
 # Error - Core
 thiserror = "1"
-
-# Error - Modules
-unm_common = { path = "../unm_common" }
 
 # Macros
 unm_macro = { path = "../unm_macro" }
@@ -40,3 +41,6 @@ unm_macro = { path = "../unm_macro" }
 # Utilities
 log = "0.4"
 regex = "1"
+unm_utils = { path = "../unm_utils" }
+either = "1.6.1"
+async-trait = "0.1.51"

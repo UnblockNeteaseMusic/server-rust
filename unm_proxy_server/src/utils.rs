@@ -3,8 +3,6 @@ use std::io::{self, Read};
 use flate2::read::{DeflateDecoder, GzDecoder, ZlibDecoder};
 use hyper::{Body, HeaderMap, Request};
 
-use unm_common::StringError;
-
 use crate::error::{ServerError, ServerResult};
 
 fn get_encoding_from_header(header: &HeaderMap) -> String {
@@ -35,9 +33,7 @@ pub async fn extract_request_body(req: &mut Request<Body>) -> ServerResult<Strin
         "deflate" => decompress_data(DeflateDecoder::new(buf_ref))?,
         "gzip" => decompress_data(GzDecoder::new(buf_ref))?,
         "zlib" => decompress_data(ZlibDecoder::new(buf_ref))?,
-        _ => std::str::from_utf8(buf_ref)
-            .map_err(StringError::DecodeUtf8Failed)?
-            .to_string(),
+        _ => std::str::from_utf8(buf_ref)?.to_string(),
     };
 
     Ok(data)

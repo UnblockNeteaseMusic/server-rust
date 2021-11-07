@@ -1,24 +1,37 @@
+use hex::FromHexError;
 use std::io::Error as IoErr;
+use std::str::Utf8Error;
+use std::string::FromUtf8Error;
 
 use thiserror::Error as BaseErr;
 use tokio::task::JoinError;
 
-use unm_common::{JsonErr, StringError};
-
 #[derive(BaseErr, Debug)]
 pub enum ServerError {
-    #[error("Failed to extract 'Host' field in your header.")]
-    ExtractHostFailed,
     #[error("The request is invalid.")]
     InvalidRequest,
+    #[error("Invalid URI: {0}")]
+    InvalidUri(#[from] http::uri::InvalidUri),
+
+    #[error("Failed to extract 'Host' field in your header.")]
+    ExtractHostFailed,
     #[error("Failed to aggregate body.")]
     BodyAggregateError,
+
+    #[error("Failed to convert a header value to string: {0}")]
+    HeaderToStringFailed(#[from] http::header::ToStrError),
+    #[error("Failed to decode UTF-8 array: {0}")]
+    DecodeUtf8Failed(#[from] Utf8Error),
+    #[error("Error converting UTF-8 array to String: {0}")]
+    StringFromUtf8Error(#[from] FromUtf8Error),
     #[error("I/O error: {0}")]
     IoError(#[from] IoErr),
-    #[error("JSON Error: {0}")]
-    JsonError(#[from] JsonErr),
-    #[error("String Error: {0}")]
-    StringError(#[from] StringError),
+    #[error("Error decoding from hex: {0}")]
+    HexDecodeError(#[from] FromHexError),
+    #[error("Error in serde_json: {0}")]
+    SerdeError(#[from] serde_json::error::Error),
+    #[error("Error in unm_crypto: {0}")]
+    UnmCryptoError(#[from] unm_crypto::error::CryptoError),
 }
 
 #[derive(BaseErr, Debug)]
