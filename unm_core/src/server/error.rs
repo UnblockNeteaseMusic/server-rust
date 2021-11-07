@@ -1,6 +1,7 @@
 use std::io::Error as IoErr;
 
 use thiserror::Error as BaseErr;
+use tokio::task::JoinError;
 
 use unm_common::{JsonErr, StringError};
 
@@ -20,4 +21,13 @@ pub enum ServerError {
     StringError(#[from] StringError),
 }
 
+#[derive(BaseErr, Debug)]
+pub enum ServerServeError {
+    #[error("Error serving HTTP server: {0}.")]
+    HttpError(JoinError),
+    #[error("Error serving HTTPS server: {0}.")]
+    HttpsError(JoinError),
+}
+
 pub type ServerResult<T> = Result<T, ServerError>;
+pub type ServerServeResult<T> = Result<T, ServerServeError>;

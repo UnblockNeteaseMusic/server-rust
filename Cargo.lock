@@ -1437,7 +1437,6 @@ name = "unm_cli"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "hyper",
  "log",
  "log4rs",
  "regex",

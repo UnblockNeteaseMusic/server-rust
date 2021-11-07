@@ -12,9 +12,6 @@ license = "LGPL-3.0-only"
 # Asynchronous - Core
 tokio = { version = "1", features = ["full"] }
 
-# HTTP - Core
-hyper = { version = "0.14", features = ["full"] }
-
 # Loggers - Core
 log = "^0.4"
 log4rs = { version = "^1", features = ["json_encoder", "file_appender", "console_appender"] }
