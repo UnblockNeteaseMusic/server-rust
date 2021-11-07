@@ -5,10 +5,24 @@ use log::info;
 use std::convert::Infallible;
 use std::net::SocketAddr;
 
+macro_rules! make_service {
+    () => {
+        make_service_fn(|_conn| async { Ok::<_, Infallible>(service_fn(root_handler)) })
+    };
+}
+
 macro_rules! instantiate_server {
-    ($addr:expr) => {{
-        let service =
-            make_service_fn(|_conn| async { Ok::<_, Infallible>(service_fn(root_handler)) });
+    (http, $addr:expr) => {{
+        let service = make_service!();
+        let server = hyper::Server::bind(&($addr))
+            .serve(service)
+            .with_graceful_shutdown(shutdown_signal());
+
+        server
+    }};
+
+    (https, $addr:expr) => {{
+        let service = make_service!();
         let server = hyper::Server::bind(&($addr))
             .serve(service)
             .with_graceful_shutdown(shutdown_signal());
@@ -20,7 +34,7 @@ macro_rules! instantiate_server {
 macro_rules! serve_http {
     ($addr:expr) => {{
         tokio::spawn(async move {
-            let server = instantiate_server!($addr);
+            let server = instantiate_server!(http, $addr);
 
             info!(
                 "[HTTP] Welcome! You can access UNM service on: \x1b[1m{}\x1b[0m",
@@ -35,7 +49,7 @@ macro_rules! serve_http {
 macro_rules! serve_https {
     ($addr:expr) => {{
         tokio::spawn(async move {
-            let server = instantiate_server!($addr);
+            let server = instantiate_server!(https, $addr);
 
             info!(
                 "[HTTPS] Welcome! You can access UNM service on: \x1b[1m{}\x1b[0m",
