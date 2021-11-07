@@ -1,9 +1,9 @@
 use urlencoding::encode;
 
-use unm_common::JsonErr;
 use unm_request::{request_str, Json, Method, RequestError};
 
 use crate::error::ProvidersResult;
+use crate::ProvidersError;
 
 use super::definitions::*;
 
@@ -26,7 +26,7 @@ impl BilibiliProvider {
         let mut list: Vec<SongMetadata> = Vec::new();
         for item in jsonbody["data"]["result"]
             .as_array()
-            .ok_or(JsonErr::ParseError("data.result", "array"))?
+            .ok_or(ProvidersError::ParseError("data.result", "array"))?
             .iter()
         {
             list.push(format(item)?);
@@ -51,13 +51,13 @@ impl BilibiliProvider {
             .map_err(RequestError::RequestFail)?;
         let links = jsonbody["data"]["cdns"]
             .as_array()
-            .ok_or(JsonErr::ParseError("data.cdns", "array"))?;
+            .ok_or(ProvidersError::ParseError("data.cdns", "array"))?;
         if links.is_empty() {
             return Ok(None);
         }
         let link = links[0]
             .as_str()
-            .ok_or(JsonErr::ParseError("data.cdns[0]", "string"))?
+            .ok_or(ProvidersError::ParseError("data.cdns[0]", "string"))?
             .replace("https", "http");
         Ok(Some(link))
     }
@@ -76,16 +76,16 @@ impl Provide for BilibiliProvider {
 fn format(song: &Json) -> ProvidersResult<SongMetadata> {
     let id = &song["id"]
         .as_i64()
-        .ok_or(JsonErr::ParseError("id", "i64"))?;
+        .ok_or(ProvidersError::ParseError("id", "i64"))?;
     let name = song["title"]
         .as_str()
-        .ok_or(JsonErr::ParseError("title", "string"))?;
+        .ok_or(ProvidersError::ParseError("title", "string"))?;
     let mid = &song["mid"]
         .as_i64()
-        .ok_or(JsonErr::ParseError("mid", "i64"))?;
+        .ok_or(ProvidersError::ParseError("mid", "i64"))?;
     let author = song["author"]
         .as_str()
-        .ok_or(JsonErr::ParseError("author", "string"))?;
+        .ok_or(ProvidersError::ParseError("author", "string"))?;
     let x = SongMetadata {
         id: *id,
         name: String::from(name),
