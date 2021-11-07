@@ -11,6 +11,7 @@
       <sourceFolder url="file://$MODULE_DIR$/unm_proxy_server/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/unm_request/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/unm_request/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/unm_utils/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
