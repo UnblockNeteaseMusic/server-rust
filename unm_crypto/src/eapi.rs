@@ -15,10 +15,9 @@ pub fn encrypt(data: &[u8]) -> AesResult {
     aes_128::encrypt(data, EAPI_KEY)
 }
 
-#[allow(dead_code)]
 pub struct EncryptRequestResponse {
-    url: String,
-    body: String,
+    pub url: String,
+    pub body: String,
 }
 
 pub fn encrypt_request<T: Serialize>(

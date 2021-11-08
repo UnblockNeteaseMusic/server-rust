@@ -24,8 +24,8 @@ pub fn encrypt(data: &[u8]) -> CryptoResult<Vec<u8>> {
 }
 
 pub struct EncryptRequestResponse {
-    url: String,
-    body: String,
+    pub url: String,
+    pub body: String,
 }
 
 pub fn encrypt_request<T: Serialize>(
