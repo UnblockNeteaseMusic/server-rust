@@ -1,10 +1,9 @@
-use std::error::Error;
-
 use regex::Regex;
 use serde::Serialize;
 
 use crate::aes_128;
 use crate::aes_128::AesResult;
+use crate::error::CryptoResult;
 
 const EAPI_KEY: &[u8; 16] = b"e82ckenh8dichen8";
 
@@ -25,7 +24,7 @@ pub struct EncryptRequestResponse {
 pub fn encrypt_request<T: Serialize>(
     url: &str,
     object: &T,
-) -> Result<EncryptRequestResponse, Box<dyn Error>> {
+) -> CryptoResult<EncryptRequestResponse> {
     let serialized: String = serde_json::to_string(object)?;
     let message = format!("deprecate{}md5{}please", url, serialized);
     let digest = md5::compute(message.into_bytes());
