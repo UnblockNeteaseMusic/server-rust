@@ -1573,6 +1573,9 @@ dependencies = [
 [[package]]
 name = "unm_utils"
 version = "0.1.0"
+dependencies = [
+ "log",
+]
 
 [[package]]
 name = "unsafe-any"
