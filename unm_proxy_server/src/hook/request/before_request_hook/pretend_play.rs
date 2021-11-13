@@ -3,7 +3,7 @@ use serde_json::{json, value::Value};
 use std::str::FromStr;
 
 use crate::middleware::NeteaseApiContext;
-use crate::ServerResult;
+use crate::{BeforeRequestHookError, ServerResult};
 use hyper::{Body, Request, Uri};
 
 const API_TO_TURN_TO: &str = "http://music.163.com/api/song/enhance/player/url";
@@ -42,7 +42,13 @@ pub(super) fn pretend_play(
         };
 
         *request.uri_mut() = Uri::from_str(&url)?;
-        *request.body_mut() = Body::from(format!("{}{}", body, netease_context.pad));
+        *request.body_mut() = Body::from(format!(
+            "{}{}",
+            body,
+            (&netease_context.pad)
+                .as_deref()
+                .ok_or(BeforeRequestHookError::PadUndefinedError)?
+        ));
     } else {
         warn!("Unable to pretend play: there is no 'param' in netease_context.");
     }

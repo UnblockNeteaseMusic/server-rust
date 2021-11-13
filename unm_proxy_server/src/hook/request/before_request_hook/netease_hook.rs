@@ -18,7 +18,7 @@ use std::str::FromStr;
 use unm_utils::iter::Slice;
 
 #[derive(Debug)]
-pub(super) enum NeteaseApiHookStatus {
+pub(in crate::hook::request) enum NeteaseApiHookStatus {
     Unhookable,
 }
 
@@ -114,7 +114,7 @@ pub(super) async fn hook_netease_api(
                 };
                 let body_params = body_object.get("params").cloned();
 
-                netease_ctx.path = body_path;
+                netease_ctx.path = Some(body_path);
                 netease_ctx.param = body_params;
             } else {
                 let body_hex = take_body_hex(7)?;
@@ -130,14 +130,21 @@ pub(super) async fn hook_netease_api(
                     netease_ctx.param = Some(body_param_json);
                 }
 
-                netease_ctx.path = body_path;
+                netease_ctx.path = Some(body_path);
             }
 
-            netease_ctx.path = Regex::new("/\\d*$")
-                .unwrap()
-                .replace(&*netease_ctx.path, "")
-                .to_string();
-            netease_ctx.pad = netease_pad;
+            netease_ctx.path = Some(
+                Regex::new("/\\d*$")
+                    .unwrap()
+                    .replace(
+                        &*netease_ctx
+                            .path
+                            .expect("netease_ctx.path should never be null"),
+                        "",
+                    )
+                    .to_string(),
+            );
+            netease_ctx.pad = Some(netease_pad);
             netease_ctx.forward = netease_forward;
         } else {
             return Ok(Left(NeteaseApiHookStatus::Unhookable));

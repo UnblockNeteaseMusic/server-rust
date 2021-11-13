@@ -7,16 +7,34 @@ use thiserror::Error as BaseErr;
 use tokio::task::JoinError;
 
 #[derive(BaseErr, Debug)]
+pub enum BeforeRequestHookError {
+    #[error("The pad was not defined in the context.")]
+    PadUndefinedError,
+
+    #[error("Failed to extract the raw `url` part.")]
+    FailedToExtractUrl,
+    #[error("Failed to extract the raw `id` part.")]
+    FailedToExtractId,
+    #[error("Failed to extract the hostname from {0}.")]
+    FailedToExtractHostname(String),
+}
+
+#[derive(BaseErr, Debug)]
 pub enum ServerError {
     #[error("The request is invalid.")]
     InvalidRequest,
     #[error("Invalid URI: {0}")]
     InvalidUri(#[from] http::uri::InvalidUri),
+    #[error("Invalid header value: {0}")]
+    InvalidHeaderValue(#[from] http::header::InvalidHeaderValue),
 
     #[error("Failed to extract 'Host' field in your header.")]
     ExtractHostFailed,
     #[error("Failed to aggregate body.")]
     BodyAggregateError,
+
+    #[error("BeforeRequestHook error: {0}")]
+    BeforeRequestHookError(#[from] BeforeRequestHookError),
 
     #[error("Failed to convert a header value to string: {0}")]
     HeaderToStringFailed(#[from] http::header::ToStrError),
