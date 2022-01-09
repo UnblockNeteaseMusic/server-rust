@@ -1,31 +1,44 @@
 /// UNM Resolver: Request method.
-/// 
+///
 /// It includes request-related methods.
-
 use std::{collections::HashMap, time::Duration};
 
-use reqwest::{Proxy, Client, Body, Response};
-use url::Url;
-use http::{header::{HeaderMap, HeaderValue}, Method};
+use http::{
+    header::{HeaderMap, HeaderValue},
+    Method,
+};
+use reqwest::{Body, Proxy, Response};
 use thiserror::Error;
-use once_cell::sync::Lazy;
+use url::Url;
 
 /// Construct the request header.
-/// 
+///
 /// `url` is the URL to request;
 /// `additional` is the additional header to send to.
-pub fn construct_header(url: &Url, additional: Option<HeaderMap>) -> RequestModuleResult<HeaderMap> {
+pub fn construct_header(
+    url: &Url,
+    additional: Option<HeaderMap>,
+) -> RequestModuleResult<HeaderMap> {
     let mut header_map = HeaderMap::new();
 
     header_map.insert(http::header::HOST, {
         let host_value = url.host_str().ok_or(RequestModuleError::UrlWithoutHost)?;
         HeaderValue::from_str(host_value)?
-    }); 
-    header_map.insert(http::header::ACCEPT, HeaderValue::from_static("application/json, text/plain, */*"));
-    header_map.insert(http::header::ACCEPT_ENCODING, HeaderValue::from_static("gzip, deflate"));
-    header_map.insert(http::header::ACCEPT_LANGUAGE, HeaderValue::from_static("zh-CN,zh;q=0.9"));
+    });
+    header_map.insert(
+        http::header::ACCEPT,
+        HeaderValue::from_static("application/json, text/plain, */*"),
+    );
+    header_map.insert(
+        http::header::ACCEPT_ENCODING,
+        HeaderValue::from_static("gzip, deflate"),
+    );
+    header_map.insert(
+        http::header::ACCEPT_LANGUAGE,
+        HeaderValue::from_static("zh-CN,zh;q=0.9"),
+    );
     header_map.insert(http::header::USER_AGENT, HeaderValue::from_static("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36"));
-    
+
     if let Some(additional) = additional {
         header_map.extend(additional.into_iter());
     }
@@ -34,7 +47,7 @@ pub fn construct_header(url: &Url, additional: Option<HeaderMap>) -> RequestModu
 }
 
 /// Translate the specified host to the user-specified one.
-/// 
+///
 /// `map` must be comprised of the `(src, tgt)` pair.
 #[inline]
 pub fn translate_host<'a>(map: &'a HashMap<&str, &str>, host: &'a str) -> &'a str {
@@ -47,7 +60,8 @@ pub fn translate_url<'a>(map: &'a HashMap<&str, &str>, url: &mut Url) -> Request
 
     if let Some(host) = host {
         let new_host = translate_host(map, host).to_string();
-        url.set_host(Some(&new_host)).map_err(RequestModuleError::InvalidHost)?;
+        url.set_host(Some(&new_host))
+            .map_err(RequestModuleError::InvalidHost)?;
     }
 
     Ok(())
@@ -55,61 +69,73 @@ pub fn translate_url<'a>(map: &'a HashMap<&str, &str>, url: &mut Url) -> Request
 
 /// Extract the JSON string from a JSONP response.
 pub fn extract_jsonp(data: &str) -> String {
+    // jsonp({"data": {"id": "1", "name": "test"}});
+    //       ~ START HERE                        ~ END HERE
+
     let left_bracket_index = data.find('(').map(|idx| idx + 1);
     let right_bracket_index = data.rfind(')');
 
-    data.chars().skip(left_bracket_index.unwrap_or(0))
+    data.chars()
+        .skip(left_bracket_index.unwrap_or(0))
         .take(right_bracket_index.unwrap_or(data.len()) - left_bracket_index.unwrap_or(0))
         .collect()
 }
 
 /// Request the specified URL.
-/// 
+///
 /// `method` is the method to request. It can be one of
 /// `GET`, `POST`, `PUT`, `DELETE`, `HEAD`, `OPTIONS` or `PATCH`.
-/// 
+///
 /// `url` is the URL to request. You may call [`translate_url`] to
 /// translate the host of your URL to your desired one.
-/// 
+///
 /// `additional_headers` is the additional header to send to.
 /// Whatever you passed it or not, we will call
 /// [`construct_header`] to construct the header.
-/// 
+///
 /// `body` is the body to send to the server.
-/// 
+///
 /// `proxy` is the proxy to use.
 pub async fn request(
-	method: Method,
-	url: &Url,
-	additional_headers: Option<HeaderMap>,
-	body: Option<Body>,
-	proxy: Option<Proxy>,
+    method: Method,
+    url: &Url,
+    additional_headers: Option<HeaderMap>,
+    body: Option<Body>,
+    proxy: Option<Proxy>,
 ) -> RequestModuleResult<Response> {
+    // Construct the headers according to the URL and the optional `additional_headers`.
     let headers = construct_header(url, additional_headers)?;
+
+    // Construct the client builder.
     let mut client_builder = reqwest::Client::builder();
 
+    // Set the proxy if the user specified it.
     if let Some(proxy) = proxy {
         client_builder = client_builder.proxy(proxy);
     }
 
+    // Set the timeout (10s), then build the client.
     let client = client_builder
         .timeout(Duration::from_secs(10))
         .build()
         .map_err(RequestModuleError::ConstructClientFailed)?;
 
-    let mut response_builder = client
-        .request(method, url.to_string())
-        .headers(headers);
+    // Consturct the request. Here, we set up the method
+    // and the headers to send to the server.
+    let mut response_builder = client.request(method, url.to_string()).headers(headers);
 
+    // Set the body if the user specified it.
     if let Some(body) = body {
         response_builder = response_builder.body(body);
     }
 
+    // Send the request and get the response.
     let response = response_builder
         .send()
         .await
         .map_err(RequestModuleError::RequestFailed)?;
 
+    // Return it.
     Ok(response)
 }
 
@@ -136,8 +162,8 @@ pub type RequestModuleResult<T> = Result<T, RequestModuleError>;
 
 #[cfg(test)]
 mod tests {
-    use std::collections::HashMap;
     use once_cell::sync::Lazy;
+    use std::collections::HashMap;
 
     static TRANSLATE_MAP: Lazy<HashMap<&str, &str>> = Lazy::new(|| {
         let mut map = HashMap::new();
@@ -150,7 +176,7 @@ mod tests {
     mod construct_header {
         use super::super::construct_header;
 
-        use http::{HeaderValue, HeaderMap};
+        use http::{HeaderMap, HeaderValue};
         use once_cell::sync::Lazy;
         use url::Url;
 
@@ -160,27 +186,61 @@ mod tests {
         fn can_construct_the_correct_header_without_header_specified() {
             let constructed_header = construct_header(&TEST_URL, None).unwrap();
 
-            assert_eq!(constructed_header.get(http::header::HOST).unwrap(), &HeaderValue::from_static("www.baidu.com"));
-            assert_eq!(constructed_header.get(http::header::ACCEPT), Some(&HeaderValue::from_static("application/json, text/plain, */*")));
-            assert_eq!(constructed_header.get(http::header::ACCEPT_ENCODING), Some(&HeaderValue::from_static("gzip, deflate")));
-            assert_eq!(constructed_header.get(http::header::ACCEPT_LANGUAGE), Some(&HeaderValue::from_static("zh-CN,zh;q=0.9")));
+            assert_eq!(
+                constructed_header.get(http::header::HOST).unwrap(),
+                &HeaderValue::from_static("www.baidu.com")
+            );
+            assert_eq!(
+                constructed_header.get(http::header::ACCEPT),
+                Some(&HeaderValue::from_static(
+                    "application/json, text/plain, */*"
+                ))
+            );
+            assert_eq!(
+                constructed_header.get(http::header::ACCEPT_ENCODING),
+                Some(&HeaderValue::from_static("gzip, deflate"))
+            );
+            assert_eq!(
+                constructed_header.get(http::header::ACCEPT_LANGUAGE),
+                Some(&HeaderValue::from_static("zh-CN,zh;q=0.9"))
+            );
             assert_eq!(constructed_header.get(http::header::USER_AGENT), Some(&HeaderValue::from_static("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36")));
         }
 
         #[test]
         fn can_construct_the_correct_header_with_header_specified() {
             let mut additional_header = HeaderMap::new();
-            additional_header.insert(http::header::COOKIE, HeaderValue::from_static("cookie=value"));
-            
+            additional_header.insert(
+                http::header::COOKIE,
+                HeaderValue::from_static("cookie=value"),
+            );
+
             let additional_header = additional_header;
             let constructed_header = construct_header(&TEST_URL, Some(additional_header)).unwrap();
 
-            assert_eq!(constructed_header.get(http::header::HOST).unwrap(), &HeaderValue::from_static("www.baidu.com"));
-            assert_eq!(constructed_header.get(http::header::ACCEPT), Some(&HeaderValue::from_static("application/json, text/plain, */*")));
-            assert_eq!(constructed_header.get(http::header::ACCEPT_ENCODING), Some(&HeaderValue::from_static("gzip, deflate")));
-            assert_eq!(constructed_header.get(http::header::ACCEPT_LANGUAGE), Some(&HeaderValue::from_static("zh-CN,zh;q=0.9")));
+            assert_eq!(
+                constructed_header.get(http::header::HOST).unwrap(),
+                &HeaderValue::from_static("www.baidu.com")
+            );
+            assert_eq!(
+                constructed_header.get(http::header::ACCEPT),
+                Some(&HeaderValue::from_static(
+                    "application/json, text/plain, */*"
+                ))
+            );
+            assert_eq!(
+                constructed_header.get(http::header::ACCEPT_ENCODING),
+                Some(&HeaderValue::from_static("gzip, deflate"))
+            );
+            assert_eq!(
+                constructed_header.get(http::header::ACCEPT_LANGUAGE),
+                Some(&HeaderValue::from_static("zh-CN,zh;q=0.9"))
+            );
             assert_eq!(constructed_header.get(http::header::USER_AGENT), Some(&HeaderValue::from_static("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36")));
-            assert_eq!(constructed_header.get(http::header::COOKIE), Some(&HeaderValue::from_static("cookie=value")));
+            assert_eq!(
+                constructed_header.get(http::header::COOKIE),
+                Some(&HeaderValue::from_static("cookie=value"))
+            );
         }
     }
 
@@ -189,8 +249,14 @@ mod tests {
 
         #[test]
         fn test_translate_host() {
-            assert_eq!(translate_host(&super::TRANSLATE_MAP, "www.cloudflare.com"), "1.1.1.1");
-            assert_eq!(translate_host(&super::TRANSLATE_MAP, "www.google.com"), "www.bing.com");
+            assert_eq!(
+                translate_host(&super::TRANSLATE_MAP, "www.cloudflare.com"),
+                "1.1.1.1"
+            );
+            assert_eq!(
+                translate_host(&super::TRANSLATE_MAP, "www.google.com"),
+                "www.bing.com"
+            );
         }
     }
 
@@ -202,13 +268,18 @@ mod tests {
         #[test]
         fn test_translate_url() {
             let mut testdata_1 = "https://www.cloudflare.com/owo".parse::<Url>().unwrap();
-            let mut testdata_2 = "https://www.google.com/?search=Rickroll".parse::<Url>().unwrap();
+            let mut testdata_2 = "https://www.google.com/?search=Rickroll"
+                .parse::<Url>()
+                .unwrap();
 
             translate_url(&super::TRANSLATE_MAP, &mut testdata_1).unwrap();
             translate_url(&super::TRANSLATE_MAP, &mut testdata_2).unwrap();
 
             assert_eq!(testdata_1.to_string(), "https://1.1.1.1/owo");
-            assert_eq!(testdata_2.to_string(), "https://www.bing.com/?search=Rickroll");
+            assert_eq!(
+                testdata_2.to_string(),
+                "https://www.bing.com/?search=Rickroll"
+            );
         }
     }
 
