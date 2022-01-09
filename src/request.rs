@@ -2,11 +2,13 @@
 /// 
 /// It includes request-related methods.
 
-use std::collections::HashMap;
+use std::{collections::HashMap, time::Duration};
 
+use reqwest::{Proxy, Client, Body, Response};
 use url::Url;
-use http::{header::{HeaderMap, HeaderValue}};
+use http::{header::{HeaderMap, HeaderValue}, Method};
 use thiserror::Error;
+use once_cell::sync::Lazy;
 
 /// Construct the request header.
 /// 
@@ -61,6 +63,56 @@ pub fn extract_jsonp(data: &str) -> String {
         .collect()
 }
 
+/// Request the specified URL.
+/// 
+/// `method` is the method to request. It can be one of
+/// `GET`, `POST`, `PUT`, `DELETE`, `HEAD`, `OPTIONS` or `PATCH`.
+/// 
+/// `url` is the URL to request. You may call [`translate_url`] to
+/// translate the host of your URL to your desired one.
+/// 
+/// `additional_headers` is the additional header to send to.
+/// Whatever you passed it or not, we will call
+/// [`construct_header`] to construct the header.
+/// 
+/// `body` is the body to send to the server.
+/// 
+/// `proxy` is the proxy to use.
+pub async fn request(
+	method: Method,
+	url: &Url,
+	additional_headers: Option<HeaderMap>,
+	body: Option<Body>,
+	proxy: Option<Proxy>,
+) -> RequestModuleResult<Response> {
+    let headers = construct_header(url, additional_headers)?;
+    let mut client_builder = reqwest::Client::builder();
+
+    if let Some(proxy) = proxy {
+        client_builder = client_builder.proxy(proxy);
+    }
+
+    let client = client_builder
+        .timeout(Duration::from_secs(10))
+        .build()
+        .map_err(RequestModuleError::ConstructClientFailed)?;
+
+    let mut response_builder = client
+        .request(method, url.to_string())
+        .headers(headers);
+
+    if let Some(body) = body {
+        response_builder = response_builder.body(body);
+    }
+
+    let response = response_builder
+        .send()
+        .await
+        .map_err(RequestModuleError::RequestFailed)?;
+
+    Ok(response)
+}
+
 /// Error in this module.
 #[derive(Error, Debug)]
 pub enum RequestModuleError {
@@ -73,6 +125,10 @@ pub enum RequestModuleError {
     /// Invalid host.
     #[error("invalid host: {0}")]
     InvalidHost(url::ParseError),
+    #[error("failed to construct client: {0}")]
+    ConstructClientFailed(reqwest::Error),
+    #[error("failed to request: {0}")]
+    RequestFailed(reqwest::Error),
 }
 
 /// The [`Result`] of this module.

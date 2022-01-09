@@ -8,7 +8,7 @@ edition = "2021"
 [dependencies]
 http = "0.2.6"
 once_cell = "1.9.0"
-reqwest = { version = "0.11.8", features = ["json"] }
+reqwest = { version = "0.11.8", features = ["json", "brotli", "deflate", "gzip"] }
 thiserror = "1.0.30"
 tokio = { version = "1.15.0", features = ["full"] }
 url = "2.2.2"
