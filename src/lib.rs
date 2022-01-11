@@ -1,10 +1,5 @@
-pub mod request;
+//! UNM Resolver: Resolve the specified audio name to a URL.
+#![warn(missing_docs)]
 
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        let result = 2 + 2;
-        assert_eq!(result, 4);
-    }
-}
+pub mod request;
+pub mod engine;

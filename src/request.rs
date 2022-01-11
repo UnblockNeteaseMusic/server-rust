@@ -1,6 +1,9 @@
-/// UNM Resolver: Request method.
-///
-/// It includes request-related methods.
+//! UNM Resolver: Request method.
+//!
+//! It includes request-related methods.
+
+pub mod ext;
+
 use std::{collections::HashMap, time::Duration};
 
 use http::{
@@ -151,8 +154,10 @@ pub enum RequestModuleError {
     /// Invalid host.
     #[error("invalid host: {0}")]
     InvalidHost(url::ParseError),
+    /// Construct client failed.
     #[error("failed to construct client: {0}")]
     ConstructClientFailed(reqwest::Error),
+    /// Request failed.
     #[error("failed to request: {0}")]
     RequestFailed(reqwest::Error),
 }
