@@ -1,35 +1,58 @@
-// pub use async_trait::async_trait;
+//! UNM Resolver: Engine
+//! 
+//! "Engine" is a music platform unit, which can be used for
+//! resolving the audio URL of a music.
+
+pub use async_trait::async_trait;
 pub use serde_json::Value as Json;
 
-#[derive(Clone)]
-pub struct SongArtistMetadata {
-    pub id: i64,
+/// The metadata of the artist of a song.
+#[derive(Clone, Default)]
+pub struct Artist {
+    /// The name of this artist.
     pub name: String,
+    /// The Netease Cloud Music ID of this artist.
+    pub ncm_id: Option<i64>,
 }
 
-#[derive(Clone)]
-pub struct SongAlbumMetadata {
-    pub id: i64,
+/// The metadata of the album of a song.
+#[derive(Clone, Default)]
+pub struct Album {
+    /// The name of this album.
     pub name: String,
+    /// The Netease Cloud Music ID of this artist.
+    pub ncm_id: Option<i64>,
+    /// The song this album includes.
+    pub songs: Vec<Song>,
 }
 
+/// The metadata of a song.
 #[derive(Clone)]
-pub struct SongMetadata {
-    pub id: i64,
+pub struct Song {
+    /// The name of this song.
     pub name: String,
+    /// The duration of this song.
     pub duration: Option<i64>,
-    pub artists: Vec<SongArtistMetadata>,
-    pub album: Option<SongAlbumMetadata>,
+    /// The artist of this song.
+    pub artists: Vec<Artist>,
+    /// The album of this song.
+    pub album: Option<Album>,
+    /// The Netease Cloud Music ID of this song.
+    pub ncm_id: Option<i64>,
 }
 
-// #[async_trait]
-// pub trait Provide {
-//     /// Search a audio similar with info from Provider,
-//     /// and return the audio link
-//     async fn check(&self, info: &SongMetadata) -> Self::Result<Option<String>>;
-// }
+#[async_trait]
+/// The provider trait.
+pub trait Provider {
+    /// The result from [`Provider::check`].
+    type CheckResult;
 
-impl SongMetadata {
+    /// Search a audio similar to the info from Provider,
+    /// and return the audio link.
+    async fn check(&self, info: &Song) -> Self::CheckResult;
+}
+
+impl Song {
     /// Generate the keyword of this song.
     pub fn keyword(&self) -> String {
         // {Song Name}
@@ -56,9 +79,9 @@ impl SongMetadata {
 
 /// iterate `list` and pick up a song which similar with `expect`
 pub fn select_similar_song<'a>(
-    list: &'a [SongMetadata],
-    expect: &'a SongMetadata,
-) -> Option<&'a SongMetadata> {
+    list: &'a [Song],
+    expect: &'a Song,
+) -> Option<&'a Song> {
     if list.is_empty() {
         return None;
     }
@@ -86,23 +109,24 @@ mod test {
 
     #[test]
     fn test_engine_keyword() {
-        let meta = SongMetadata {
-            id: 114514,
+        let meta = Song {
+            ncm_id: Some(114514),
             name: "U2FsdGVkX1".to_string(),
             duration: Some(7001),
             artists: vec![
-                SongArtistMetadata {
-                    id: 114514,
+                Artist {
+                    ncm_id: Some(114514),
                     name: "elonh".to_string(),
                 },
-                SongArtistMetadata {
-                    id: 114516,
+                Artist {
+                    ncm_id: Some(114516),
                     name: "pan93412".to_string(),
                 },
             ],
-            album: Some(SongAlbumMetadata {
-                id: 334511,
+            album: Some(Album {
+                ncm_id: Some(334511),
                 name: "OWOOW".to_string(),
+                ..Default::default()
             })
         };
 
@@ -130,18 +154,18 @@ mod test {
         assert_eq!(x.duration, list[0].duration);
     }
 
-    fn gen_meta(d: Option<i64>) -> SongMetadata {
-        SongMetadata {
+    fn gen_meta(d: Option<i64>) -> Song {
+        Song {
             album: None,
             artists: Vec::new(),
             duration: d,
-            id: 0,
+            ncm_id: None,
             name: String::new(),
         }
     }
 
-    fn gen_metas(ds: Vec<Option<i64>>) -> Vec<SongMetadata> {
-        let mut res: Vec<SongMetadata> = Vec::new();
+    fn gen_metas(ds: Vec<Option<i64>>) -> Vec<Song> {
+        let mut res: Vec<Song> = Vec::new();
         for d in ds {
             res.push(gen_meta(d))
         }
