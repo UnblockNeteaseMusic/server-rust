@@ -85,6 +85,31 @@ mod test {
     use super::*;
 
     #[test]
+    fn test_engine_keyword() {
+        let meta = SongMetadata {
+            id: 114514,
+            name: "U2FsdGVkX1".to_string(),
+            duration: Some(7001),
+            artists: vec![
+                SongArtistMetadata {
+                    id: 114514,
+                    name: "elonh".to_string(),
+                },
+                SongArtistMetadata {
+                    id: 114516,
+                    name: "pan93412".to_string(),
+                },
+            ],
+            album: Some(SongAlbumMetadata {
+                id: 334511,
+                name: "OWOOW".to_string(),
+            })
+        };
+
+        assert_eq!(meta.keyword(), "U2FsdGVkX1 - elonh, pan93412");
+    }
+
+    #[test]
     fn test_select() {
         let expect = gen_meta(Some(7001));
         let list = gen_metas(vec![Some(1000), Some(2000), Some(3000)]);
@@ -121,12 +146,5 @@ mod test {
             res.push(gen_meta(d))
         }
         res
-    }
-}
-
-#[cfg(test)]
-mod bench {
-    fn bench_keyword() {
-        
     }
 }
