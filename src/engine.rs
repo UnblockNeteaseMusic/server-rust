@@ -3,32 +3,37 @@
 //! "Engine" is a music platform unit, which can be used for
 //! resolving the audio URL of a music.
 
+pub mod bilibili;
+
 pub use async_trait::async_trait;
+use reqwest::Proxy;
 pub use serde_json::Value as Json;
 
 /// The metadata of the artist of a song.
 #[derive(Clone, Default)]
 pub struct Artist {
+    /// The identifier of this artist.
+    pub id: String,
     /// The name of this artist.
     pub name: String,
-    /// The Netease Cloud Music ID of this artist.
-    pub ncm_id: Option<i64>,
 }
 
 /// The metadata of the album of a song.
 #[derive(Clone, Default)]
 pub struct Album {
+    /// The identifier of this artist.
+    pub id: String,
     /// The name of this album.
     pub name: String,
-    /// The Netease Cloud Music ID of this artist.
-    pub ncm_id: Option<i64>,
     /// The song this album includes.
     pub songs: Vec<Song>,
 }
 
 /// The metadata of a song.
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Song {
+    /// The identifier of this song.
+    pub id: String,
     /// The name of this song.
     pub name: String,
     /// The duration of this song.
@@ -37,19 +42,15 @@ pub struct Song {
     pub artists: Vec<Artist>,
     /// The album of this song.
     pub album: Option<Album>,
-    /// The Netease Cloud Music ID of this song.
-    pub ncm_id: Option<i64>,
 }
 
 #[async_trait]
 /// The provider trait.
 pub trait Provider {
-    /// The result from [`Provider::check`].
-    type CheckResult;
-
     /// Search a audio similar to the info from Provider,
     /// and return the audio link.
-    async fn check(&self, info: &Song) -> Self::CheckResult;
+    async fn check(&self, info: &Song, proxy: Option<Proxy>) -> anyhow::Result<Option<String>>;
+    // FIXME: anyhow::Result<()> is not pretty a good practice.
 }
 
 impl Song {
@@ -110,21 +111,21 @@ mod test {
     #[test]
     fn test_engine_keyword() {
         let meta = Song {
-            ncm_id: Some(114514),
+            id: "114514".to_string(),
             name: "U2FsdGVkX1".to_string(),
             duration: Some(7001),
             artists: vec![
                 Artist {
-                    ncm_id: Some(114514),
+                    id: "114514".to_string(),
                     name: "elonh".to_string(),
                 },
                 Artist {
-                    ncm_id: Some(114516),
+                    id: "114516".to_string(),
                     name: "pan93412".to_string(),
                 },
             ],
             album: Some(Album {
-                ncm_id: Some(334511),
+                id: "334511".to_string(),
                 name: "OWOOW".to_string(),
                 ..Default::default()
             })
@@ -159,8 +160,8 @@ mod test {
             album: None,
             artists: Vec::new(),
             duration: d,
-            ncm_id: None,
             name: String::new(),
+            ..Default::default()
         }
     }
 
