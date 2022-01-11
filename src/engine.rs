@@ -1,4 +1,4 @@
-pub use async_trait::async_trait;
+// pub use async_trait::async_trait;
 pub use serde_json::Value as Json;
 
 #[derive(Clone)]
@@ -22,32 +22,35 @@ pub struct SongMetadata {
     pub album: Option<SongAlbumMetadata>,
 }
 
-#[async_trait]
-pub trait Provide {
-    /// Search a audio similar with info from Provider,
-    /// and return the audio link
-    async fn check(&self, info: &SongMetadata) -> Self::Result<Option<String>>;
-}
+// #[async_trait]
+// pub trait Provide {
+//     /// Search a audio similar with info from Provider,
+//     /// and return the audio link
+//     async fn check(&self, info: &SongMetadata) -> Self::Result<Option<String>>;
+// }
 
 impl SongMetadata {
+    /// Generate the keyword of this song.
     pub fn keyword(&self) -> String {
-        let mut ret: String = String::new();
-        ret.push_str(self.name.as_str());
-        ret.push_str(" - ");
+        // {Song Name}
+        let mut keyword = self.name.to_string();
+        let max_idx = self.artists.len() - 1;
 
-        let mut len = 0;
+        // Add hyphen between the song name and the following artist name.
+        keyword.push_str(" - ");
+
         for (idx, artist) in self.artists.iter().enumerate() {
-            ret.push_str(artist.name.as_str());
-            if idx > 0 {
-                ret.push_str(" - ");
-            };
-            len += artist.name.len();
-            if len > 15 {
-                break;
+            // "[keyword] {artist.name}"
+            keyword.push_str(&artist.name);
+
+            if idx != max_idx {
+                // ", " if this is not the last item.
+                keyword.push_str(", ");
             }
         }
 
-        ret
+        // {Song name} - {Artist 1's name}, {Artist 2's name}[, ...]
+        keyword
     }
 }
 
@@ -118,5 +121,12 @@ mod test {
             res.push(gen_meta(d))
         }
         res
+    }
+}
+
+#[cfg(test)]
+mod bench {
+    fn bench_keyword() {
+        
     }
 }
