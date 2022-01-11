@@ -4,6 +4,7 @@
 //! resolving the audio URL of a music.
 
 pub mod bilibili;
+pub mod pyncm;
 
 pub use async_trait::async_trait;
 use reqwest::Proxy;
