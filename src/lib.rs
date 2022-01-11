@@ -3,3 +3,4 @@
 
 pub mod request;
 pub mod engine;
+pub mod crypto;
