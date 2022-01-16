@@ -1,5 +1,6 @@
 [workspace]
 
-members = [
-  "unm_resolver",
-]
+members = ["unm_resolver", "unm_resolver_napi"]
+
+[profile.release]
+lto = true
