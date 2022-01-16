@@ -5,6 +5,7 @@
 
 pub mod bilibili;
 pub mod pyncm;
+pub mod ytdl;
 pub mod ytdlp;
 
 pub use async_trait::async_trait;
