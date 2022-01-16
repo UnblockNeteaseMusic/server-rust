@@ -1347,6 +1347,7 @@ dependencies = [
  "async-trait",
  "criterion",
  "http",
+ "log",
  "once_cell",
  "rayon",
  "reqwest",
