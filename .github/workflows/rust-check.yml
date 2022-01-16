@@ -29,6 +29,7 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: check
+          toolchain: beta
 
   cargo-test:
     needs: cargo-check
@@ -59,9 +60,11 @@ jobs:
             v1-${{ runner.os }}-cargo-
       - uses: actions-rs/cargo@v1
         with:
+          toolchain: beta
           command: test
           args: -p unm_server
       - uses: actions-rs/cargo@v1
         with:
+          toolchain: beta
           command: test
           args: -p unm_macro

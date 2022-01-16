@@ -38,6 +38,7 @@ jobs:
             v1-${{ matrix.os }}-${{ matrix.target }}-cargo-build-
       - uses: actions-rs/cargo@v1
         with:
+          toolchain: beta
           use-cross: true
           command: build
           args: --target ${{ matrix.target }}
