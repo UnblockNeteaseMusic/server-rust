@@ -1,0 +1,3 @@
+[toolchain]
+channel = "beta"
+profile = "default"

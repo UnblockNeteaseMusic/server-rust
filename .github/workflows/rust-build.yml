@@ -22,7 +22,6 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: beta
           target: ${{ matrix.target }}
       - uses: actions/cache@v2
         with:
@@ -38,7 +37,6 @@ jobs:
             v1-${{ matrix.os }}-${{ matrix.target }}-cargo-build-
       - uses: actions-rs/cargo@v1
         with:
-          toolchain: beta
           use-cross: true
           command: build
           args: --target ${{ matrix.target }}

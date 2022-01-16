@@ -11,8 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: beta
       - uses: actions/cache@v2
         with:
           path: |
@@ -29,7 +27,6 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: check
-          toolchain: beta
 
   cargo-test:
     needs: cargo-check
@@ -43,8 +40,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: beta
       - uses: actions/cache@v2
         with:
           path: |
@@ -60,11 +55,9 @@ jobs:
             v1-${{ runner.os }}-cargo-
       - uses: actions-rs/cargo@v1
         with:
-          toolchain: beta
           command: test
           args: -p unm_server
       - uses: actions-rs/cargo@v1
         with:
-          toolchain: beta
           command: test
           args: -p unm_macro
