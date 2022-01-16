@@ -46,4 +46,4 @@ jobs:
         with:
           name: unm-server-${{ matrix.os }}-${{ matrix.target }}
           path: |
-            ./target/${{ matrix.target }}/debug/*unm_server*
+            ./target/${{ matrix.target }}/debug/*unm*
