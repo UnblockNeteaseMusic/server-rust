@@ -42,7 +42,11 @@ impl Engine for PyNCMEngine {
 }
 
 /// Fetch the song info in [`PyNCMResponse`].
-async fn fetch_song_info(id: &str, enable_flac: bool, proxy: Option<Proxy>) -> anyhow::Result<PyNCMResponse> {
+async fn fetch_song_info(
+    id: &str,
+    enable_flac: bool,
+    proxy: Option<Proxy>,
+) -> anyhow::Result<PyNCMResponse> {
     let url_str = format!(
         "http://mos9527.tooo.top/ncm/pyncm/track/GetTrackAudio?song_ids={id}&bitrate={bitrate}",
         id = id,
@@ -56,8 +60,7 @@ async fn fetch_song_info(id: &str, enable_flac: bool, proxy: Option<Proxy>) -> a
 
 /// Find the matched song from an array of [`PyNCMResponseEntry`].
 fn find_match(data: &[PyNCMResponseEntry], song_id: &str) -> anyhow::Result<Option<String>> {
-    data
-        .par_iter()
+    data.par_iter()
         .find_any(|entry| {
             // Test if the ID of this entry matched what we want to fetch,
             // and there is content in its URL.

@@ -22,7 +22,9 @@ pub trait BodyExt<'a> {
 
 impl<'a> BodyExt<'a> for Body {
     fn to_text(&'a self) -> RequestExtModuleResult<Cow<'a, str>> {
-        let bytes = self.as_bytes().ok_or(RequestExtModuleError::NoBytesAvailable)?;
+        let bytes = self
+            .as_bytes()
+            .ok_or(RequestExtModuleError::NoBytesAvailable)?;
         let str = String::from_utf8_lossy(bytes);
 
         Ok(str)
@@ -30,7 +32,7 @@ impl<'a> BodyExt<'a> for Body {
 
     fn to_json<T: DeserializeOwned>(&self) -> RequestExtModuleResult<T> {
         let text = self.to_text()?;
-        
+
         serde_json::from_str(&text).map_err(RequestExtModuleError::DeserializeFailed)
     }
 
@@ -39,7 +41,7 @@ impl<'a> BodyExt<'a> for Body {
             let raw = self.to_text()?;
             extract_jsonp(&raw)
         };
-        
+
         serde_json::from_str(&text).map_err(RequestExtModuleError::DeserializeFailed)
     }
 }

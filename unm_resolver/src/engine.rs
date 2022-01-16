@@ -1,5 +1,5 @@
 //! UNM Resolver: Engine
-//! 
+//!
 //! "Engine" is a music platform unit, which can be used for
 //! resolving the audio URL of a music.
 
@@ -82,10 +82,7 @@ impl Song {
 }
 
 /// iterate `list` and pick up a song which similar with `expect`
-pub fn select_similar_song<'a>(
-    list: &'a [Song],
-    expect: &'a Song,
-) -> Option<&'a Song> {
+pub fn select_similar_song<'a>(list: &'a [Song], expect: &'a Song) -> Option<&'a Song> {
     if list.is_empty() {
         return None;
     }
@@ -131,7 +128,7 @@ mod test {
                 id: "334511".to_string(),
                 name: "OWOOW".to_string(),
                 ..Default::default()
-            })
+            }),
         };
 
         assert_eq!(meta.keyword(), "U2FsdGVkX1 - elonh, pan93412");

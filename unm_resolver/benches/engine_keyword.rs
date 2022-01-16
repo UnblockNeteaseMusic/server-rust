@@ -1,5 +1,5 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
-use unm_resolver::engine::{Song, Artist, Album};
+use unm_resolver::engine::{Album, Artist, Song};
 
 fn criterion_benchmark(c: &mut Criterion) {
     let m = black_box(Song {
@@ -20,9 +20,9 @@ fn criterion_benchmark(c: &mut Criterion) {
             id: "334511".to_string(),
             name: "OWOOW".to_string(),
             ..Default::default()
-        })
+        }),
     });
-    
+
     c.bench_function("engine > keyword()", |b| b.iter(|| m.keyword()));
 }
 

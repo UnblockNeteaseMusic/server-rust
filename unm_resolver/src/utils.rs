@@ -1,5 +1,5 @@
 /// Throws when the JSON is not able to extract.
-/// 
+///
 /// (pointer, expected_type)
 #[derive(Debug)]
 pub struct UnableToExtractJson<'a>(pub &'a str, pub &'a str);

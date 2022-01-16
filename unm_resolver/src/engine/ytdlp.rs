@@ -4,7 +4,7 @@
 
 use serde::Deserialize;
 
-use super::{Engine, Song, Proxy};
+use super::{Engine, Proxy, Song};
 
 /// The response that `yt-dlp` will return.
 #[derive(Deserialize)]

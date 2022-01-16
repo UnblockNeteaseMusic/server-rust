@@ -5,7 +5,7 @@
 
 use serde::Deserialize;
 
-use super::{Engine, Song, Proxy};
+use super::{Engine, Proxy, Song};
 
 /// The response that `youtube-dl` will return.
 #[derive(Deserialize)]
