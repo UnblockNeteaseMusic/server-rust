@@ -9,6 +9,7 @@ pub mod ytdl;
 pub mod ytdlp;
 
 pub use async_trait::async_trait;
+use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use reqwest::Proxy;
 pub use serde_json::Value as Json;
 
@@ -87,21 +88,19 @@ pub fn select_similar_song<'a>(list: &'a [Song], expect: &'a Song) -> Option<&'a
         return None;
     }
     let duration = expect.duration.unwrap_or(i64::MAX);
-    for (idx, i) in list.iter().enumerate() {
-        // 只挑前五個結果
-        if idx > 5 {
-            break;
-        }
-
-        if let Some(d) = i.duration {
+    
+    // 並行尋找所有相似歌曲
+    // 如果沒有，就播放第一条
+    Some(list.par_iter().find_first(|song| {
+        if let Some(d) = song.duration {
             if i64::abs(d - duration) < 5000 {
                 // 第一个时长相差5s (5000ms) 之内的结果
-                return Some(i);
+                return true;
             }
         }
-    }
-    // 没有就播放第一条
-    Some(&list[0])
+
+        false
+    }).unwrap_or_else(|| &list[0]))
 }
 
 #[cfg(test)]
