@@ -53,6 +53,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "async-recursion"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2cda8f4bcc10624c4e85bc66b3f452cca98cfa5ca002dc83a16aad2367641bea"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "async-trait"
 version = "0.1.52"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -754,8 +765,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5cbca4762c2865296cf6c9b2252fc2d875f005d2903a148b4cd6206bb6f9a686"
 dependencies = [
  "ctor",
+ "encoding_rs",
  "lazy_static",
  "napi-sys",
+ "serde",
+ "serde_json",
+ "tokio",
  "windows",
 ]
 
@@ -1546,6 +1561,7 @@ dependencies = [
 name = "unm_resolver_napi"
 version = "0.0.0"
 dependencies = [
+ "async-recursion",
  "napi",
  "napi-build",
  "napi-derive",

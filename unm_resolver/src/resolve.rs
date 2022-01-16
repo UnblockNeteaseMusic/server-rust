@@ -3,12 +3,12 @@
 use futures::FutureExt;
 use log::{error, info};
 use once_cell::sync::Lazy;
-use reqwest::Proxy;
+pub use reqwest::Proxy;
 
 use crate::engine::{
     bilibili::BilibiliEngine, pyncm::PyNCMEngine, ytdl::YtDlEngine, ytdlp::YtDlpEngine,
 };
-use crate::engine::{Engine as EngineTrait, Song};
+pub use crate::engine::{Engine as EngineTrait, Song};
 
 /// Engine: Bilibili Music
 static BILIBILI_ENGINE: Lazy<BilibiliEngine> = Lazy::new(|| BilibiliEngine);

@@ -28,15 +28,5 @@
     "build:debug": "napi build --platform",
     "prepublishOnly": "napi prepublish -t npm",
     "version": "napi version"
-  },
-  "optionalDependencies": {
-    "unm_resolver_napi-win32-x64-msvc": "0.0.0",
-    "unm_resolver_napi-darwin-x64": "0.0.0",
-    "unm_resolver_napi-linux-x64-gnu": "0.0.0",
-    "unm_resolver_napi-darwin-arm64": "0.0.0",
-    "unm_resolver_napi-android-arm64": "0.0.0",
-    "unm_resolver_napi-linux-arm64-gnu": "0.0.0",
-    "unm_resolver_napi-win32-arm64-msvc": "0.0.0",
-    "unm_resolver_napi-linux-x64-musl": "0.0.0"
   }
 }
