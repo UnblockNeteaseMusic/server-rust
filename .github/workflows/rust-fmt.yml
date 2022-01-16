@@ -33,11 +33,11 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          key: v0-${{ runner.os }}-cargo-clippy-${{ hashFiles('**/Cargo.lock') }}
+          key: v1-${{ runner.os }}-cargo-clippy-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
-            v0-${{ runner.os }}-cargo-clippy-${{ hashFiles('**/Cargo.lock') }}
-            v0-${{ runner.os }}-cargo-clippy
-            v0-${{ runner.os }}-cargo-
+            v1-${{ runner.os }}-cargo-clippy-${{ hashFiles('**/Cargo.lock') }}
+            v1-${{ runner.os }}-cargo-clippy
+            v1-${{ runner.os }}-cargo-
       - uses: actions-rs/cargo@v1
         with:
           command: clippy

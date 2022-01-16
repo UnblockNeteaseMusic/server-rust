@@ -32,10 +32,10 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          key: v0-${{ matrix.os }}-${{ matrix.target }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
+          key: v1-${{ matrix.os }}-${{ matrix.target }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
-            v0-${{ matrix.os }}-${{ matrix.target }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
-            v0-${{ matrix.os }}-${{ matrix.target }}-cargo-build-
+            v1-${{ matrix.os }}-${{ matrix.target }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
+            v1-${{ matrix.os }}-${{ matrix.target }}-cargo-build-
       - uses: actions-rs/cargo@v1
         with:
           use-cross: true

@@ -21,11 +21,11 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          key: v0-${{ runner.os }}-cargo-check-${{ hashFiles('**/Cargo.lock') }}
+          key: v1-${{ runner.os }}-cargo-check-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
-            v0-${{ runner.os }}-cargo-check-${{ hashFiles('**/Cargo.lock') }}
-            v0-${{ runner.os }}-cargo-check-
-            v0-${{ runner.os }}-cargo-
+            v1-${{ runner.os }}-cargo-check-${{ hashFiles('**/Cargo.lock') }}
+            v1-${{ runner.os }}-cargo-check-
+            v1-${{ runner.os }}-cargo-
       - uses: actions-rs/cargo@v1
         with:
           command: check
@@ -52,11 +52,11 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          key: v0-${{ runner.os }}-cargo-test-${{ hashFiles('**/Cargo.lock') }}
+          key: v1-${{ runner.os }}-cargo-test-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
-            v0-${{ runner.os }}-cargo-test-${{ hashFiles('**/Cargo.lock') }}
-            v0-${{ runner.os }}-cargo-test-
-            v0-${{ runner.os }}-cargo-
+            v1-${{ runner.os }}-cargo-test-${{ hashFiles('**/Cargo.lock') }}
+            v1-${{ runner.os }}-cargo-test-
+            v1-${{ runner.os }}-cargo-
       - uses: actions-rs/cargo@v1
         with:
           command: test
