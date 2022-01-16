@@ -2,7 +2,7 @@ use unm_resolver::engine::{Artist, Engine, Song};
 
 #[tokio::main]
 async fn main() {
-    let ytdlp = unm_resolver::engine::bilibili::BilibiliEngine;
+    let engine = unm_resolver::engine::bilibili::BilibiliEngine;
     let song = Song {
         name: "青花瓷".to_string(),
         artists: vec![Artist {
@@ -13,7 +13,7 @@ async fn main() {
     };
 
     let start = std::time::Instant::now();
-    let result = ytdlp.check(&song, None).await.unwrap();
+    let result = engine.check(&song, None).await.unwrap();
     let end = start.elapsed();
 
     println!("周杰伦 - 青花瓷: {:?}", result);
