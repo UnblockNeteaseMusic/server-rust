@@ -88,19 +88,23 @@ pub fn select_similar_song<'a>(list: &'a [Song], expect: &'a Song) -> Option<&'a
         return None;
     }
     let duration = expect.duration.unwrap_or(i64::MAX);
-    
+
     // 並行尋找所有相似歌曲
     // 如果沒有，就播放第一条
-    Some(list.par_iter().find_first(|song| {
-        if let Some(d) = song.duration {
-            if i64::abs(d - duration) < 5000 {
-                // 第一个时长相差5s (5000ms) 之内的结果
-                return true;
-            }
-        }
+    Some(
+        list.par_iter()
+            .find_first(|song| {
+                if let Some(d) = song.duration {
+                    if i64::abs(d - duration) < 5000 {
+                        // 第一个时长相差5s (5000ms) 之内的结果
+                        return true;
+                    }
+                }
 
-        false
-    }).unwrap_or_else(|| &list[0]))
+                false
+            })
+            .unwrap_or_else(|| &list[0]),
+    )
 }
 
 #[cfg(test)]

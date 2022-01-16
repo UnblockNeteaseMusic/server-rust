@@ -1,4 +1,4 @@
-use unm_resolver::engine::{Engine, Song, Artist};
+use unm_resolver::engine::{Artist, Engine, Song};
 
 #[tokio::main]
 async fn main() {
