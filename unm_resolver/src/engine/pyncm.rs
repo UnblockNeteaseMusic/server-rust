@@ -3,6 +3,7 @@
 //! It can fetch audio from the unofficial
 //! Netease Cloud Music API.
 
+use rayon::prelude::*;
 use std::str::FromStr;
 
 use http::Method;
@@ -11,7 +12,7 @@ use serde::Deserialize;
 
 use crate::request::request;
 
-use super::{Song, Provider};
+use super::{Provider, Song};
 
 #[derive(Deserialize)]
 struct PyNCMResponse {
@@ -28,41 +29,58 @@ struct PyNCMResponseEntry {
     pub url: Option<String>,
 }
 
-/// The `bilibili` provider that can fetch audio from
+/// The `pyncm` provider that can fetch audio from
 /// the unofficial Netease Cloud Music API.
 pub struct PyNCMProvider;
-
-impl PyNCMProvider {
-    async fn track(&self, song: &Song, enable_flac: bool, proxy: Option<Proxy>) -> anyhow::Result<Option<String>> {
-        let url_str = format!(
-            "http://mos9527.tooo.top/ncm/pyncm/track/GetTrackAudio?song_ids={id}&bitrate={bitrate}",
-            id = song.id,
-            bitrate = if enable_flac { 999000 } else { 320000 }
-        );
-        let url = url::Url::from_str(&url_str)?;
-
-        let response = request(Method::GET, &url, None, None, proxy).await?;
-        let res_json = response.json::<PyNCMResponse>().await?;
-
-		if res_json.code == 200 {
-			let matched = res_json
-            .data
-            .into_iter()
-            .find(|entry| entry.id == song.id && entry.url.is_some())
-            .ok_or(anyhow::anyhow!("no matched song"))?
-            .url;
-
-        	Ok(matched)
-		} else {
-			Err(anyhow::anyhow!("failed to request. code: {}", res_json.code))
-		}
-    }
-}
 
 #[async_trait::async_trait]
 impl Provider for PyNCMProvider {
     async fn check(&self, info: &Song, proxy: Option<Proxy>) -> anyhow::Result<Option<String>> {
-		// FIXME: enable_flac should be configuable by users.
-		self.track(info, cfg!(ENABLE_FLAC), proxy).await
-	}
+        // FIXME: enable_flac should be configuable by users.
+        track(info, cfg!(ENABLE_FLAC), proxy).await
+    }
+}
+
+/// Fetch the song info in [`PyNCMResponse`].
+async fn fetch_song_info(id: &str, enable_flac: bool, proxy: Option<Proxy>) -> anyhow::Result<PyNCMResponse> {
+    let url_str = format!(
+        "http://mos9527.tooo.top/ncm/pyncm/track/GetTrackAudio?song_ids={id}&bitrate={bitrate}",
+        id = id,
+        bitrate = if enable_flac { 999000 } else { 320000 }
+    );
+    let url = url::Url::from_str(&url_str)?;
+
+    let response = request(Method::GET, &url, None, None, proxy).await?;
+    Ok(response.json::<PyNCMResponse>().await?)
+}
+
+/// Find the matched song from an array of [`PyNCMResponseEntry`].
+fn find_match(data: &[PyNCMResponseEntry], song_id: &str) -> anyhow::Result<Option<String>> {
+    data
+        .par_iter()
+        .find_any(|entry| {
+            // Test if the ID of this entry matched what we want to fetch,
+            // and there is content in its URL.
+            entry.id == song_id && entry.url.is_some()
+        })
+        .map(|v| v.url.clone())
+        .ok_or(anyhow::anyhow!("no matched song"))
+}
+
+/// Track the matched song.
+async fn track(
+    song: &Song,
+    enable_flac: bool,
+    proxy: Option<Proxy>,
+) -> anyhow::Result<Option<String>> {
+    let response = fetch_song_info(&song.id, enable_flac, proxy).await?;
+
+    if response.code == 200 {
+        Ok(find_match(&response.data, &song.id)?)
+    } else {
+        Err(anyhow::anyhow!(
+            "failed to request. code: {}",
+            response.code
+        ))
+    }
 }
