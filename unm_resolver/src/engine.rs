@@ -47,9 +47,9 @@ pub struct Song {
 }
 
 #[async_trait]
-/// The provider trait.
-pub trait Provider {
-    /// Search a audio similar to the info from Provider,
+/// The engine that can search and track the specified [`Song`].
+pub trait Engine {
+    /// Search an audio matched the info,
     /// and return the audio link.
     async fn check(&self, info: &Song, proxy: Option<Proxy>) -> anyhow::Result<Option<String>>;
     // FIXME: anyhow::Result<()> is not pretty a good practice.

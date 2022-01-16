@@ -12,7 +12,7 @@ use serde::Deserialize;
 
 use crate::request::request;
 
-use super::{Provider, Song};
+use super::{Engine, Song};
 
 #[derive(Deserialize)]
 struct PyNCMResponse {
@@ -29,12 +29,12 @@ struct PyNCMResponseEntry {
     pub url: Option<String>,
 }
 
-/// The `pyncm` provider that can fetch audio from
+/// The `pyncm` engine that can fetch audio from
 /// the unofficial Netease Cloud Music API.
-pub struct PyNCMProvider;
+pub struct PyNCMEngine;
 
 #[async_trait::async_trait]
-impl Provider for PyNCMProvider {
+impl Engine for PyNCMEngine {
     async fn check(&self, info: &Song, proxy: Option<Proxy>) -> anyhow::Result<Option<String>> {
         // FIXME: enable_flac should be configuable by users.
         track(info, cfg!(ENABLE_FLAC), proxy).await

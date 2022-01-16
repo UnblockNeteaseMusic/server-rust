@@ -15,13 +15,13 @@ use http::Method;
 use url::Url;
 use urlencoding::encode;
 
-use super::{select_similar_song, Artist, Provider, Song};
+use super::{select_similar_song, Artist, Engine, Song};
 
-/// The `bilibili` provider that can fetch audio from Bilibili Music.
-pub struct BilibiliProvider;
+/// The `bilibili` engine that can fetch audio from Bilibili Music.
+pub struct BilibiliEngine;
 
 #[async_trait]
-impl Provider for BilibiliProvider {
+impl Engine for BilibiliEngine {
     async fn check(&self, info: &Song, proxy: Option<Proxy>) -> anyhow::Result<Option<String>> {
         match search(info, proxy.clone()).await? {
             None => Ok(None),
@@ -162,7 +162,7 @@ mod tests {
 
     #[test]
     async fn bilibili_check() {
-        let p = BilibiliProvider;
+        let p = BilibiliEngine;
         let info = get_info_1();
         let url = p.check(&info, None).await.unwrap().unwrap();
         println!("{}", url);
