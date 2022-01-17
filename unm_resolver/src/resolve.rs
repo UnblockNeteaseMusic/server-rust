@@ -6,7 +6,7 @@ use once_cell::sync::Lazy;
 pub use reqwest::Proxy;
 
 use crate::engine::{
-    bilibili::BilibiliEngine, pyncm::PyNCMEngine, ytdl::YtDlEngine, ytdlp::YtDlpEngine,
+    bilibili::BilibiliEngine, pyncm::PyNCMEngine, ytdl::YtDlEngine, ytdlp::YtDlpEngine, migu::MiguEngine,
 };
 pub use crate::engine::{Engine as EngineTrait, Song};
 
@@ -18,6 +18,8 @@ static PYNCM_ENGINE: Lazy<PyNCMEngine> = Lazy::new(|| PyNCMEngine);
 static YTDLP_ENGINE: Lazy<YtDlpEngine> = Lazy::new(|| YtDlpEngine);
 /// Engine: youtube-dl
 static YTDL_ENGINE: Lazy<YtDlEngine> = Lazy::new(|| YtDlEngine);
+/// Engine: Migu Music
+static MIGU_ENGINE: Lazy<MiguEngine> = Lazy::new(|| MiguEngine);
 
 /// The engine uses to resolve audio.
 #[derive(Debug)]
@@ -30,6 +32,8 @@ pub enum Engine {
     YtDlp,
     /// YouTube with `youtube-dl`.
     YtDl,
+    /// Migu Music.
+    Migu,
 }
 
 #[async_trait::async_trait]
@@ -40,6 +44,7 @@ impl EngineTrait for Engine {
             Engine::PyNCM => PYNCM_ENGINE.check(info, proxy),
             Engine::YtDlp => YTDLP_ENGINE.check(info, proxy),
             Engine::YtDl => YTDL_ENGINE.check(info, proxy),
+            Engine::Migu => MIGU_ENGINE.check(info, proxy),
         };
 
         result.await

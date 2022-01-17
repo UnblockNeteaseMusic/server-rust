@@ -24,7 +24,7 @@ async fn main() {
 
     let start = std::time::Instant::now();
     let result = resolve(
-        &[Engine::Bilibili, Engine::YtDlp, Engine::YtDl],
+        &[Engine::Bilibili, Engine::YtDlp, Engine::YtDl, Engine::Migu],
         &song,
         None,
     )
