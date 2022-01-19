@@ -1,3 +1,7 @@
+//! UNM Resolver [Engine]: Migu
+//!
+//! It can fetch audio from Migu Music.
+
 use std::str::FromStr;
 
 use anyhow::Ok;
@@ -20,7 +24,8 @@ use crate::utils::UnableToExtractJson;
 
 use super::*;
 
-pub struct  MiguEngine;
+/// The `migu` engine that can fetch audio from Migu Music.
+pub struct MiguEngine;
 
 #[async_trait]
 impl Engine for MiguEngine {
