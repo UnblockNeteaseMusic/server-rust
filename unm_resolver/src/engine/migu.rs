@@ -74,7 +74,7 @@ async fn find_match(info: &Song, data: &[Json]) -> Result<Option<String>> {
     Ok(select_similar_song(&list, info).map(|song| song.id.to_string()))
 }
 
-async fn search(info: &Song, proxy: Option<Proxy>) -> anyhow::Result<Option<String>> {
+async fn search(info: &Song, proxy: Option<Proxy>) -> Result<Option<String>> {
     let response = get_search_data(&info.keyword(), proxy).await?;
     let result = response
         .pointer("/musics")
@@ -105,7 +105,7 @@ async fn track(id: &str, proxy: Option<Proxy>, num: &str) -> Result<Option<Strin
     for u in urls {
         let o = u.ok();
         if o.is_some() {
-            result = Some(String::from(o.unwrap()));
+            result = o;
             break;
         }
     }
@@ -113,7 +113,7 @@ async fn track(id: &str, proxy: Option<Proxy>, num: &str) -> Result<Option<Strin
     Ok(result)
 }
 
-fn format(song: &Json) -> anyhow::Result<Song> {
+fn format(song: &Json) -> Result<Song> {
     //TODO: singer_id and singer_name regex
 
     //let reg_exp = Regex::new(r"\s*,\s*\").unwrap();
