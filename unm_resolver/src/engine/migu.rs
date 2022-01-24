@@ -15,7 +15,6 @@ use http::header::REFERER;
 
 use rand::Rng;
 use rayon::iter::ParallelIterator;
-//use regex::Regex;
 use url::Url;
 use http::Method;
 use urlencoding::encode;
@@ -42,6 +41,8 @@ fn get_header() -> HeaderMap {
     header.insert(ORIGIN, "http://music.migu.cn/".parse().unwrap());
     header.insert(REFERER, "http://m.music.migu.cn/v3/".parse().unwrap());
     header.insert(HeaderName::from_static("channel"), "0".parse().unwrap());
+    // FIXME: 传入cookie
+    //header.insert(HeaderName::from_static("aversionid"), cookie.parse().unwrap());
 
     header
 }
@@ -49,7 +50,11 @@ fn get_header() -> HeaderMap {
 fn get_rand_num() -> String {
     let mut rng = rand::thread_rng();
     let num = rng.gen_range(0.0..1.0);
-    num.to_string().split('.').collect::<Vec<_>>()[1].to_string()
+    num.to_string()
+        .split('.')
+        .skip(1).next()
+        .expect("index 2: nothing there")
+        .to_string()
 }
 
 async fn get_search_data(keyword: &str, proxy: Option<Proxy>) -> Result<Json> {
@@ -88,6 +93,7 @@ async fn search(info: &Song, proxy: Option<Proxy>) -> Result<Option<String>> {
 }
 
 async fn track(id: &str, proxy: Option<Proxy>, num: &str) -> Result<Option<String>> {
+    // FIXME: 传入enabled_flac
     let enabled_flac = false;
     let qualities = if enabled_flac {
         vec!["ZQ", "SQ", "HQ", "PQ"]
@@ -97,8 +103,7 @@ async fn track(id: &str, proxy: Option<Proxy>, num: &str) -> Result<Option<Strin
 
     let futures = qualities
     .iter()
-    .map(|&format| single(id, format, num, proxy.clone()))
-    .collect::<Vec<_>>();
+    .map(|&format| single(id, format, num, proxy.clone()));
 
     let urls = join_all(futures).await;
     let mut result = None;
@@ -114,9 +119,6 @@ async fn track(id: &str, proxy: Option<Proxy>, num: &str) -> Result<Option<Strin
 }
 
 fn format(song: &Json) -> Result<Song> {
-    //TODO: singer_id and singer_name regex
-
-    //let reg_exp = Regex::new(r"\s*,\s*\").unwrap();
     let id = song["id"]
         .as_str()
         .ok_or(UnableToExtractJson("id", "str"))?;
@@ -130,16 +132,21 @@ fn format(song: &Json) -> Result<Song> {
         .as_str()
         .ok_or(UnableToExtractJson("singerName", "string"))?;
 
-    //let si: Vec<&str> = reg_exp.split(singer_id).collect();
-    //let sn: Vec<&str> = reg_exp.split(singer_name).collect();
+    let si: Vec<&str> = singer_id.split(",").collect();
+    let sn: Vec<&str> = singer_name.split(",").collect();
+
+    let mut artists = Vec::new();
+    for index in 0..si.len() {
+        artists.push(Artist{
+            id: si.get(index).cloned().unwrap_or_default().to_string(),
+            name: sn.get(index).cloned().unwrap_or_default().to_string()
+        })
+    }
 
     let x = Song {
         id: String::from(id),
         name: String::from(name),
-        artists: vec![Artist {
-            id: String::from(singer_id),
-            name: String::from(singer_name),
-        }],
+        artists,
         ..Default::default()
     };
     Ok(x)
@@ -159,17 +166,18 @@ async fn get_single_data(id: &str, format: &str, num: &str, proxy: Option<Proxy>
 
 async fn single(id: &str, format: &str, num: &str, proxy: Option<Proxy>) -> Result<String> {
     let response = get_single_data(id, format, num, proxy).await?;
-    let data = response
-        .pointer("/data")
-        .ok_or(anyhow::anyhow!("/data not found"))?;
-    let format_type = data["formatType"]
+    let format_type = response
+        .pointer("/data/formatType")
+        .ok_or(anyhow::anyhow!("/data/formatType not found"))?
         .as_str()
         .ok_or(UnableToExtractJson("formatType", "string"))?;
-    let url = data["url"]
+    let url = response
+        .pointer("/data/url")
+        .ok_or(anyhow::anyhow!("/data/url not found"))?
         .as_str()
         .ok_or(UnableToExtractJson("url", "string"))?;
 
-    if format_type.eq(format) {
+    if format_type == format {
         Ok(String::from(url))
     } else {
         Err(anyhow::anyhow!("format not equals"))
