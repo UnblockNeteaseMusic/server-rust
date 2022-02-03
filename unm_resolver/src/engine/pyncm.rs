@@ -7,7 +7,6 @@ use rayon::prelude::*;
 use std::str::FromStr;
 
 use http::Method;
-use reqwest::Proxy;
 use serde::Deserialize;
 
 use crate::request::request;
@@ -37,7 +36,7 @@ pub struct PyNCMEngine;
 impl Engine for PyNCMEngine {
     async fn check<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<String>> {
         // FIXME: enable_flac should be configuable by users.
-        track(info, cfg!(ENABLE_FLAC), ctx.proxy.cloned()).await
+        track(info, cfg!(ENABLE_FLAC), ctx).await
     }
 }
 
@@ -45,7 +44,7 @@ impl Engine for PyNCMEngine {
 async fn fetch_song_info(
     id: &str,
     enable_flac: bool,
-    proxy: Option<Proxy>,
+    ctx: &Context<'_>,
 ) -> anyhow::Result<PyNCMResponse> {
     let url_str = format!(
         "http://mos9527.tooo.top/ncm/pyncm/track/GetTrackAudio?song_ids={id}&bitrate={bitrate}",
@@ -54,7 +53,7 @@ async fn fetch_song_info(
     );
     let url = url::Url::from_str(&url_str)?;
 
-    let response = request(Method::GET, &url, None, None, proxy).await?;
+    let response = request(Method::GET, &url, None, None, ctx.proxy.cloned()).await?;
     Ok(response.json::<PyNCMResponse>().await?)
 }
 
@@ -74,9 +73,9 @@ fn find_match(data: &[PyNCMResponseEntry], song_id: &str) -> anyhow::Result<Opti
 async fn track(
     song: &Song,
     enable_flac: bool,
-    proxy: Option<Proxy>,
+    ctx: &Context<'_>,
 ) -> anyhow::Result<Option<String>> {
-    let response = fetch_song_info(&song.id, enable_flac, proxy).await?;
+    let response = fetch_song_info(&song.id, enable_flac, ctx).await?;
 
     if response.code == 200 {
         Ok(find_match(&response.data, &song.id)?)

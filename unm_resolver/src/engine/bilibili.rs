@@ -4,7 +4,6 @@
 
 use async_trait::async_trait;
 use rayon::prelude::*;
-use reqwest::Proxy;
 
 use std::str::FromStr;
 
@@ -23,15 +22,15 @@ pub struct BilibiliEngine;
 #[async_trait]
 impl Engine for BilibiliEngine {
     async fn check<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<String>> {
-        match search(info, ctx.proxy.cloned()).await? {
+        match search(info, ctx).await? {
             None => Ok(None),
-            Some(id) => Ok(track(id, ctx.proxy.cloned()).await?),
+            Some(id) => Ok(track(id, ctx).await?),
         }
     }
 }
 
 /// Get search data from Bilibili Music.
-async fn get_search_data(keyword: &str, proxy: Option<Proxy>) -> anyhow::Result<Json> {
+async fn get_search_data(keyword: &str, ctx: &Context<'_>) -> anyhow::Result<Json> {
     let url_str = format!(
         "https://api.bilibili.com/audio/music-service-c/s?\
         search_type=music&page=1&pagesize=30&\
@@ -40,18 +39,18 @@ async fn get_search_data(keyword: &str, proxy: Option<Proxy>) -> anyhow::Result<
     );
     let url = Url::from_str(&url_str)?;
 
-    let res = request(Method::GET, &url, None, None, proxy).await?;
+    let res = request(Method::GET, &url, None, None, ctx.proxy.cloned()).await?;
     Ok(res.json().await?)
 }
 
 /// Track the ID from Bilibili Music.
-async fn get_tracked_data(id: &str, proxy: Option<Proxy>) -> anyhow::Result<Json> {
+async fn get_tracked_data(id: &str, ctx: &Context<'_>) -> anyhow::Result<Json> {
     let url_str = format!(
         "https://www.bilibili.com/audio/music-service-c/web/url?rivilege=2&quality=2&sid={id}"
     );
     let url = Url::from_str(&url_str)?;
 
-    let res = request(Method::GET, &url, None, None, proxy).await?;
+    let res = request(Method::GET, &url, None, None, ctx.proxy.cloned()).await?;
     Ok(res.json().await?)
 }
 
@@ -70,8 +69,8 @@ async fn find_match(info: &Song, data: &[Json]) -> anyhow::Result<Option<String>
 }
 
 /// Search and get the audio ID from Bilibili Music.
-async fn search(info: &Song, proxy: Option<Proxy>) -> anyhow::Result<Option<String>> {
-    let response = get_search_data(&info.keyword(), proxy).await?;
+async fn search(info: &Song, ctx: &Context<'_>) -> anyhow::Result<Option<String>> {
+    let response = get_search_data(&info.keyword(), ctx).await?;
     let result = response
         .pointer("/data/result")
         .ok_or(anyhow::anyhow!("/data/result not found"))?
@@ -83,8 +82,8 @@ async fn search(info: &Song, proxy: Option<Proxy>) -> anyhow::Result<Option<Stri
 }
 
 /// Track the song with the audio ID.
-async fn track(id: String, proxy: Option<Proxy>) -> anyhow::Result<Option<String>> {
-    let response = get_tracked_data(&id, proxy).await?;
+async fn track(id: String, ctx: &Context<'_>) -> anyhow::Result<Option<String>> {
+    let response = get_tracked_data(&id, ctx).await?;
     let links = response
         .pointer("/data/cdns")
         .ok_or(anyhow::anyhow!("/data/cdns not found"))?
@@ -150,13 +149,16 @@ mod tests {
     #[test]
     async fn bilibili_search() {
         let info = get_info_1();
-        let id = search(&info, None).await.unwrap();
+        let id = search(&info, &Context::default()).await.unwrap();
         assert_eq!(id, Some("349595".to_string()));
     }
 
     #[test]
     async fn bilibili_track() {
-        let url = track("349595".to_string(), None).await.unwrap().unwrap();
+        let url = track("349595".to_string(), &Context::default())
+            .await
+            .unwrap()
+            .unwrap();
         println!("{}", url);
     }
 

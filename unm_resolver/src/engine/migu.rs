@@ -8,18 +8,18 @@ use anyhow::Ok;
 use anyhow::Result;
 
 use futures::future::join_all;
-use http::HeaderMap;
 use http::header::HeaderName;
 use http::header::ORIGIN;
 use http::header::REFERER;
+use http::HeaderMap;
 
+use crate::request::request;
+use crate::utils::UnableToExtractJson;
+use http::Method;
 use rand::Rng;
 use rayon::iter::ParallelIterator;
 use url::Url;
-use http::Method;
 use urlencoding::encode;
-use crate::request::request;
-use crate::utils::UnableToExtractJson;
 
 use super::*;
 
@@ -28,10 +28,10 @@ pub struct MiguEngine;
 
 #[async_trait]
 impl Engine for MiguEngine {
-    async fn check(&self, info: &Song, proxy: Option<Proxy>) -> Result<Option<String>> {
-        match search(info, proxy.clone()).await? {
+    async fn check<'a>(&self, info: &'a Song, ctx: &'a Context) -> Result<Option<String>> {
+        match search(info, ctx).await? {
             None => Ok(None),
-            Some(id) => Ok(track(id.as_str(), proxy, get_rand_num().as_str()).await?),
+            Some(id) => Ok(track(id.as_str(), ctx, get_rand_num().as_str()).await?),
         }
     }
 }
@@ -52,19 +52,26 @@ fn get_rand_num() -> String {
     let num = rng.gen_range(0.0..1.0);
     num.to_string()
         .split('.')
-        .skip(1).next()
+        .nth(1)
         .expect("index 2: nothing there")
         .to_string()
 }
 
-async fn get_search_data(keyword: &str, proxy: Option<Proxy>) -> Result<Json> {
+async fn get_search_data(keyword: &str, ctx: &Context<'_>) -> Result<Json> {
     let url_str = format!(
         "https://m.music.migu.cn/migu/remoting/scr_search_tag?keyword={0}&type=2&rows=20&pgc=1",
         encode(keyword)
     );
     let url = Url::from_str(&url_str)?;
 
-    let res = request(Method::GET, &url, Some(get_header()), None, proxy).await?;
+    let res = request(
+        Method::GET,
+        &url,
+        Some(get_header()),
+        None,
+        ctx.proxy.cloned(),
+    )
+    .await?;
     Ok(res.json().await?)
 }
 
@@ -79,8 +86,8 @@ async fn find_match(info: &Song, data: &[Json]) -> Result<Option<String>> {
     Ok(select_similar_song(&list, info).map(|song| song.id.to_string()))
 }
 
-async fn search(info: &Song, proxy: Option<Proxy>) -> Result<Option<String>> {
-    let response = get_search_data(&info.keyword(), proxy).await?;
+async fn search(info: &Song, ctx: &Context<'_>) -> Result<Option<String>> {
+    let response = get_search_data(&info.keyword(), ctx).await?;
     let result = response
         .pointer("/musics")
         .ok_or(anyhow::anyhow!("/musics not found"))?
@@ -92,18 +99,15 @@ async fn search(info: &Song, proxy: Option<Proxy>) -> Result<Option<String>> {
     Ok(matched)
 }
 
-async fn track(id: &str, proxy: Option<Proxy>, num: &str) -> Result<Option<String>> {
-    // FIXME: 传入enabled_flac
-    let enabled_flac = false;
+async fn track(id: &str, ctx: &Context<'_>, num: &str) -> Result<Option<String>> {
+    let enabled_flac = ctx.enable_flac;
     let qualities = if enabled_flac {
         vec!["ZQ", "SQ", "HQ", "PQ"]
-     } else{
+    } else {
         vec!["HQ", "PQ"]
     };
 
-    let futures = qualities
-    .iter()
-    .map(|&format| single(id, format, num, proxy.clone()));
+    let futures = qualities.iter().map(|&format| single(id, format, num, ctx));
 
     let urls = join_all(futures).await;
     let mut result = None;
@@ -132,14 +136,14 @@ fn format(song: &Json) -> Result<Song> {
         .as_str()
         .ok_or(UnableToExtractJson("singerName", "string"))?;
 
-    let si: Vec<&str> = singer_id.split(",").collect();
-    let sn: Vec<&str> = singer_name.split(",").collect();
+    let si: Vec<&str> = singer_id.split(',').collect();
+    let sn: Vec<&str> = singer_name.split(',').collect();
 
     let mut artists = Vec::new();
     for index in 0..si.len() {
-        artists.push(Artist{
+        artists.push(Artist {
             id: si.get(index).cloned().unwrap_or_default().to_string(),
-            name: sn.get(index).cloned().unwrap_or_default().to_string()
+            name: sn.get(index).cloned().unwrap_or_default().to_string(),
         })
     }
 
@@ -152,7 +156,7 @@ fn format(song: &Json) -> Result<Song> {
     Ok(x)
 }
 
-async fn get_single_data(id: &str, format: &str, num: &str, proxy: Option<Proxy>) -> Result<Json> {
+async fn get_single_data(id: &str, format: &str, num: &str, ctx: &Context<'_>) -> Result<Json> {
     let url_str = format!(
         "https://app.c.nf.migu.cn/MIGUM2.0/strategy/listen-url/v2.2?lowerQualityContentId={0}&netType=01&resourceType=E&songId={1}&toneFlag={2}",
         encode(num),
@@ -160,12 +164,19 @@ async fn get_single_data(id: &str, format: &str, num: &str, proxy: Option<Proxy>
         encode(format),
     );
     let url = Url::from_str(&url_str)?;
-    let res = request(Method::GET, &url, Some(get_header()), None, proxy).await?;
+    let res = request(
+        Method::GET,
+        &url,
+        Some(get_header()),
+        None,
+        ctx.proxy.cloned(),
+    )
+    .await?;
     Ok(res.json().await?)
 }
 
-async fn single(id: &str, format: &str, num: &str, proxy: Option<Proxy>) -> Result<String> {
-    let response = get_single_data(id, format, num, proxy).await?;
+async fn single(id: &str, format: &str, num: &str, ctx: &Context<'_>) -> Result<String> {
+    let response = get_single_data(id, format, num, ctx).await?;
     let format_type = response
         .pointer("/data/formatType")
         .ok_or(anyhow::anyhow!("/data/formatType not found"))?
@@ -205,32 +216,51 @@ mod tests {
     #[test]
     async fn migu_search() {
         let info = get_info_1();
-        let id = search(&info, None).await.unwrap().unwrap();
+        let id = search(&info, &Context::default()).await.unwrap().unwrap();
         assert_eq!(id, "4300399".to_string());
     }
 
     #[test]
     async fn migu_search_json() {
         let info = get_info_1();
-        let json = get_search_data(&info.keyword(), None).await.unwrap();
+        let json = get_search_data(&info.keyword(), &Context::default())
+            .await
+            .unwrap();
         println!("{}", json);
     }
 
     #[test]
     async fn migu_single() {
-        let url = single("4300399", "PQ", get_rand_num().as_str(), None).await.unwrap();
+        let url = single(
+            "4300399",
+            "PQ",
+            get_rand_num().as_str(),
+            &Context::default(),
+        )
+        .await
+        .unwrap();
         println!("{}", url);
     }
 
     #[test]
     async fn migu_single_json() {
-        let json = get_single_data("4300399", "PQ", get_rand_num().as_str(), None).await.unwrap();
+        let json = get_single_data(
+            "4300399",
+            "PQ",
+            get_rand_num().as_str(),
+            &Context::default(),
+        )
+        .await
+        .unwrap();
         println!("{}", json);
     }
 
     #[test]
     async fn migu_track() {
-        let url = track("4300399", None, get_rand_num().as_str()).await.unwrap().unwrap();
+        let url = track("4300399", &Context::default(), get_rand_num().as_str())
+            .await
+            .unwrap()
+            .unwrap();
         println!("{}", url);
     }
 
@@ -238,7 +268,7 @@ mod tests {
     async fn migu_check() {
         let p = MiguEngine;
         let info = get_info_1();
-        let url = p.check(&info, None).await.unwrap().unwrap();
+        let url = p.check(&info, &Context::default()).await.unwrap().unwrap();
         println!("{}", url);
     }
 }
