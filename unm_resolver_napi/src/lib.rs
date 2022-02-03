@@ -1,6 +1,8 @@
 use napi::bindgen_prelude::*;
 use napi_derive::napi;
-use unm_resolver::engine::{Album as RustAlbum, Artist as RustArtist, Context, Song as RustSong};
+use unm_resolver::engine::{
+    Album as RustAlbum, Artist as RustArtist, Context as RustContext, Song as RustSong,
+};
 use unm_resolver::resolve::{resolve as rust_resolve, Engine as RustEngine};
 
 /// (napi-rs) The engine uses to resolve audio.
@@ -96,16 +98,37 @@ impl From<Song> for RustSong {
     }
 }
 
+/// (napi-rs) The context.
+#[derive(Clone, Default)]
+#[napi(object)]
+pub struct Context {
+    /// Whether to enable FLAC support.
+    pub enable_flac: bool,
+
+    /// Migu: The cookie "channel"
+    pub migu_channel: Option<String>,
+}
+
+impl Context {
+    fn as_rust_ctx(&self) -> RustContext {
+        RustContext {
+            enable_flac: self.enable_flac,
+            migu_channel: self.migu_channel.as_deref(),
+            ..Default::default()
+        }
+    }
+}
+
 /// (napi-rs) Resolve the `song` with the specified engines parallelly.
 #[napi]
 
-pub async fn resolve(engines: Vec<Engine>, info: Song) -> Result<String> {
+pub async fn resolve(engines: Vec<Engine>, info: Song, context: Context) -> Result<String> {
     let engines = engines
         .into_iter()
         .map(|e| e.into())
         .collect::<Vec<RustEngine>>();
 
-    rust_resolve(&engines, &info.into(), &Context::default())
+    rust_resolve(&engines, &info.into(), &context.as_rust_ctx())
         .await
         .map_err(|e| {
             Error::new(
