@@ -4,10 +4,10 @@
 //! resolving the audio URL of a music.
 
 pub mod bilibili;
+pub mod migu;
 pub mod pyncm;
 pub mod ytdl;
 pub mod ytdlp;
-pub mod migu;
 
 pub use async_trait::async_trait;
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
