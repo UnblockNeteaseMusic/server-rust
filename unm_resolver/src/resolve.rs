@@ -6,7 +6,8 @@ use once_cell::sync::Lazy;
 pub use reqwest::Proxy;
 
 use crate::engine::{
-    bilibili::BilibiliEngine, pyncm::PyNCMEngine, ytdl::YtDlEngine, ytdlp::YtDlpEngine, migu::MiguEngine,
+    bilibili::BilibiliEngine, migu::MiguEngine, pyncm::PyNCMEngine, ytdl::YtDlEngine,
+    ytdlp::YtDlpEngine, Context,
 };
 pub use crate::engine::{Engine as EngineTrait, Song};
 
@@ -38,13 +39,17 @@ pub enum Engine {
 
 #[async_trait::async_trait]
 impl EngineTrait for Engine {
-    async fn check(&self, info: &Song, proxy: Option<Proxy>) -> anyhow::Result<Option<String>> {
+    async fn check<'a>(
+        &self,
+        info: &'a Song,
+        context: &'a Context,
+    ) -> anyhow::Result<Option<String>> {
         let result = match self {
-            Engine::Bilibili => BILIBILI_ENGINE.check(info, proxy),
-            Engine::PyNCM => PYNCM_ENGINE.check(info, proxy),
-            Engine::YtDlp => YTDLP_ENGINE.check(info, proxy),
-            Engine::YtDl => YTDL_ENGINE.check(info, proxy),
-            Engine::Migu => MIGU_ENGINE.check(info, proxy),
+            Engine::Bilibili => BILIBILI_ENGINE.check(info, context),
+            Engine::PyNCM => PYNCM_ENGINE.check(info, context),
+            Engine::YtDlp => YTDLP_ENGINE.check(info, context),
+            Engine::YtDl => YTDL_ENGINE.check(info, context),
+            Engine::Migu => MIGU_ENGINE.check(info, context),
         };
 
         result.await
@@ -55,20 +60,18 @@ impl EngineTrait for Engine {
 pub async fn resolve(
     engines: &[Engine],
     info: &Song,
-    proxy: Option<Proxy>,
+    context: &Context<'_>,
 ) -> ResolveResult<String> {
     let keyword = info.keyword();
     info!("Resolving: {}", keyword);
 
     let futures = engines.iter().map(|engine| {
-        // Clone a Proxy to pass to the engine.
-        let proxy = proxy.clone();
         let keyword = keyword.clone();
         async move {
             info!("Resolving with engine: {:?}", engine);
 
             let result = engine
-                .check(info, proxy)
+                .check(info, context)
                 .await
                 .map_err(ResolveError::EngineError)?
                 .ok_or(ResolveError::NoMatchedSong { keyword })?;

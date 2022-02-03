@@ -1,4 +1,4 @@
-use unm_resolver::engine::{Artist, Engine, Song};
+use unm_resolver::engine::{Artist, Engine, Song, Context};
 
 #[tokio::main]
 async fn main() {
@@ -13,7 +13,7 @@ async fn main() {
     };
 
     let start = std::time::Instant::now();
-    let result = engine.check(&song, None).await.unwrap();
+    let result = engine.check(&song, &Context::default()).await.unwrap();
     let end = start.elapsed();
 
     println!("周杰伦 - 青花瓷: {:?}", result);

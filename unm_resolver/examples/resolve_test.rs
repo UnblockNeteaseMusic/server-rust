@@ -1,7 +1,7 @@
 use log::LevelFilter;
 use simple_logger::SimpleLogger;
 use unm_resolver::{
-    engine::{Artist, Song},
+    engine::{Artist, Context, Song},
     resolve::{resolve, Engine},
 };
 
@@ -26,7 +26,7 @@ async fn main() {
     let result = resolve(
         &[Engine::Bilibili, Engine::YtDlp, Engine::YtDl, Engine::Migu],
         &song,
-        None,
+        &Context::default(),
     )
     .await;
     let end = start.elapsed();

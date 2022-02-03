@@ -49,12 +49,25 @@ pub struct Song {
     pub album: Option<Album>,
 }
 
+/// The context.
+#[derive(Clone, Default)]
+pub struct Context<'a> {
+    /// The proxy to be used in request.
+    pub proxy: Option<&'a Proxy>,
+
+    /// Whether to enable FLAC support.
+    pub enable_flac: bool,
+
+    /// Migu: The cookie "channel"
+    pub migu_channel: Option<&'a str>,
+}
+
 #[async_trait]
 /// The engine that can search and track the specified [`Song`].
 pub trait Engine {
     /// Search an audio matched the info,
     /// and return the audio link.
-    async fn check(&self, info: &Song, proxy: Option<Proxy>) -> anyhow::Result<Option<String>>;
+    async fn check<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<String>>;
     // FIXME: anyhow::Result<()> is not pretty a good practice.
 }
 

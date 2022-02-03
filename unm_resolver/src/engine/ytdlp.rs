@@ -4,7 +4,7 @@
 
 use serde::Deserialize;
 
-use super::{Engine, Proxy, Song};
+use super::{Context, Engine, Song};
 
 /// The response that `yt-dlp` will return.
 #[derive(Deserialize)]
@@ -19,7 +19,7 @@ pub struct YtDlpEngine;
 #[async_trait::async_trait]
 impl Engine for YtDlpEngine {
     // TODO: allow specifying proxy
-    async fn check(&self, info: &Song, _: Option<Proxy>) -> anyhow::Result<Option<String>> {
+    async fn check<'a>(&self, info: &'a Song, _: &'a Context) -> anyhow::Result<Option<String>> {
         Ok(fetch_from_youtube(&info.keyword()).await?.map(|r| r.url))
     }
 }

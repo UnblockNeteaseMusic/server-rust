@@ -12,7 +12,7 @@ use serde::Deserialize;
 
 use crate::request::request;
 
-use super::{Engine, Song};
+use super::{Context, Engine, Song};
 
 #[derive(Deserialize)]
 struct PyNCMResponse {
@@ -35,9 +35,9 @@ pub struct PyNCMEngine;
 
 #[async_trait::async_trait]
 impl Engine for PyNCMEngine {
-    async fn check(&self, info: &Song, proxy: Option<Proxy>) -> anyhow::Result<Option<String>> {
+    async fn check<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<String>> {
         // FIXME: enable_flac should be configuable by users.
-        track(info, cfg!(ENABLE_FLAC), proxy).await
+        track(info, cfg!(ENABLE_FLAC), ctx.proxy.cloned()).await
     }
 }
 

@@ -15,17 +15,17 @@ use http::Method;
 use url::Url;
 use urlencoding::encode;
 
-use super::{select_similar_song, Artist, Engine, Song};
+use super::{select_similar_song, Artist, Context, Engine, Song};
 
 /// The `bilibili` engine that can fetch audio from Bilibili Music.
 pub struct BilibiliEngine;
 
 #[async_trait]
 impl Engine for BilibiliEngine {
-    async fn check(&self, info: &Song, proxy: Option<Proxy>) -> anyhow::Result<Option<String>> {
-        match search(info, proxy.clone()).await? {
+    async fn check<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<String>> {
+        match search(info, ctx.proxy.cloned()).await? {
             None => Ok(None),
-            Some(id) => Ok(track(id, proxy).await?),
+            Some(id) => Ok(track(id, ctx.proxy.cloned()).await?),
         }
     }
 }
@@ -164,7 +164,7 @@ mod tests {
     async fn bilibili_check() {
         let p = BilibiliEngine;
         let info = get_info_1();
-        let url = p.check(&info, None).await.unwrap().unwrap();
+        let url = p.check(&info, &Context::default()).await.unwrap().unwrap();
         println!("{}", url);
     }
 }

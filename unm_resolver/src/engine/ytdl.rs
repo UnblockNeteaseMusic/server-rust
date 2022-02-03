@@ -5,7 +5,7 @@
 
 use serde::Deserialize;
 
-use super::{Engine, Proxy, Song};
+use super::{Context, Engine, Song};
 
 /// The response that `youtube-dl` will return.
 #[derive(Deserialize)]
@@ -20,7 +20,7 @@ pub struct YtDlEngine;
 #[async_trait::async_trait]
 impl Engine for YtDlEngine {
     // TODO: allow specifying proxy
-    async fn check(&self, info: &Song, _: Option<Proxy>) -> anyhow::Result<Option<String>> {
+    async fn check<'a>(&self, info: &'a Song, _: &'a Context) -> anyhow::Result<Option<String>> {
         Ok(fetch_from_youtube(&info.keyword()).await?.map(|r| r.url))
     }
 }

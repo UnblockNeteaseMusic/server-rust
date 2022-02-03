@@ -1,6 +1,6 @@
 use napi::bindgen_prelude::*;
 use napi_derive::napi;
-use unm_resolver::engine::{Album as RustAlbum, Artist as RustArtist, Song as RustSong};
+use unm_resolver::engine::{Album as RustAlbum, Artist as RustArtist, Context, Song as RustSong};
 use unm_resolver::resolve::{resolve as rust_resolve, Engine as RustEngine};
 
 /// (napi-rs) The engine uses to resolve audio.
@@ -105,7 +105,7 @@ pub async fn resolve(engines: Vec<Engine>, info: Song) -> Result<String> {
         .map(|e| e.into())
         .collect::<Vec<RustEngine>>();
 
-    rust_resolve(&engines, &info.into(), None)
+    rust_resolve(&engines, &info.into(), &Context::default())
         .await
         .map_err(|e| {
             Error::new(
