@@ -195,7 +195,7 @@ async fn single(id: &str, format: &str, num: &str, ctx: &Context<'_>) -> Result<
     }
 }
 
-#[cfg(test)]
+#[cfg(all(test, migu_test))]
 mod tests {
     use tokio::test;
 
