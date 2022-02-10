@@ -9,7 +9,7 @@ crate-type = ["cdylib"]
 [dependencies]
 async-recursion = "1.0.0"
 napi = { version = "2.1.0", features = ["full"] }
-napi-derive = "2.0.8"
+napi-derive = "2.1.0"
 unm_resolver = { path = "../unm_resolver" }
 
 [build-dependencies]
