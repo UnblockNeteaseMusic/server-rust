@@ -28,7 +28,7 @@ thiserror = "1.0.30"
 tokio = { version = "1.16.1", features = ["full"] }
 url = "2.2.2"
 urlencoding = "2.1.0"
-rand = "0.8.4"
+rand = "0.8.5"
 
 [features]
 
