@@ -135,5 +135,5 @@ pub async fn resolve(engines: Vec<Engine>, info: Song, context: Context) -> Resu
                 Status::GenericFailure,
                 format!("Failed to resolve: {:?}", e),
             )
-        }) //
+        })
 }
