@@ -41,9 +41,12 @@ fn get_header(aversionid: Option<&str>) -> HeaderMap {
     header.insert(ORIGIN, "http://music.migu.cn/".parse().unwrap());
     header.insert(REFERER, "http://m.music.migu.cn/v3/".parse().unwrap());
     header.insert(HeaderName::from_static("channel"), "0".parse().unwrap());
-    
+
     if let Some(aversionid) = aversionid {
-        header.insert(HeaderName::from_static("aversionid"), aversionid.parse().unwrap());
+        header.insert(
+            HeaderName::from_static("aversionid"),
+            aversionid.parse().unwrap(),
+        );
     }
 
     header
