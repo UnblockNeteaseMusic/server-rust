@@ -16,6 +16,8 @@ pub enum Engine {
     YtDlp,
     /// YouTube with `youtube-dl`.
     YtDl,
+    /// Migu Music.
+    Migu,
 }
 
 impl From<Engine> for RustEngine {
@@ -25,6 +27,7 @@ impl From<Engine> for RustEngine {
             Engine::PyNCM => RustEngine::PyNCM,
             Engine::YtDlp => RustEngine::YtDlp,
             Engine::YtDl => RustEngine::YtDl,
+            Engine::Migu => RustEngine::Migu,
         }
     }
 }
@@ -134,7 +137,6 @@ impl Context {
 
 /// (napi-rs) Resolve the `song` with the specified engines parallelly.
 #[napi]
-
 pub async fn resolve(engines: Vec<Engine>, info: Song, context: Context) -> Result<String> {
     let engines = engines
         .into_iter()
