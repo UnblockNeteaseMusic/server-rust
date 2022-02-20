@@ -102,14 +102,17 @@ impl From<Song> for RustSong {
 #[derive(Clone, Default)]
 #[napi(object)]
 pub struct Context {
+    /// The proxy URI
+    pub proxy_uri: Option<String>,
+
     /// Whether to enable FLAC support.
     pub enable_flac: bool,
 
     /// Migu: The cookie "channel"
     pub migu_channel: Option<String>,
 
-    /// The proxy URI
-    pub proxy_uri: Option<String>,
+    /// Migu: The cookie "aversionid"
+    pub migu_aversionid: Option<String>,
 }
 
 impl Context {
@@ -121,9 +124,10 @@ impl Context {
 
     pub fn as_rust_ctx<'a>(&'a self, proxy: Option<&'a Proxy>) -> RustContext<'a> {
         RustContext {
+            proxy,
             enable_flac: self.enable_flac,
             migu_channel: self.migu_channel.as_deref(),
-            proxy,
+            migu_aversionid: self.migu_aversionid.as_deref(),
         }
     }
 }

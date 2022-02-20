@@ -60,6 +60,9 @@ pub struct Context<'a> {
 
     /// Migu: The cookie "channel"
     pub migu_channel: Option<&'a str>,
+
+    /// Migu: The cookie "aversionid"
+    pub migu_aversionid: Option<&'a str>,
 }
 
 #[async_trait]

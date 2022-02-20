@@ -36,13 +36,15 @@ impl Engine for MiguEngine {
     }
 }
 
-fn get_header() -> HeaderMap {
+fn get_header(aversionid: Option<&str>) -> HeaderMap {
     let mut header = HeaderMap::new();
     header.insert(ORIGIN, "http://music.migu.cn/".parse().unwrap());
     header.insert(REFERER, "http://m.music.migu.cn/v3/".parse().unwrap());
     header.insert(HeaderName::from_static("channel"), "0".parse().unwrap());
-    // FIXME: 传入cookie
-    //header.insert(HeaderName::from_static("aversionid"), cookie.parse().unwrap());
+    
+    if let Some(aversionid) = aversionid {
+        header.insert(HeaderName::from_static("aversionid"), aversionid.parse().unwrap());
+    }
 
     header
 }
@@ -67,7 +69,7 @@ async fn get_search_data(keyword: &str, ctx: &Context<'_>) -> Result<Json> {
     let res = request(
         Method::GET,
         &url,
-        Some(get_header()),
+        Some(get_header(ctx.migu_aversionid)),
         None,
         ctx.proxy.cloned(),
     )
@@ -167,7 +169,7 @@ async fn get_single_data(id: &str, format: &str, num: &str, ctx: &Context<'_>) -
     let res = request(
         Method::GET,
         &url,
-        Some(get_header()),
+        Some(get_header(ctx.migu_aversionid)),
         None,
         ctx.proxy.cloned(),
     )
