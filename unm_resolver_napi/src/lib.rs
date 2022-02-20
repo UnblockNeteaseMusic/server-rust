@@ -3,7 +3,7 @@ use napi_derive::napi;
 use unm_resolver::engine::{
     Album as RustAlbum, Artist as RustArtist, Context as RustContext, Song as RustSong,
 };
-use unm_resolver::resolve::{resolve as rust_resolve, Engine as RustEngine};
+use unm_resolver::resolve::{resolve as rust_resolve, Engine as RustEngine, Proxy};
 
 /// (napi-rs) The engine uses to resolve audio.
 #[napi]
@@ -107,14 +107,23 @@ pub struct Context {
 
     /// Migu: The cookie "channel"
     pub migu_channel: Option<String>,
+
+    /// The proxy URI
+    pub proxy_uri: Option<String>,
 }
 
 impl Context {
-    fn as_rust_ctx(&self) -> RustContext {
+    pub fn get_proxy(&self) -> Option<Proxy> {
+        self.proxy_uri
+            .as_ref()
+            .map(|uri| Proxy::all(uri).expect("failed to configure proxy"))
+    }
+
+    pub fn as_rust_ctx<'a>(&'a self, proxy: Option<&'a Proxy>) -> RustContext<'a> {
         RustContext {
             enable_flac: self.enable_flac,
             migu_channel: self.migu_channel.as_deref(),
-            ..Default::default()
+            proxy,
         }
     }
 }
@@ -127,8 +136,9 @@ pub async fn resolve(engines: Vec<Engine>, info: Song, context: Context) -> Resu
         .into_iter()
         .map(|e| e.into())
         .collect::<Vec<RustEngine>>();
+    let proxy = context.get_proxy();
 
-    rust_resolve(&engines, &info.into(), &context.as_rust_ctx())
+    rust_resolve(&engines, &info.into(), &context.as_rust_ctx(proxy.as_ref()))
         .await
         .map_err(|e| {
             Error::new(
