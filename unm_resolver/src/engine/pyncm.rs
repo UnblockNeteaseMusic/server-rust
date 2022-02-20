@@ -35,8 +35,7 @@ pub struct PyNCMEngine;
 #[async_trait::async_trait]
 impl Engine for PyNCMEngine {
     async fn check<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<String>> {
-        // FIXME: enable_flac should be configuable by users.
-        track(info, cfg!(ENABLE_FLAC), ctx).await
+        track(info, ctx.enable_flac, ctx).await
     }
 }
 
