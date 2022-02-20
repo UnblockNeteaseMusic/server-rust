@@ -2,6 +2,11 @@
 //!
 //! WIP - Not completed yet!
 
+
+// FIXME: add tests
+// FIXME: add decrypt function
+// FIXME: implement well
+
 static SECRET_KEY: &[u8; 8] = b"ylzsxkwm";
 static ARRAY_MASK: &[u64; 64] = &[
     (0x0000000000000001), (0x0000000000000002), (0x0000000000000004), (0x0000000000000008),
