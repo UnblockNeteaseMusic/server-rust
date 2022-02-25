@@ -48,7 +48,7 @@ pub struct Song<C = ()> {
     /// The album of this song.
     pub album: Option<Album>,
     /// The context of this song.
-    /// 
+    ///
     /// For example, the URI identifier of this song.
     pub context: C,
 }
@@ -104,15 +104,20 @@ impl Song {
 }
 
 /// Construct a "similar song selector" to pass to `.find()`.
-/// 
+///
 /// # Example
-/// 
+///
 /// ```ignore
 /// let (selector, optional_selector) = similar_song_selector_constructor(expected);
 /// vec![Song {..Default::default()}].iter().find(selector);
 /// vec![Some(Song::default()), None].iter().find(optional_selector)
 /// ```
-pub fn similar_song_selector_constructor<EC, LC>(expected: &Song<EC>) -> (impl Fn(&&Song<LC>) -> bool, impl Fn(&&Option<Song<LC>>) -> bool) {
+pub fn similar_song_selector_constructor<EC, LC>(
+    expected: &Song<EC>,
+) -> (
+    impl Fn(&&Song<LC>) -> bool,
+    impl Fn(&&Option<Song<LC>>) -> bool,
+) {
     let duration = expected.duration.unwrap_or(i64::MAX);
     let basic_func = move |song: &&Song<LC>| {
         if let Some(d) = song.duration {
@@ -121,14 +126,16 @@ pub fn similar_song_selector_constructor<EC, LC>(expected: &Song<EC>) -> (impl F
                 return true;
             }
         }
-    
+
         false
     };
 
     (basic_func, move |song| {
         if let Some(s) = song {
             basic_func(&s)
-        } else { false }
+        } else {
+            false
+        }
     })
 }
 

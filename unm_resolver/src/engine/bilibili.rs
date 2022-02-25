@@ -14,7 +14,7 @@ use http::Method;
 use url::Url;
 use urlencoding::encode;
 
-use super::{Artist, Context, Engine, Song, similar_song_selector_constructor};
+use super::{similar_song_selector_constructor, Artist, Context, Engine, Song};
 
 /// The `bilibili` engine that can fetch audio from Bilibili Music.
 pub struct BilibiliEngine;
