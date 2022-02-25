@@ -69,7 +69,7 @@ async fn find_match(info: &Song, data: &[Json]) -> anyhow::Result<Option<String>
 }
 
 /// Search and get the audio ID from Bilibili Music.
-async fn search(info: &Song, ctx: &Context<'_>) -> anyhow::Result<Option<String>> {
+pub async fn search(info: &Song, ctx: &Context<'_>) -> anyhow::Result<Option<String>> {
     let response = get_search_data(&info.keyword(), ctx).await?;
     let result = response
         .pointer("/data/result")
@@ -82,7 +82,7 @@ async fn search(info: &Song, ctx: &Context<'_>) -> anyhow::Result<Option<String>
 }
 
 /// Track the song with the audio ID.
-async fn track(id: String, ctx: &Context<'_>) -> anyhow::Result<Option<String>> {
+pub async fn track(id: String, ctx: &Context<'_>) -> anyhow::Result<Option<String>> {
     let response = get_tracked_data(&id, ctx).await?;
     let links = response
         .pointer("/data/cdns")
