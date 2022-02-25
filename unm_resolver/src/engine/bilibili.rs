@@ -14,7 +14,7 @@ use http::Method;
 use url::Url;
 use urlencoding::encode;
 
-use super::{select_similar_song, Artist, Context, Engine, Song};
+use super::{Artist, Context, Engine, Song, similar_song_selector_constructor};
 
 /// The `bilibili` engine that can fetch audio from Bilibili Music.
 pub struct BilibiliEngine;
@@ -58,14 +58,15 @@ async fn get_tracked_data(id: &str, ctx: &Context<'_>) -> anyhow::Result<Json> {
 ///
 /// `data` is the `data/result` of the Bilibili Music response.
 async fn find_match(info: &Song, data: &[Json]) -> anyhow::Result<Option<String>> {
-    let list = data
+    let selector = similar_song_selector_constructor(info);
+    let similar_song = data
         .par_iter()
         .map(|entry| format(entry).ok())
         .filter(|v| v.is_some())
         .map(|v| v.expect("should be Some"))
-        .collect::<Vec<_>>();
+        .find_first(|s| selector(&s));
 
-    Ok(select_similar_song(&list, info).map(|song| song.id.to_string()))
+    Ok(similar_song.map(|song| song.id))
 }
 
 /// Search and get the audio ID from Bilibili Music.

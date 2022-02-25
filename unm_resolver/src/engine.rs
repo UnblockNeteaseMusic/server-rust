@@ -4,13 +4,13 @@
 //! resolving the audio URL of a music.
 
 pub mod bilibili;
+pub mod kugou;
 pub mod migu;
 pub mod pyncm;
 pub mod ytdl;
 pub mod ytdlp;
 
 pub use async_trait::async_trait;
-use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use reqwest::Proxy;
 pub use serde_json::Value as Json;
 
@@ -103,8 +103,32 @@ impl Song {
     }
 }
 
+/// Construct a "similar song selector" to pass to `.find()`.
+/// 
+/// # Example
+/// 
+/// ```ignore
+/// let selector = similar_song_selector_constructor(expected);
+/// song_list.iter().find(selector);
+/// ```
+pub fn similar_song_selector_constructor<EC, LC>(expected: &Song<EC>) -> impl Fn(&&Song<LC>) -> bool {
+    let duration = expected.duration.unwrap_or(i64::MAX);
+
+    move |song| {
+        if let Some(d) = song.duration {
+            if i64::abs(d - duration) < 5000 {
+                // 第一个时长相差5s (5000ms) 之内的结果
+                return true;
+            }
+        }
+    
+        false
+    }
+}
+
 /// iterate `list` and pick up a song which similar with `expect`
-pub fn select_similar_song<'a>(list: &'a [Song], expect: &'a Song) -> Option<&'a Song> {
+#[deprecated]
+pub fn select_similar_song<'a, C>(list: &'a [Song<C>], expect: &'a Song) -> Option<&'a Song<C>> {
     if list.is_empty() {
         return None;
     }
@@ -113,8 +137,8 @@ pub fn select_similar_song<'a>(list: &'a [Song], expect: &'a Song) -> Option<&'a
     // 並行尋找所有相似歌曲
     // 如果沒有，就播放第一条
     Some(
-        list.par_iter()
-            .find_first(|song| {
+        list.iter()
+            .find(|song| {
                 if let Some(d) = song.duration {
                     if i64::abs(d - duration) < 5000 {
                         // 第一个时长相差5s (5000ms) 之内的结果
@@ -162,22 +186,34 @@ mod test {
     #[test]
     fn test_select() {
         let expect = gen_meta(Some(7001));
-        let list = gen_metas(vec![Some(1000), Some(2000), Some(3000)]);
-        let x = select_similar_song(&list, &expect).unwrap();
-        assert_eq!(x.duration, list[2].duration);
-        let list = gen_metas(vec![
-            Some(1000),
-            Some(2000),
-            Some(3000),
-            Some(4000),
-            Some(5000),
-            Some(6000),
-        ]);
-        let x = select_similar_song(&list, &expect).unwrap();
-        assert_eq!(x.duration, list[2].duration);
-        let list = gen_metas(vec![Some(1000)]);
-        let x = select_similar_song(&list, &expect).unwrap();
-        assert_eq!(x.duration, list[0].duration);
+
+        {
+            let selector = similar_song_selector_constructor(&expect);
+            let list = gen_metas(vec![Some(1000), Some(2000), Some(3000)]);
+            let x = list.iter().find(selector).expect("must be Some");
+            assert_eq!(x.duration, list[2].duration);
+        }
+
+        {
+            let selector = similar_song_selector_constructor(&expect);
+            let list = gen_metas(vec![
+                Some(1000),
+                Some(2000),
+                Some(3000),
+                Some(4000),
+                Some(5000),
+                Some(6000),
+            ]);
+            let x = list.iter().find(selector).expect("must be Some");
+            assert_eq!(x.duration, list[2].duration);
+        }
+
+        {
+            let selector = similar_song_selector_constructor(&expect);
+            let list = gen_metas(vec![Some(1000)]);
+            let x = list.iter().find(selector);
+            assert!(matches!(x, None));
+        }
     }
 
     fn gen_meta(d: Option<i64>) -> Song {

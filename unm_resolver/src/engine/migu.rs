@@ -12,6 +12,7 @@ use http::header::HeaderName;
 use http::header::ORIGIN;
 use http::header::REFERER;
 use http::HeaderMap;
+use rayon::iter::IntoParallelRefIterator;
 
 use crate::request::request;
 use crate::utils::UnableToExtractJson;
@@ -81,14 +82,15 @@ async fn get_search_data(keyword: &str, ctx: &Context<'_>) -> Result<Json> {
 }
 
 async fn find_match(info: &Song, data: &[Json]) -> Result<Option<String>> {
-    let list = data
+    let selector = similar_song_selector_constructor(info);
+    let similar_song = data
         .par_iter()
         .map(|entry| format(entry).ok())
         .filter(|v| v.is_some())
         .map(|v| v.expect("should be Some"))
-        .collect::<Vec<_>>();
+        .find_first(|s| selector(&s));
 
-    Ok(select_similar_song(&list, info).map(|song| song.id.to_string()))
+    Ok(similar_song.map(|song| song.id))
 }
 
 async fn search(info: &Song, ctx: &Context<'_>) -> Result<Option<String>> {
