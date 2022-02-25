@@ -108,13 +108,13 @@ impl Song {
 /// # Example
 /// 
 /// ```ignore
-/// let selector = similar_song_selector_constructor(expected);
-/// song_list.iter().find(selector);
+/// let (selector, optional_selector) = similar_song_selector_constructor(expected);
+/// vec![Song {..Default::default()}].iter().find(selector);
+/// vec![Some(Song::default()), None].iter().find(optional_selector)
 /// ```
-pub fn similar_song_selector_constructor<EC, LC>(expected: &Song<EC>) -> impl Fn(&&Song<LC>) -> bool {
+pub fn similar_song_selector_constructor<EC, LC>(expected: &Song<EC>) -> (impl Fn(&&Song<LC>) -> bool, impl Fn(&&Option<Song<LC>>) -> bool) {
     let duration = expected.duration.unwrap_or(i64::MAX);
-
-    move |song| {
+    let basic_func = move |song: &&Song<LC>| {
         if let Some(d) = song.duration {
             if i64::abs(d - duration) < 5000 {
                 // 第一个时长相差5s (5000ms) 之内的结果
@@ -123,7 +123,13 @@ pub fn similar_song_selector_constructor<EC, LC>(expected: &Song<EC>) -> impl Fn
         }
     
         false
-    }
+    };
+
+    (basic_func, move |song| {
+        if let Some(s) = song {
+            basic_func(&s)
+        } else { false }
+    })
 }
 
 /// iterate `list` and pick up a song which similar with `expect`
@@ -188,14 +194,14 @@ mod test {
         let expect = gen_meta(Some(7001));
 
         {
-            let selector = similar_song_selector_constructor(&expect);
+            let selector = similar_song_selector_constructor(&expect).0;
             let list = gen_metas(vec![Some(1000), Some(2000), Some(3000)]);
             let x = list.iter().find(selector).expect("must be Some");
             assert_eq!(x.duration, list[2].duration);
         }
 
         {
-            let selector = similar_song_selector_constructor(&expect);
+            let selector = similar_song_selector_constructor(&expect).0;
             let list = gen_metas(vec![
                 Some(1000),
                 Some(2000),
@@ -209,7 +215,7 @@ mod test {
         }
 
         {
-            let selector = similar_song_selector_constructor(&expect);
+            let selector = similar_song_selector_constructor(&expect).0;
             let list = gen_metas(vec![Some(1000)]);
             let x = list.iter().find(selector);
             assert!(matches!(x, None));

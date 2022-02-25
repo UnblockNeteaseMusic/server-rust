@@ -58,13 +58,12 @@ async fn get_tracked_data(id: &str, ctx: &Context<'_>) -> anyhow::Result<Json> {
 ///
 /// `data` is the `data/result` of the Bilibili Music response.
 async fn find_match(info: &Song, data: &[Json]) -> anyhow::Result<Option<String>> {
-    let selector = similar_song_selector_constructor(info);
+    let selector = similar_song_selector_constructor(info).1;
     let similar_song = data
         .par_iter()
         .map(|entry| format(entry).ok())
-        .filter(|v| v.is_some())
-        .map(|v| v.expect("should be Some"))
-        .find_first(|s| selector(&s));
+        .find_first(|s| selector(&s))
+        .expect("should be Some");
 
     Ok(similar_song.map(|song| song.id))
 }
