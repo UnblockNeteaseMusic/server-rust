@@ -29,7 +29,11 @@ pub struct KugouSongContext {
 
 #[async_trait]
 impl Engine for KugouEngine {
-    async fn check<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<String>> {
+    async fn check<'a>(
+        &self,
+        _info: &'a Song,
+        _ctx: &'a Context,
+    ) -> anyhow::Result<Option<String>> {
         todo!()
     }
 }

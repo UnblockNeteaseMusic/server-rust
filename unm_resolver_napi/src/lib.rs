@@ -97,6 +97,7 @@ impl From<Song> for RustSong {
             duration: song.duration,
             artists: song.artists.into_iter().map(Into::into).collect(),
             album: song.album.map(Into::into),
+            ..Default::default()
         }
     }
 }
