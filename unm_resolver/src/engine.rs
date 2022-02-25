@@ -36,7 +36,7 @@ pub struct Album {
 
 /// The metadata of a song.
 #[derive(Clone, Default)]
-pub struct Song {
+pub struct Song<C = ()> {
     /// The identifier of this song.
     pub id: String,
     /// The name of this song.
@@ -47,6 +47,10 @@ pub struct Song {
     pub artists: Vec<Artist>,
     /// The album of this song.
     pub album: Option<Album>,
+    /// The context of this song.
+    /// 
+    /// For example, the URI identifier of this song.
+    pub context: C,
 }
 
 /// The context.
@@ -149,6 +153,7 @@ mod test {
                 name: "OWOOW".to_string(),
                 ..Default::default()
             }),
+            ..Default::default()
         };
 
         assert_eq!(meta.keyword(), "U2FsdGVkX1 - elonh, pan93412");

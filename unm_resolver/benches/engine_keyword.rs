@@ -21,6 +21,7 @@ fn criterion_benchmark(c: &mut Criterion) {
             name: "OWOOW".to_string(),
             ..Default::default()
         }),
+        ..Default::default()
     });
 
     c.bench_function("engine > keyword()", |b| b.iter(|| m.keyword()));
