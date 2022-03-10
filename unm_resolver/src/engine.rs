@@ -118,16 +118,20 @@ pub fn similar_song_selector_constructor<EC, LC>(
     impl Fn(&&Song<LC>) -> bool,
     impl Fn(&&Option<Song<LC>>) -> bool,
 ) {
-    let duration = expected.duration.unwrap_or(i64::MAX);
+    let expected_duration = expected.duration;
     let basic_func = move |song: &&Song<LC>| {
-        if let Some(d) = song.duration {
-            if i64::abs(d - duration) < 5000 {
+        if let Some(expected_duration) = expected_duration {
+            if let Some(song_duration) = song.duration {
                 // 第一个时长相差5s (5000ms) 之内的结果
-                return true;
+                i64::abs(song_duration - expected_duration) < 5000
+            } else {
+                // 歌曲沒有長度，而期待有長度，則回傳 false。
+                false
             }
+        } else {
+            // 沒有期待長度，則回傳 true 直接取出唯一選擇。
+            true
         }
-
-        false
     };
 
     (basic_func, move |song| {
