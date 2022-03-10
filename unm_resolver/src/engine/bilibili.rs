@@ -73,7 +73,7 @@ pub async fn search(info: &Song, ctx: &Context<'_>) -> anyhow::Result<Option<Str
     let response = get_search_data(&info.keyword(), ctx).await?;
     let result = response
         .pointer("/data/result")
-        .ok_or(anyhow::anyhow!("/data/result not found"))?
+        .ok_or_else(|| anyhow::anyhow!("/data/result not found"))?
         .as_array()
         .ok_or(UnableToExtractJson("/data/result", "array"))?;
 
@@ -86,7 +86,7 @@ pub async fn track(id: String, ctx: &Context<'_>) -> anyhow::Result<Option<Strin
     let response = get_tracked_data(&id, ctx).await?;
     let links = response
         .pointer("/data/cdns")
-        .ok_or(anyhow::anyhow!("/data/cdns not found"))?
+        .ok_or_else(|| anyhow::anyhow!("/data/cdns not found"))?
         .as_array()
         .ok_or(UnableToExtractJson("/data/cdns", "array"))?;
 

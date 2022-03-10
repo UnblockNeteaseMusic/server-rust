@@ -88,7 +88,7 @@ pub async fn search(info: &Song, ctx: &Context<'_>) -> anyhow::Result<Song<Kugou
         .find_first(|s| selector(&s))
         .expect("should be Some");
 
-    similar_song.ok_or(anyhow::anyhow!("no such a song"))
+    similar_song.ok_or_else(|| anyhow::anyhow!("no such a song"))
 }
 
 /*

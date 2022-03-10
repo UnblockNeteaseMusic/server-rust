@@ -65,7 +65,7 @@ fn find_match(data: &[PyNCMResponseEntry], song_id: &str) -> anyhow::Result<Opti
             entry.id == song_id && entry.url.is_some()
         })
         .map(|v| v.url.clone())
-        .ok_or(anyhow::anyhow!("no matched song"))
+        .ok_or_else(|| anyhow::anyhow!("no matched song"))
 }
 
 /// Track the matched song.

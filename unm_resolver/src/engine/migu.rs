@@ -96,7 +96,7 @@ async fn search(info: &Song, ctx: &Context<'_>) -> Result<Option<String>> {
     let response = get_search_data(&info.keyword(), ctx).await?;
     let result = response
         .pointer("/musics")
-        .ok_or(anyhow::anyhow!("/musics not found"))?
+        .ok_or_else(|| anyhow::anyhow!("/musics not found"))?
         .as_array()
         .ok_or(UnableToExtractJson("/musics", "array"))?;
 
@@ -185,12 +185,12 @@ async fn single(id: &str, format: &str, num: &str, ctx: &Context<'_>) -> Result<
     let response = get_single_data(id, format, num, ctx).await?;
     let format_type = response
         .pointer("/data/formatType")
-        .ok_or(anyhow::anyhow!("/data/formatType not found"))?
+        .ok_or_else(|| anyhow::anyhow!("/data/formatType not found"))?
         .as_str()
         .ok_or(UnableToExtractJson("formatType", "string"))?;
     let url = response
         .pointer("/data/url")
-        .ok_or(anyhow::anyhow!("/data/url not found"))?
+        .ok_or_else(|| anyhow::anyhow!("/data/url not found"))?
         .as_str()
         .ok_or(UnableToExtractJson("url", "string"))?;
 
