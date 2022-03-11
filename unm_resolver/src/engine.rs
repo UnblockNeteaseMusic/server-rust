@@ -12,7 +12,13 @@ pub mod ytdlp;
 
 pub use async_trait::async_trait;
 use reqwest::Proxy;
+use serde::Serialize;
 pub use serde_json::Value as Json;
+
+/**
+ * The serialized identifier for passing to `retrieve()`.
+ */
+pub type SerializedIdentifier = String;
 
 /// The metadata of the artist of a song.
 #[derive(Clone, Default)]
@@ -53,6 +59,15 @@ pub struct Song<C = ()> {
     pub context: C,
 }
 
+/// The information of the song retrieved with `retrieve()`.
+#[derive(Clone, Serialize)]
+pub struct RetrievedSongInfo {
+    /// The retrieve source of this song, for example: `bilibili`.
+    pub source: Option<String>,
+    /// The URL of this song.
+    pub url: String,
+}
+
 /// The context.
 #[derive(Clone, Default)]
 pub struct Context<'a> {
@@ -72,8 +87,16 @@ pub struct Context<'a> {
 #[async_trait]
 /// The engine that can search and track the specified [`Song`].
 pub trait Engine {
+    /// Search an audio matched the `info`, and
+    /// return the identifier for retrieving audio URL with [`retrieve`].
+    async fn search<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<SerializedIdentifier>>; 
+
+    /// Retrieve the audio URL of the specified `identifier`.
+    async fn retrieve<'a>(&self, identifier: &'a SerializedIdentifier, ctx: &'a Context) -> anyhow::Result<RetrievedSongInfo>; 
+
     /// Search an audio matched the info,
     /// and return the audio link.
+    #[deprecated]
     async fn check<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<String>>;
     // FIXME: anyhow::Result<()> is not pretty a good practice.
 }
@@ -129,7 +152,7 @@ pub fn similar_song_selector_constructor<EC, LC>(
                 false
             }
         } else {
-            // 沒有期待長度，則回傳 true 直接取出唯一選擇。
+            // 沒有期待長度，則回傳 true 直接取出任一選擇。
             true
         }
     };
