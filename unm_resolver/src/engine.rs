@@ -10,6 +10,8 @@ pub mod pyncm;
 pub mod ytdl;
 pub mod ytdlp;
 
+use std::borrow::Cow;
+
 pub use async_trait::async_trait;
 use reqwest::Proxy;
 use serde::Serialize;
@@ -59,11 +61,20 @@ pub struct Song<C = ()> {
     pub context: C,
 }
 
+/// The song identifier with the engine information.
+#[derive(Clone, Serialize)]
+pub struct SongSearchInformation<'a> {
+    /// The retrieve source of this song, for example: `bilibili`.
+    pub source: Cow<'a, str>,
+    /// The serialized identifier of this song.
+    pub identifier: SerializedIdentifier,
+}
+
 /// The information of the song retrieved with `retrieve()`.
 #[derive(Clone, Serialize)]
-pub struct RetrievedSongInfo {
+pub struct RetrievedSongInfo<'a> {
     /// The retrieve source of this song, for example: `bilibili`.
-    pub source: Option<String>,
+    pub source: Cow<'a, str>,
     /// The URL of this song.
     pub url: String,
 }
@@ -89,14 +100,16 @@ pub struct Context<'a> {
 pub trait Engine {
     /// Search an audio matched the `info`, and
     /// return the identifier for retrieving audio URL with [`retrieve`].
-    async fn search<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<SerializedIdentifier>>; 
+    async fn search<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<SongSearchInformation<'static>>>; 
+    // FIXME: allow dynamically generate the source name.
 
     /// Retrieve the audio URL of the specified `identifier`.
-    async fn retrieve<'a>(&self, identifier: &'a SerializedIdentifier, ctx: &'a Context) -> anyhow::Result<RetrievedSongInfo>; 
+    async fn retrieve<'a>(&self, identifier: &'a SerializedIdentifier, ctx: &'a Context) -> anyhow::Result<RetrievedSongInfo<'static>>; 
+    // FIXME: allow dynamically generate the source name.
 
     /// Search an audio matched the info,
     /// and return the audio link.
-    #[deprecated]
+    #[deprecated = "Use `search` and `retrieve` instead."]
     async fn check<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<String>>;
     // FIXME: anyhow::Result<()> is not pretty a good practice.
 }

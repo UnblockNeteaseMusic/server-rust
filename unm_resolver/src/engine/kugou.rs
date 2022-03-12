@@ -36,6 +36,14 @@ impl Engine for KugouEngine {
     ) -> anyhow::Result<Option<String>> {
         todo!()
     }
+
+    async fn search<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<super::SongSearchInformation<'static>>> {
+        todo!()
+    }
+
+    async fn retrieve<'a>(&self, identifier: &'a super::SerializedIdentifier, ctx: &'a Context) -> anyhow::Result<super::RetrievedSongInfo<'static>> {
+        todo!()
+    }
 }
 
 fn format(entry: &Json) -> anyhow::Result<Song<KugouSongContext>> {

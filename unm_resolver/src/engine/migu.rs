@@ -35,6 +35,14 @@ impl Engine for MiguEngine {
             Some(id) => Ok(track(id.as_str(), ctx, get_rand_num().as_str()).await?),
         }
     }
+
+    async fn search<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
+        todo!()
+    }
+
+    async fn retrieve<'a>(&self, identifier: &'a SerializedIdentifier, ctx: &'a Context) -> anyhow::Result<RetrievedSongInfo<'static>> {
+        todo!()
+    }
 }
 
 fn get_header(aversionid: Option<&str>) -> HeaderMap {

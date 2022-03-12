@@ -37,6 +37,14 @@ impl Engine for PyNCMEngine {
     async fn check<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<String>> {
         track(info, ctx.enable_flac, ctx).await
     }
+
+    async fn search<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<super::SongSearchInformation<'static>>> {
+        todo!()
+    }
+
+    async fn retrieve<'a>(&self, identifier: &'a super::SerializedIdentifier, ctx: &'a Context) -> anyhow::Result<super::RetrievedSongInfo<'static>> {
+        todo!()
+    }
 }
 
 /// Fetch the song info in [`PyNCMResponse`].

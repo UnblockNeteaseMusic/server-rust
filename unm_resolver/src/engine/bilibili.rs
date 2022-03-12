@@ -27,6 +27,14 @@ impl Engine for BilibiliEngine {
             Some(id) => Ok(track(id, ctx).await?),
         }
     }
+
+    async fn search<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<super::SongSearchInformation<'static>>> {
+        todo!()
+    }
+
+    async fn retrieve<'a>(&self, identifier: &'a super::SerializedIdentifier, ctx: &'a Context) -> anyhow::Result<super::RetrievedSongInfo<'static>> {
+        todo!()
+    }
 }
 
 /// Get search data from Bilibili Music.

@@ -23,6 +23,14 @@ impl Engine for YtDlEngine {
     async fn check<'a>(&self, info: &'a Song, _: &'a Context) -> anyhow::Result<Option<String>> {
         Ok(fetch_from_youtube(&info.keyword()).await?.map(|r| r.url))
     }
+
+    async fn search<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<super::SongSearchInformation<'static>>> {
+        todo!()
+    }
+
+    async fn retrieve<'a>(&self, identifier: &'a super::SerializedIdentifier, ctx: &'a Context) -> anyhow::Result<super::RetrievedSongInfo<'static>> {
+        todo!()
+    }
 }
 
 /// Get the response from `youtube-dl`.
