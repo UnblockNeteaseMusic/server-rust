@@ -4,14 +4,14 @@
 //! Netease Cloud Music API.
 
 use rayon::prelude::*;
-use std::str::FromStr;
+use std::{str::FromStr, borrow::Cow};
 
 use http::Method;
 use serde::Deserialize;
 
 use crate::request::request;
 
-use super::{Context, Engine, Song};
+use super::{Context, Engine, Song, SongSearchInformation, RetrievedSongInfo, SerializedIdentifier};
 
 #[derive(Deserialize)]
 struct PyNCMResponse {
@@ -28,6 +28,8 @@ struct PyNCMResponseEntry {
     pub url: Option<String>,
 }
 
+const ENGINE_NAME: &str = "pyncm";
+
 /// The `pyncm` engine that can fetch audio from
 /// the unofficial Netease Cloud Music API.
 pub struct PyNCMEngine;
@@ -35,28 +37,45 @@ pub struct PyNCMEngine;
 #[async_trait::async_trait]
 impl Engine for PyNCMEngine {
     async fn check<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<String>> {
-        track(info, ctx.enable_flac, ctx).await
+        track(info, ctx).await
     }
 
-    async fn search<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<super::SongSearchInformation<'static>>> {
-        todo!()
+    async fn search<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
+        let response = fetch_song_info(&info.id, ctx).await?;
+
+        if response.code == 200 {
+            let match_result = find_match(&response.data, &info.id)?
+                .map(|url| SongSearchInformation {
+                    source: Cow::Borrowed(ENGINE_NAME),
+                    identifier: url, // FIXME: hacky way to search with PyNCM
+                });
+
+            Ok(match_result)
+        } else {
+            Err(anyhow::anyhow!(
+                "failed to request. code: {}",
+                response.code
+            ))
+        }
     }
 
-    async fn retrieve<'a>(&self, identifier: &'a super::SerializedIdentifier, ctx: &'a Context) -> anyhow::Result<super::RetrievedSongInfo<'static>> {
-        todo!()
+    async fn retrieve<'a>(&self, identifier: &'a SerializedIdentifier, ctx: &'a Context) -> anyhow::Result<RetrievedSongInfo<'static>> {
+        Ok(RetrievedSongInfo {
+            source: Cow::Borrowed(ENGINE_NAME),
+            url: identifier.to_string(),
+        })
     }
 }
 
 /// Fetch the song info in [`PyNCMResponse`].
 async fn fetch_song_info(
     id: &str,
-    enable_flac: bool,
     ctx: &Context<'_>,
 ) -> anyhow::Result<PyNCMResponse> {
     let url_str = format!(
         "http://mos9527.tooo.top/ncm/pyncm/track/GetTrackAudio?song_ids={id}&bitrate={bitrate}",
         id = id,
-        bitrate = if enable_flac { 999000 } else { 320000 }
+        bitrate = if ctx.enable_flac { 999000 } else { 320000 }
     );
     let url = url::Url::from_str(&url_str)?;
 
@@ -77,12 +96,12 @@ fn find_match(data: &[PyNCMResponseEntry], song_id: &str) -> anyhow::Result<Opti
 }
 
 /// Track the matched song.
+#[deprecated]
 async fn track(
     song: &Song,
-    enable_flac: bool,
     ctx: &Context<'_>,
 ) -> anyhow::Result<Option<String>> {
-    let response = fetch_song_info(&song.id, enable_flac, ctx).await?;
+    let response = fetch_song_info(&song.id, ctx).await?;
 
     if response.code == 200 {
         Ok(find_match(&response.data, &song.id)?)

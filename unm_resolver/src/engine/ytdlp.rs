@@ -2,9 +2,13 @@
 //!
 //! It can fetch audio from YouTube.
 
+use std::borrow::Cow;
+
 use serde::Deserialize;
 
-use super::{Context, Engine, Song};
+use super::{Context, Engine, Song, SongSearchInformation, SerializedIdentifier, RetrievedSongInfo};
+
+const ENGINE_NAME: &str = "ytdlp";
 
 /// The response that `yt-dlp` will return.
 #[derive(Deserialize)]
@@ -23,12 +27,20 @@ impl Engine for YtDlpEngine {
         Ok(fetch_from_youtube(&info.keyword()).await?.map(|r| r.url))
     }
 
-    async fn search<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<super::SongSearchInformation<'static>>> {
-        todo!()
+    // TODO: allow specifying proxy
+    async fn search<'a>(&self, info: &'a Song, _: &'a Context) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
+        let response = fetch_from_youtube(&info.keyword()).await?.map(|r| r.url);
+        Ok(response.map(|url| SongSearchInformation {
+            source: Cow::Borrowed(ENGINE_NAME),
+            identifier: url,
+        }))
     }
 
-    async fn retrieve<'a>(&self, identifier: &'a super::SerializedIdentifier, ctx: &'a Context) -> anyhow::Result<super::RetrievedSongInfo<'static>> {
-        todo!()
+    async fn retrieve<'a>(&self, identifier: &'a SerializedIdentifier, _: &'a Context) -> anyhow::Result<RetrievedSongInfo<'static>> {
+        Ok(RetrievedSongInfo {
+            source: Cow::Borrowed(ENGINE_NAME),
+            url: identifier.to_string(),
+        })
     }
 }
 

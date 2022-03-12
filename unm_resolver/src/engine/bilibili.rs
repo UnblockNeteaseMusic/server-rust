@@ -5,7 +5,7 @@
 use async_trait::async_trait;
 use rayon::prelude::*;
 
-use std::str::FromStr;
+use std::{str::FromStr, borrow::Cow};
 
 use crate::engine::Json;
 use crate::request::request;
@@ -14,7 +14,9 @@ use http::Method;
 use url::Url;
 use urlencoding::encode;
 
-use super::{similar_song_selector_constructor, Artist, Context, Engine, Song};
+use super::{similar_song_selector_constructor, Artist, Context, Engine, Song, SongSearchInformation, RetrievedSongInfo, SerializedIdentifier};
+
+const ENGINE_NAME: &str = "bilibili";
 
 /// The `bilibili` engine that can fetch audio from Bilibili Music.
 pub struct BilibiliEngine;
@@ -28,12 +30,42 @@ impl Engine for BilibiliEngine {
         }
     }
 
-    async fn search<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<super::SongSearchInformation<'static>>> {
-        todo!()
+    async fn search<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
+        let response = get_search_data(&info.keyword(), ctx).await?;
+        let result = response
+            .pointer("/data/result")
+            .ok_or_else(|| anyhow::anyhow!("/data/result not found"))?
+            .as_array()
+            .ok_or(UnableToExtractJson("/data/result", "array"))?;
+    
+        let matched = find_match(info, result).await?;
+        Ok(matched.map(|identifier| SongSearchInformation {
+            source: Cow::Borrowed(ENGINE_NAME),
+            identifier,
+        }))
     }
 
-    async fn retrieve<'a>(&self, identifier: &'a super::SerializedIdentifier, ctx: &'a Context) -> anyhow::Result<super::RetrievedSongInfo<'static>> {
-        todo!()
+    async fn retrieve<'a>(&self, identifier: &'a SerializedIdentifier, ctx: &'a Context) -> anyhow::Result<RetrievedSongInfo<'static>> {
+        let response = get_tracked_data(identifier.as_ref(), ctx).await?;
+        let links = response
+            .pointer("/data/cdns")
+            .ok_or_else(|| anyhow::anyhow!("/data/cdns not found"))?
+            .as_array()
+            .ok_or(UnableToExtractJson("/data/cdns", "array"))?;
+    
+        if links.is_empty() {
+            return Err(anyhow::anyhow!("unable to retrieve the identifier"));
+        }
+    
+        let url = links[0]
+            .as_str()
+            .ok_or(UnableToExtractJson("/data/cdns/0", "string"))?
+            .replace("https", "http");
+
+        Ok(RetrievedSongInfo {
+            source: Cow::Borrowed(ENGINE_NAME),
+            url,
+        })
     }
 }
 
@@ -77,6 +109,7 @@ async fn find_match(info: &Song, data: &[Json]) -> anyhow::Result<Option<String>
 }
 
 /// Search and get the audio ID from Bilibili Music.
+#[deprecated]
 pub async fn search(info: &Song, ctx: &Context<'_>) -> anyhow::Result<Option<String>> {
     let response = get_search_data(&info.keyword(), ctx).await?;
     let result = response
@@ -90,6 +123,7 @@ pub async fn search(info: &Song, ctx: &Context<'_>) -> anyhow::Result<Option<Str
 }
 
 /// Track the song with the audio ID.
+#[deprecated]
 pub async fn track(id: String, ctx: &Context<'_>) -> anyhow::Result<Option<String>> {
     let response = get_tracked_data(&id, ctx).await?;
     let links = response
@@ -157,24 +191,19 @@ mod tests {
     #[test]
     async fn bilibili_search() {
         let info = get_info_1();
-        let id = search(&info, &Context::default()).await.unwrap();
-        assert_eq!(id, Some("349595".to_string()));
+        let info = BilibiliEngine.search(&info, &Context::default()).await.unwrap().unwrap();
+
+        assert_eq!(info.identifier, "349595");
+        assert_eq!(info.source, ENGINE_NAME);
     }
 
     #[test]
-    async fn bilibili_track() {
-        let url = track("349595".to_string(), &Context::default())
+    async fn bilibili_retrieve() {
+        let info = BilibiliEngine.retrieve(&String::from("349595"), &Context::default())
             .await
-            .unwrap()
             .unwrap();
-        println!("{}", url);
-    }
-
-    #[test]
-    async fn bilibili_check() {
-        let p = BilibiliEngine;
-        let info = get_info_1();
-        let url = p.check(&info, &Context::default()).await.unwrap().unwrap();
-        println!("{}", url);
+        
+        assert_eq!(info.source, ENGINE_NAME);
+        println!("{}", info.url);
     }
 }

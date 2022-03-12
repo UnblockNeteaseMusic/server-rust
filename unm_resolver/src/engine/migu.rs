@@ -24,6 +24,8 @@ use urlencoding::encode;
 
 use super::*;
 
+const ENGINE_NAME: &str = "migu";
+
 /// The `migu` engine that can fetch audio from Migu Music.
 pub struct MiguEngine;
 
@@ -37,11 +39,43 @@ impl Engine for MiguEngine {
     }
 
     async fn search<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
-        todo!()
+        let response = get_search_data(&info.keyword(), ctx).await?;
+        let result = response
+            .pointer("/musics")
+            .ok_or_else(|| anyhow::anyhow!("/musics not found"))?
+            .as_array()
+            .ok_or(UnableToExtractJson("/musics", "array"))?;
+    
+        let matched = find_match(info, result).await?;
+    
+        Ok(matched.map(|identifier| SongSearchInformation {
+            source: Cow::Borrowed(ENGINE_NAME),
+            identifier,
+        }))
     }
 
     async fn retrieve<'a>(&self, identifier: &'a SerializedIdentifier, ctx: &'a Context) -> anyhow::Result<RetrievedSongInfo<'static>> {
-        todo!()
+        let num = get_rand_num();
+        let enabled_flac = ctx.enable_flac;
+        let qualities = if enabled_flac {
+            vec!["ZQ", "SQ", "HQ", "PQ"]
+        } else {
+            vec!["HQ", "PQ"]
+        };
+    
+        let futures = qualities.iter().map(|&format| single(&identifier, format, &num, ctx));
+    
+        let urls = join_all(futures).await;
+        
+        urls
+            .into_iter()
+            .find(|result_url| result_url.is_ok())
+            .map(|result_url| result_url.expect("should be Some"))
+            .map(|url| RetrievedSongInfo {
+                source: Cow::Borrowed(ENGINE_NAME),
+                url,
+            })
+            .ok_or_else(|| anyhow::anyhow!("not able to retrieve identifier"))
     }
 }
 
@@ -100,6 +134,7 @@ async fn find_match(info: &Song, data: &[Json]) -> Result<Option<String>> {
     Ok(similar_song.map(|song| song.id))
 }
 
+#[deprecated]
 async fn search(info: &Song, ctx: &Context<'_>) -> Result<Option<String>> {
     let response = get_search_data(&info.keyword(), ctx).await?;
     let result = response
@@ -113,6 +148,7 @@ async fn search(info: &Song, ctx: &Context<'_>) -> Result<Option<String>> {
     Ok(matched)
 }
 
+#[deprecated]
 async fn track(id: &str, ctx: &Context<'_>, num: &str) -> Result<Option<String>> {
     let enabled_flac = ctx.enable_flac;
     let qualities = if enabled_flac {
@@ -230,8 +266,10 @@ mod tests {
     #[test]
     async fn migu_search() {
         let info = get_info_1();
-        let id = search(&info, &Context::default()).await.unwrap().unwrap();
-        assert_eq!(id, "4300399".to_string());
+        let info = MiguEngine.search(&info, &Context::default()).await.unwrap().unwrap();
+
+        assert_eq!(info.source, ENGINE_NAME);
+        assert_eq!(info.identifier, "4300399");
     }
 
     #[test]
@@ -271,11 +309,12 @@ mod tests {
 
     #[test]
     async fn migu_track() {
-        let url = track("4300399", &Context::default(), get_rand_num().as_str())
+        let info = MiguEngine.retrieve(&String::from("4300399"), &Context::default())
             .await
-            .unwrap()
             .unwrap();
-        println!("{}", url);
+            
+        assert_eq!(info.source, ENGINE_NAME);
+        println!("{}", info.url);
     }
 
     #[test]

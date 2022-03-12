@@ -3,9 +3,11 @@
 //! Better to use `yt-dlp` instead of `youtube-dl`
 //! since the latter do not maintain actively now.
 
+use std::borrow::Cow;
+
 use serde::Deserialize;
 
-use super::{Context, Engine, Song};
+use super::{Context, Engine, Song, SongSearchInformation, RetrievedSongInfo, SerializedIdentifier};
 
 /// The response that `youtube-dl` will return.
 #[derive(Deserialize)]
@@ -13,6 +15,8 @@ struct YtDlResponse {
     /// The audio URL.
     url: String,
 }
+
+const ENGINE_NAME: &str = "ytdl";
 
 /// The search and track engine powered by `youtube-dl`.
 pub struct YtDlEngine;
@@ -24,12 +28,20 @@ impl Engine for YtDlEngine {
         Ok(fetch_from_youtube(&info.keyword()).await?.map(|r| r.url))
     }
 
-    async fn search<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<super::SongSearchInformation<'static>>> {
-        todo!()
+    // TODO: allow specifying proxy
+    async fn search<'a>(&self, info: &'a Song, _: &'a Context) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
+        let response = fetch_from_youtube(&info.keyword()).await?.map(|r| r.url);
+        Ok(response.map(|url| SongSearchInformation {
+            source: Cow::Borrowed(ENGINE_NAME),
+            identifier: url,
+        }))
     }
 
-    async fn retrieve<'a>(&self, identifier: &'a super::SerializedIdentifier, ctx: &'a Context) -> anyhow::Result<super::RetrievedSongInfo<'static>> {
-        todo!()
+    async fn retrieve<'a>(&self, identifier: &'a SerializedIdentifier, _: &'a Context) -> anyhow::Result<RetrievedSongInfo<'static>> {
+        Ok(RetrievedSongInfo {
+            source: Cow::Borrowed(ENGINE_NAME),
+            url: identifier.to_string(),
+        })
     }
 }
 
@@ -41,7 +53,7 @@ impl Engine for YtDlEngine {
 ///     --dump-json     dump the information as JSON without downloading it
 /// ```
 async fn fetch_from_youtube(keyword: &str) -> anyhow::Result<Option<YtDlResponse>> {
-    let mut cmd = tokio::process::Command::new("yt-dl");
+    let mut cmd = tokio::process::Command::new("youtube-dl");
 
     let child = cmd
         .args(&["-f", "bestaudio", "--dump-json"])
