@@ -167,7 +167,7 @@ pub async fn retrieve<'a>(
     info: &'a SongSearchInformation<'a>,
     context: &'a Context<'_>,
 ) -> anyhow::Result<RetrievedSongInfo<'static>> {
-    let engine = info.identifier.as_str().try_into() as Result<Engine, ResolveError>;
+    let engine = info.source.as_ref().try_into() as Result<Engine, ResolveError>;
     let engine = engine.expect("must be a valid engine");
 
     engine.retrieve(&info.identifier, context).await
