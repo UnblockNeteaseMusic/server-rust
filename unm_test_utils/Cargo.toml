@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 futures = "0.3.21"
+unm_resolver = { path = "../unm_resolver" }
