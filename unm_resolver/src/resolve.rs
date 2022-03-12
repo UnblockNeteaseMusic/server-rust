@@ -58,7 +58,7 @@ impl TryFrom<&str> for Engine {
         ENGINE_IDENTIFIER_MAP
             .get_by_right(&value)
             .copied()
-            .ok_or(ResolveError::NoSuchEngine(value.to_string()))
+            .ok_or_else(|| ResolveError::NoSuchEngine(value.to_string()))
     }
 }
 
@@ -76,7 +76,7 @@ impl Display for Engine {
             f,
             "{}",
             *ENGINE_IDENTIFIER_MAP
-                .get_by_left(&self)
+                .get_by_left(self)
                 .unwrap_or(&"(<!> No engine identifier defined. Please report to developers!)")
         )
     }
@@ -104,15 +104,6 @@ impl Engine {
 
 #[async_trait::async_trait]
 impl EngineTrait for Engine {
-    async fn check<'a>(
-        &self,
-        info: &'a Song,
-        context: &'a Context,
-    ) -> anyhow::Result<Option<String>> {
-        self.reflect_engine(|engine| engine.check(info, context))
-            .await
-    }
-
     async fn search<'a>(
         &self,
         info: &'a Song,
@@ -180,48 +171,6 @@ pub async fn retrieve<'a>(
     let engine = engine.expect("must be a valid engine");
 
     engine.retrieve(&info.identifier, context).await
-}
-
-/// Resolve the `song` with the specified engines parallelly.
-#[deprecated]
-pub async fn resolve(
-    engines: &[Engine],
-    info: &Song,
-    context: &Context<'_>,
-) -> ResolveResult<String> {
-    let keyword = info.keyword();
-
-    info!("Resolving: {}", keyword);
-
-    let futures = engines.iter().map(|engine| {
-        let keyword = keyword.clone();
-        async move {
-            info!("Resolving with engine: {:?}", engine);
-
-            let result = engine
-                .check(info, context)
-                .await
-                .map_err(ResolveError::EngineError)?
-                .ok_or(ResolveError::NoMatchedSong { keyword })?;
-
-            // Specify the Error type explicitly.
-            Ok::<String, ResolveError>(result)
-        }
-        .boxed()
-    });
-
-    let selected_future = futures::future::select_ok(futures).await;
-
-    match selected_future {
-        Ok((result, _)) => {
-            info!("{} resolved: {}", info.keyword(), result);
-            Ok(result)
-        }
-        Err(e) => {
-            error!("{:?}", e);
-            Err(e)
-        }
-    }
 }
 
 /// The error type of the resolve module.

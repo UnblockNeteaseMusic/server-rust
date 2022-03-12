@@ -31,13 +31,6 @@ pub struct MiguEngine;
 
 #[async_trait]
 impl Engine for MiguEngine {
-    async fn check<'a>(&self, info: &'a Song, ctx: &'a Context) -> Result<Option<String>> {
-        match search(info, ctx).await? {
-            None => Ok(None),
-            Some(id) => Ok(track(id.as_str(), ctx, get_rand_num().as_str()).await?),
-        }
-    }
-
     async fn search<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
         let response = get_search_data(&info.keyword(), ctx).await?;
         let result = response
@@ -63,7 +56,7 @@ impl Engine for MiguEngine {
             vec!["HQ", "PQ"]
         };
     
-        let futures = qualities.iter().map(|&format| single(&identifier, format, &num, ctx));
+        let futures = qualities.iter().map(|&format| single(identifier, format, &num, ctx));
     
         let urls = join_all(futures).await;
         
@@ -132,44 +125,6 @@ async fn find_match(info: &Song, data: &[Json]) -> Result<Option<String>> {
         .expect("should be Some");
 
     Ok(similar_song.map(|song| song.id))
-}
-
-#[deprecated]
-async fn search(info: &Song, ctx: &Context<'_>) -> Result<Option<String>> {
-    let response = get_search_data(&info.keyword(), ctx).await?;
-    let result = response
-        .pointer("/musics")
-        .ok_or_else(|| anyhow::anyhow!("/musics not found"))?
-        .as_array()
-        .ok_or(UnableToExtractJson("/musics", "array"))?;
-
-    let matched = find_match(info, result).await?;
-
-    Ok(matched)
-}
-
-#[deprecated]
-async fn track(id: &str, ctx: &Context<'_>, num: &str) -> Result<Option<String>> {
-    let enabled_flac = ctx.enable_flac;
-    let qualities = if enabled_flac {
-        vec!["ZQ", "SQ", "HQ", "PQ"]
-    } else {
-        vec!["HQ", "PQ"]
-    };
-
-    let futures = qualities.iter().map(|&format| single(id, format, num, ctx));
-
-    let urls = join_all(futures).await;
-    let mut result = None;
-    for u in urls {
-        let o = u.ok();
-        if o.is_some() {
-            result = o;
-            break;
-        }
-    }
-
-    Ok(result)
 }
 
 fn format(song: &Json) -> Result<Song> {

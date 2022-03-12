@@ -24,11 +24,6 @@ pub struct YtDlEngine;
 #[async_trait::async_trait]
 impl Engine for YtDlEngine {
     // TODO: allow specifying proxy
-    async fn check<'a>(&self, info: &'a Song, _: &'a Context) -> anyhow::Result<Option<String>> {
-        Ok(fetch_from_youtube(&info.keyword()).await?.map(|r| r.url))
-    }
-
-    // TODO: allow specifying proxy
     async fn search<'a>(&self, info: &'a Song, _: &'a Context) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
         let response = fetch_from_youtube(&info.keyword()).await?.map(|r| r.url);
         Ok(response.map(|url| SongSearchInformation {

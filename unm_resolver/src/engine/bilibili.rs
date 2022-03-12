@@ -23,13 +23,6 @@ pub struct BilibiliEngine;
 
 #[async_trait]
 impl Engine for BilibiliEngine {
-    async fn check<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<String>> {
-        match search(info, ctx).await? {
-            None => Ok(None),
-            Some(id) => Ok(track(id, ctx).await?),
-        }
-    }
-
     async fn search<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
         let response = get_search_data(&info.keyword(), ctx).await?;
         let result = response

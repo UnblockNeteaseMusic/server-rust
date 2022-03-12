@@ -106,12 +106,6 @@ pub trait Engine {
     /// Retrieve the audio URL of the specified `identifier`.
     async fn retrieve<'a>(&self, identifier: &'a SerializedIdentifier, ctx: &'a Context) -> anyhow::Result<RetrievedSongInfo<'static>>; 
     // FIXME: allow dynamically generate the source name.
-
-    /// Search an audio matched the info,
-    /// and return the audio link.
-    #[deprecated = "Use `search` and `retrieve` instead."]
-    async fn check<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<String>>;
-    // FIXME: anyhow::Result<()> is not pretty a good practice.
 }
 
 impl Song {

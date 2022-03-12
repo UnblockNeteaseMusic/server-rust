@@ -36,10 +36,6 @@ pub struct PyNCMEngine;
 
 #[async_trait::async_trait]
 impl Engine for PyNCMEngine {
-    async fn check<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<String>> {
-        track(info, ctx).await
-    }
-
     async fn search<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
         let response = fetch_song_info(&info.id, ctx).await?;
 
@@ -59,7 +55,7 @@ impl Engine for PyNCMEngine {
         }
     }
 
-    async fn retrieve<'a>(&self, identifier: &'a SerializedIdentifier, ctx: &'a Context) -> anyhow::Result<RetrievedSongInfo<'static>> {
+    async fn retrieve<'a>(&self, identifier: &'a SerializedIdentifier, _: &'a Context) -> anyhow::Result<RetrievedSongInfo<'static>> {
         Ok(RetrievedSongInfo {
             source: Cow::Borrowed(ENGINE_NAME),
             url: identifier.to_string(),
@@ -93,22 +89,4 @@ fn find_match(data: &[PyNCMResponseEntry], song_id: &str) -> anyhow::Result<Opti
         })
         .map(|v| v.url.clone())
         .ok_or_else(|| anyhow::anyhow!("no matched song"))
-}
-
-/// Track the matched song.
-#[deprecated]
-async fn track(
-    song: &Song,
-    ctx: &Context<'_>,
-) -> anyhow::Result<Option<String>> {
-    let response = fetch_song_info(&song.id, ctx).await?;
-
-    if response.code == 200 {
-        Ok(find_match(&response.data, &song.id)?)
-    } else {
-        Err(anyhow::anyhow!(
-            "failed to request. code: {}",
-            response.code
-        ))
-    }
 }
