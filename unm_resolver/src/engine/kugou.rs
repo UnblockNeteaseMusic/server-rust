@@ -29,11 +29,19 @@ pub struct KugouSongContext {
 
 #[async_trait]
 impl Engine for KugouEngine {
-    async fn search<'a>(&self, _info: &'a Song, _ctx: &'a Context) -> anyhow::Result<Option<super::SongSearchInformation<'static>>> {
+    async fn search<'a>(
+        &self,
+        _info: &'a Song,
+        _ctx: &'a Context,
+    ) -> anyhow::Result<Option<super::SongSearchInformation<'static>>> {
         todo!()
     }
 
-    async fn retrieve<'a>(&self, _identifier: &'a super::SerializedIdentifier, _ctx: &'a Context) -> anyhow::Result<super::RetrievedSongInfo<'static>> {
+    async fn retrieve<'a>(
+        &self,
+        _identifier: &'a super::SerializedIdentifier,
+        _ctx: &'a Context,
+    ) -> anyhow::Result<super::RetrievedSongInfo<'static>> {
         todo!()
     }
 }

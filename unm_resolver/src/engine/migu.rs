@@ -31,23 +31,31 @@ pub struct MiguEngine;
 
 #[async_trait]
 impl Engine for MiguEngine {
-    async fn search<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
+    async fn search<'a>(
+        &self,
+        info: &'a Song,
+        ctx: &'a Context,
+    ) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
         let response = get_search_data(&info.keyword(), ctx).await?;
         let result = response
             .pointer("/musics")
             .ok_or_else(|| anyhow::anyhow!("/musics not found"))?
             .as_array()
             .ok_or(UnableToExtractJson("/musics", "array"))?;
-    
+
         let matched = find_match(info, result).await?;
-    
+
         Ok(matched.map(|identifier| SongSearchInformation {
             source: Cow::Borrowed(ENGINE_NAME),
             identifier,
         }))
     }
 
-    async fn retrieve<'a>(&self, identifier: &'a SerializedIdentifier, ctx: &'a Context) -> anyhow::Result<RetrievedSongInfo<'static>> {
+    async fn retrieve<'a>(
+        &self,
+        identifier: &'a SerializedIdentifier,
+        ctx: &'a Context,
+    ) -> anyhow::Result<RetrievedSongInfo<'static>> {
         let num = get_rand_num();
         let enabled_flac = ctx.enable_flac;
         let qualities = if enabled_flac {
@@ -55,13 +63,14 @@ impl Engine for MiguEngine {
         } else {
             vec!["HQ", "PQ"]
         };
-    
-        let futures = qualities.iter().map(|&format| single(identifier, format, &num, ctx));
-    
+
+        let futures = qualities
+            .iter()
+            .map(|&format| single(identifier, format, &num, ctx));
+
         let urls = join_all(futures).await;
-        
-        urls
-            .into_iter()
+
+        urls.into_iter()
             .find(|result_url| result_url.is_ok())
             .map(|result_url| result_url.expect("should be Some"))
             .map(|url| RetrievedSongInfo {
@@ -221,7 +230,11 @@ mod tests {
     #[test]
     async fn migu_search() {
         let info = get_info_1();
-        let info = MiguEngine.search(&info, &Context::default()).await.unwrap().unwrap();
+        let info = MiguEngine
+            .search(&info, &Context::default())
+            .await
+            .unwrap()
+            .unwrap();
 
         assert_eq!(info.source, ENGINE_NAME);
         assert_eq!(info.identifier, "4300399");
@@ -264,10 +277,11 @@ mod tests {
 
     #[test]
     async fn migu_track() {
-        let info = MiguEngine.retrieve(&String::from("4300399"), &Context::default())
+        let info = MiguEngine
+            .retrieve(&String::from("4300399"), &Context::default())
             .await
             .unwrap();
-            
+
         assert_eq!(info.source, ENGINE_NAME);
         println!("{}", info.url);
     }

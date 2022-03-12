@@ -6,7 +6,9 @@ use std::borrow::Cow;
 
 use serde::Deserialize;
 
-use super::{Context, Engine, Song, SongSearchInformation, SerializedIdentifier, RetrievedSongInfo};
+use super::{
+    Context, Engine, RetrievedSongInfo, SerializedIdentifier, Song, SongSearchInformation,
+};
 
 const ENGINE_NAME: &str = "ytdlp";
 
@@ -23,7 +25,11 @@ pub struct YtDlpEngine;
 #[async_trait::async_trait]
 impl Engine for YtDlpEngine {
     // TODO: allow specifying proxy
-    async fn search<'a>(&self, info: &'a Song, _: &'a Context) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
+    async fn search<'a>(
+        &self,
+        info: &'a Song,
+        _: &'a Context,
+    ) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
         let response = fetch_from_youtube(&info.keyword()).await?.map(|r| r.url);
         Ok(response.map(|url| SongSearchInformation {
             source: Cow::Borrowed(ENGINE_NAME),
@@ -31,7 +37,11 @@ impl Engine for YtDlpEngine {
         }))
     }
 
-    async fn retrieve<'a>(&self, identifier: &'a SerializedIdentifier, _: &'a Context) -> anyhow::Result<RetrievedSongInfo<'static>> {
+    async fn retrieve<'a>(
+        &self,
+        identifier: &'a SerializedIdentifier,
+        _: &'a Context,
+    ) -> anyhow::Result<RetrievedSongInfo<'static>> {
         Ok(RetrievedSongInfo {
             source: Cow::Borrowed(ENGINE_NAME),
             url: identifier.to_string(),

@@ -5,7 +5,7 @@
 use async_trait::async_trait;
 use rayon::prelude::*;
 
-use std::{str::FromStr, borrow::Cow};
+use std::{borrow::Cow, str::FromStr};
 
 use crate::engine::Json;
 use crate::request::request;
@@ -14,7 +14,10 @@ use http::Method;
 use url::Url;
 use urlencoding::encode;
 
-use super::{similar_song_selector_constructor, Artist, Context, Engine, Song, SongSearchInformation, RetrievedSongInfo, SerializedIdentifier};
+use super::{
+    similar_song_selector_constructor, Artist, Context, Engine, RetrievedSongInfo,
+    SerializedIdentifier, Song, SongSearchInformation,
+};
 
 const ENGINE_NAME: &str = "bilibili";
 
@@ -23,14 +26,18 @@ pub struct BilibiliEngine;
 
 #[async_trait]
 impl Engine for BilibiliEngine {
-    async fn search<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
+    async fn search<'a>(
+        &self,
+        info: &'a Song,
+        ctx: &'a Context,
+    ) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
         let response = get_search_data(&info.keyword(), ctx).await?;
         let result = response
             .pointer("/data/result")
             .ok_or_else(|| anyhow::anyhow!("/data/result not found"))?
             .as_array()
             .ok_or(UnableToExtractJson("/data/result", "array"))?;
-    
+
         let matched = find_match(info, result).await?;
         Ok(matched.map(|identifier| SongSearchInformation {
             source: Cow::Borrowed(ENGINE_NAME),
@@ -38,18 +45,22 @@ impl Engine for BilibiliEngine {
         }))
     }
 
-    async fn retrieve<'a>(&self, identifier: &'a SerializedIdentifier, ctx: &'a Context) -> anyhow::Result<RetrievedSongInfo<'static>> {
+    async fn retrieve<'a>(
+        &self,
+        identifier: &'a SerializedIdentifier,
+        ctx: &'a Context,
+    ) -> anyhow::Result<RetrievedSongInfo<'static>> {
         let response = get_tracked_data(identifier.as_ref(), ctx).await?;
         let links = response
             .pointer("/data/cdns")
             .ok_or_else(|| anyhow::anyhow!("/data/cdns not found"))?
             .as_array()
             .ok_or(UnableToExtractJson("/data/cdns", "array"))?;
-    
+
         if links.is_empty() {
             return Err(anyhow::anyhow!("unable to retrieve the identifier"));
         }
-    
+
         let url = links[0]
             .as_str()
             .ok_or(UnableToExtractJson("/data/cdns/0", "string"))?
@@ -184,7 +195,11 @@ mod tests {
     #[test]
     async fn bilibili_search() {
         let info = get_info_1();
-        let info = BilibiliEngine.search(&info, &Context::default()).await.unwrap().unwrap();
+        let info = BilibiliEngine
+            .search(&info, &Context::default())
+            .await
+            .unwrap()
+            .unwrap();
 
         assert_eq!(info.identifier, "349595");
         assert_eq!(info.source, ENGINE_NAME);
@@ -192,10 +207,11 @@ mod tests {
 
     #[test]
     async fn bilibili_retrieve() {
-        let info = BilibiliEngine.retrieve(&String::from("349595"), &Context::default())
+        let info = BilibiliEngine
+            .retrieve(&String::from("349595"), &Context::default())
             .await
             .unwrap();
-        
+
         assert_eq!(info.source, ENGINE_NAME);
         println!("{}", info.url);
     }

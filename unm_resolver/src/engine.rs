@@ -100,11 +100,19 @@ pub struct Context<'a> {
 pub trait Engine {
     /// Search an audio matched the `info`, and
     /// return the identifier for retrieving audio URL with [`retrieve`].
-    async fn search<'a>(&self, info: &'a Song, ctx: &'a Context) -> anyhow::Result<Option<SongSearchInformation<'static>>>; 
+    async fn search<'a>(
+        &self,
+        info: &'a Song,
+        ctx: &'a Context,
+    ) -> anyhow::Result<Option<SongSearchInformation<'static>>>;
     // FIXME: allow dynamically generate the source name.
 
     /// Retrieve the audio URL of the specified `identifier`.
-    async fn retrieve<'a>(&self, identifier: &'a SerializedIdentifier, ctx: &'a Context) -> anyhow::Result<RetrievedSongInfo<'static>>; 
+    async fn retrieve<'a>(
+        &self,
+        identifier: &'a SerializedIdentifier,
+        ctx: &'a Context,
+    ) -> anyhow::Result<RetrievedSongInfo<'static>>;
     // FIXME: allow dynamically generate the source name.
 }
 
