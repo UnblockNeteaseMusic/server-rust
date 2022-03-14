@@ -1,6 +1,6 @@
-use std::borrow::Cow;
 use reqwest::Proxy;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
+use std::borrow::Cow;
 
 /**
  * The serialized identifier for passing to `retrieve()`.
