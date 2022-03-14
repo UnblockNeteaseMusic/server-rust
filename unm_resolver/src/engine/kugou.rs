@@ -26,7 +26,7 @@ const ENGINE_NAME: &str = "kugou";
 pub struct KugouEngine;
 
 /// The context for determining the song to fetch from Kugou Music.
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct KugouSongContext {
     /// The ID of HQ audio.
     pub id_hq: Option<String>,

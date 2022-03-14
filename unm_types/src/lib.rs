@@ -8,7 +8,7 @@ use std::borrow::Cow;
 pub type SerializedIdentifier = String;
 
 /// The metadata of the artist of a song.
-#[derive(Clone, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct Artist {
     /// The identifier of this artist.
     pub id: String,
@@ -17,7 +17,7 @@ pub struct Artist {
 }
 
 /// The metadata of the album of a song.
-#[derive(Clone, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct Album {
     /// The identifier of this artist.
     pub id: String,
@@ -28,7 +28,7 @@ pub struct Album {
 }
 
 /// The metadata of a song.
-#[derive(Clone, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct Song<C = ()> {
     /// The identifier of this song.
     pub id: String,
