@@ -1477,6 +1477,7 @@ dependencies = [
  "thiserror",
  "tokio",
  "unm_test_utils",
+ "unm_types",
  "url",
  "urlencoding",
 ]
@@ -1487,6 +1488,14 @@ version = "0.1.0"
 dependencies = [
  "futures",
  "unm_resolver",
+]
+
+[[package]]
+name = "unm_types"
+version = "0.1.0"
+dependencies = [
+ "reqwest",
+ "serde",
 ]
 
 [[package]]

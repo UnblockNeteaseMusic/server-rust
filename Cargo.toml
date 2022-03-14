@@ -1,6 +1,5 @@
 [workspace]
-
-members = ["unm_resolver", "unm_test_utils"]
+members = ["unm_resolver", "unm_test_utils", "unm_types"]
 
 [profile.release]
 lto = true

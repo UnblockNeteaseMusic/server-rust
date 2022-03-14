@@ -30,6 +30,7 @@ url = "2.2.2"
 urlencoding = "2.1.0"
 rand = "0.8.5"
 bimap = "0.6.2"
+unm_types = { version = "0.1.0", path = "../unm_types" }
 
 [features]
 
