@@ -18,7 +18,6 @@ pub use unm_types::*;
 pub use async_trait::async_trait;
 pub use serde_json::Value as Json;
 
-
 #[async_trait]
 /// The engine that can search and track the specified [`Song`].
 pub trait Engine {
@@ -39,8 +38,6 @@ pub trait Engine {
     ) -> anyhow::Result<RetrievedSongInfo<'static>>;
     // FIXME: allow dynamically generate the source name.
 }
-
-
 
 /// Construct a "similar song selector" to pass to `.find()`.
 ///

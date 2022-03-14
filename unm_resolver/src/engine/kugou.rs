@@ -86,7 +86,9 @@ impl Engine for KugouEngine {
                 match response {
                     Ok(response) => match response {
                         Some(response) => Ok(response),
-                        None => Err(anyhow::anyhow!("unable to find the format {format:?} of song")),
+                        None => Err(anyhow::anyhow!(
+                            "unable to find the format {format:?} of song"
+                        )),
                     },
                     Err(err) => Err(err),
                 }
