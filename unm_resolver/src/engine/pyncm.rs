@@ -76,7 +76,7 @@ impl Engine for PyNCMEngine {
 /// Fetch the song info in [`PyNCMResponse`].
 async fn fetch_song_info(id: &str, ctx: &Context<'_>) -> anyhow::Result<PyNCMResponse> {
     let url_str = format!(
-        "http://mos9527.tooo.top/ncm/pyncm/track/GetTrackAudio?song_ids={id}&bitrate={bitrate}",
+        "https://service-ghlrryee-1308098780.gz.apigw.tencentcs.com/release/pyncmd/track/GetTrackAudio?song_ids={id}&bitrate={bitrate}",
         id = id,
         bitrate = if ctx.enable_flac { 999000 } else { 320000 }
     );

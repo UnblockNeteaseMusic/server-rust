@@ -36,7 +36,7 @@ static YTDLP_ENGINE: Lazy<YtDlpEngine> = Lazy::new(|| YtDlpEngine);
 static YTDL_ENGINE: Lazy<YtDlEngine> = Lazy::new(|| YtDlEngine);
 /// Engine: Migu Music
 static MIGU_ENGINE: Lazy<MiguEngine> = Lazy::new(|| MiguEngine);
-/// Engine: Migu Music
+/// Engine: Kugou Music
 static KUGOU_ENGINE: Lazy<KugouEngine> = Lazy::new(|| KugouEngine);
 
 /// The engine uses to resolve audio.
