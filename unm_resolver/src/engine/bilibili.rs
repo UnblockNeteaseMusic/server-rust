@@ -83,7 +83,7 @@ async fn get_search_data(keyword: &str, ctx: &Context<'_>) -> anyhow::Result<Jso
     );
     let url = Url::from_str(&url_str)?;
 
-    let res = request(Method::GET, &url, None, None, ctx.proxy.cloned()).await?;
+    let res = request(Method::GET, &url, None, None, ctx.try_get_proxy()?).await?;
     Ok(res.json().await?)
 }
 
@@ -94,7 +94,7 @@ async fn get_tracked_data(id: &str, ctx: &Context<'_>) -> anyhow::Result<Json> {
     );
     let url = Url::from_str(&url_str)?;
 
-    let res = request(Method::GET, &url, None, None, ctx.proxy.cloned()).await?;
+    let res = request(Method::GET, &url, None, None, ctx.try_get_proxy()?).await?;
     Ok(res.json().await?)
 }
 

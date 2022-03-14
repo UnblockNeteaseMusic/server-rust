@@ -119,7 +119,7 @@ async fn get_search_data(keyword: &str, ctx: &Context<'_>) -> Result<Json> {
         &url,
         Some(get_header(ctx.migu_aversionid)),
         None,
-        ctx.proxy.cloned(),
+        ctx.try_get_proxy()?,
     )
     .await?;
     Ok(res.json().await?)
@@ -183,7 +183,7 @@ async fn get_single_data(id: &str, format: &str, num: &str, ctx: &Context<'_>) -
         &url,
         Some(get_header(ctx.migu_aversionid)),
         None,
-        ctx.proxy.cloned(),
+        ctx.try_get_proxy()?,
     )
     .await?;
     Ok(res.json().await?)

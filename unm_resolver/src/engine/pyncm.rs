@@ -82,7 +82,7 @@ async fn fetch_song_info(id: &str, ctx: &Context<'_>) -> anyhow::Result<PyNCMRes
     );
     let url = url::Url::from_str(&url_str)?;
 
-    let response = request(Method::GET, &url, None, None, ctx.proxy.cloned()).await?;
+    let response = request(Method::GET, &url, None, None, ctx.try_get_proxy()?).await?;
     Ok(response.json::<PyNCMResponse>().await?)
 }
 

@@ -92,7 +92,7 @@ pub async fn search(
     );
     let url = Url::from_str(&url_str)?;
 
-    let resp = request(Method::GET, &url, None, None, ctx.proxy.cloned()).await?;
+    let resp = request(Method::GET, &url, None, None, ctx.try_get_proxy()?).await?;
     let data = resp.json::<Json>().await?;
 
     let lists = data
