@@ -18,7 +18,7 @@ async fn main() {
         ..Default::default()
     };
 
-    let engines = [Engine::Bilibili, Engine::YtDlp, Engine::YtDl, Engine::Migu];
+    let engines = [Engine::Bilibili, Engine::YtDlp, Engine::YtDl, Engine::Migu, Engine::Kugou];
     let context = Context::default();
 
     let (search_time_taken, search_result) =

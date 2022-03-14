@@ -10,7 +10,7 @@ pub use reqwest::Proxy;
 
 use crate::engine::{
     bilibili::BilibiliEngine, migu::MiguEngine, pyncm::PyNCMEngine, ytdl::YtDlEngine,
-    ytdlp::YtDlpEngine, Context, RetrievedSongInfo, SongSearchInformation,
+    ytdlp::YtDlpEngine, Context, RetrievedSongInfo, SongSearchInformation, kugou::KugouEngine,
 };
 pub use crate::engine::{Engine as EngineTrait, Song};
 
@@ -22,6 +22,7 @@ static ENGINE_IDENTIFIER_MAP: Lazy<BiMap<Engine, &str>> = Lazy::new(|| {
     elements.insert(Engine::Migu, "migu");
     elements.insert(Engine::YtDl, "ytdl");
     elements.insert(Engine::YtDlp, "ytdlp");
+    elements.insert(Engine::Kugou, "kugou");
     elements
 });
 
@@ -35,6 +36,8 @@ static YTDLP_ENGINE: Lazy<YtDlpEngine> = Lazy::new(|| YtDlpEngine);
 static YTDL_ENGINE: Lazy<YtDlEngine> = Lazy::new(|| YtDlEngine);
 /// Engine: Migu Music
 static MIGU_ENGINE: Lazy<MiguEngine> = Lazy::new(|| MiguEngine);
+/// Engine: Migu Music
+static KUGOU_ENGINE: Lazy<KugouEngine> = Lazy::new(|| KugouEngine);
 
 /// The engine uses to resolve audio.
 #[derive(Clone, Copy, Eq, Hash, PartialEq)]
@@ -49,6 +52,8 @@ pub enum Engine {
     YtDl,
     /// Migu Music.
     Migu,
+    /// Kugou Music.
+    Kugou,
 }
 
 impl TryFrom<&str> for Engine {
@@ -98,6 +103,7 @@ impl Engine {
             Engine::YtDlp => func(&*YTDLP_ENGINE),
             Engine::YtDl => func(&*YTDL_ENGINE),
             Engine::Migu => func(&*MIGU_ENGINE),
+            Engine::Kugou => func(&*KUGOU_ENGINE)
         }
     }
 }
