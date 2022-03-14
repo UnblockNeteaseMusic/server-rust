@@ -9,8 +9,8 @@ use once_cell::sync::Lazy;
 pub use reqwest::Proxy;
 
 use crate::engine::{
-    bilibili::BilibiliEngine, migu::MiguEngine, pyncm::PyNCMEngine, ytdl::YtDlEngine,
-    ytdlp::YtDlpEngine, Context, RetrievedSongInfo, SongSearchInformation, kugou::KugouEngine,
+    bilibili::BilibiliEngine, kugou::KugouEngine, migu::MiguEngine, pyncm::PyNCMEngine,
+    ytdl::YtDlEngine, ytdlp::YtDlpEngine, Context, RetrievedSongInfo, SongSearchInformation,
 };
 pub use crate::engine::{Engine as EngineTrait, Song};
 
@@ -103,7 +103,7 @@ impl Engine {
             Engine::YtDlp => func(&*YTDLP_ENGINE),
             Engine::YtDl => func(&*YTDL_ENGINE),
             Engine::Migu => func(&*MIGU_ENGINE),
-            Engine::Kugou => func(&*KUGOU_ENGINE)
+            Engine::Kugou => func(&*KUGOU_ENGINE),
         }
     }
 }
