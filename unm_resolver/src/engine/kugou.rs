@@ -2,13 +2,14 @@
 //!
 //! It can fetch audio from Kugou Music.
 
-use std::{borrow::Cow, str::FromStr};
+use std::{borrow::Cow, str::FromStr, sync::Arc};
 
 use async_trait::async_trait;
+use futures::FutureExt;
 use http::Method;
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use reqwest::Url;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use urlencoding::encode;
 
 use crate::{request::request, utils::UnableToExtractJson};
@@ -31,6 +32,16 @@ pub struct KugouSongContext {
     pub id_hq: Option<String>,
     /// The ID of SQ audio.
     pub id_sq: Option<String>,
+}
+
+#[derive(Clone, Copy, Debug)]
+pub enum KugouFormat {
+    /// The normal song quality.
+    Hash,
+    /// The High-Quality song quality.
+    HqHash,
+    /// The Super-Quality song quality.
+    SqHash,
 }
 
 #[async_trait]
@@ -56,10 +67,39 @@ impl Engine for KugouEngine {
 
     async fn retrieve<'a>(
         &self,
-        _identifier: &'a SerializedIdentifier,
-        _ctx: &'a Context,
+        identifier: &'a SerializedIdentifier,
+        ctx: &'a Context,
     ) -> anyhow::Result<RetrievedSongInfo<'static>> {
-        todo!()
+        let song: Arc<Song<KugouSongContext>> = Arc::new(serde_json::from_str(identifier)?);
+
+        let format_to_fetch = if ctx.enable_flac {
+            [KugouFormat::HqHash, KugouFormat::SqHash]
+        } else {
+            [KugouFormat::Hash, KugouFormat::HqHash]
+        };
+
+        let song_futures = format_to_fetch.into_iter().map(|format| {
+            let song = song.clone();
+
+            async move {
+                let response = single(&*song, format, ctx).await;
+                match response {
+                    Ok(response) => match response {
+                        Some(response) => Ok(response),
+                        None => Err(anyhow::anyhow!("unable to find the format {format:?} of song")),
+                    },
+                    Err(err) => Err(err),
+                }
+            }
+            .boxed()
+        });
+
+        let url = futures::future::select_ok(song_futures).await?.0;
+
+        Ok(RetrievedSongInfo {
+            url,
+            source: Cow::Borrowed(ENGINE_NAME),
+        })
     }
 }
 
@@ -116,6 +156,48 @@ pub async fn search(
         .find_first(|s| selector(&s));
 
     Ok(similar_song)
+}
+
+pub async fn single(
+    song: &Song<KugouSongContext>,
+    format: KugouFormat,
+    ctx: &Context<'_>,
+) -> anyhow::Result<Option<String>> {
+    let hash = extract_hash_id(song, format)?;
+    let key = format!("{hash}kgcloudv2");
+
+    let album_id = song
+        .album
+        .as_ref()
+        .map(|v| v.id.to_string())
+        .unwrap_or_else(|| String::from(""));
+
+    let url_str = format!("http://trackercdn.kugou.com/i/v2/?key={key}&hash={hash}&appid=1005&pid=2&cmd=25&behavior=play&album_id={album_id}");
+    let url = Url::from_str(&url_str)?;
+
+    let response = request(Method::GET, &url, None, None, ctx.try_get_proxy()?).await?;
+    let data = response.json::<Json>().await?;
+
+    Ok(data
+        .pointer("/url/0")
+        .and_then(|v| v.as_str())
+        .map(|v| v.to_string()))
+}
+
+pub fn extract_hash_id(
+    song: &Song<KugouSongContext>,
+    format: KugouFormat,
+) -> anyhow::Result<String> {
+    let id = match format {
+        KugouFormat::Hash => song.context.id_hq.as_ref(),
+        KugouFormat::HqHash => song.context.id_hq.as_ref(),
+        KugouFormat::SqHash => song.context.id_sq.as_ref(),
+    };
+
+    match id {
+        Some(id) => Ok(id.to_string()),
+        None => Err(anyhow::anyhow!("No such a format.")),
+    }
 }
 
 /*
