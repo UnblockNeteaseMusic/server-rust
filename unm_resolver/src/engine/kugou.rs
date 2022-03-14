@@ -145,9 +145,9 @@ pub async fn search(
     let data = resp.json::<Json>().await?;
 
     let lists = data
-        .pointer("/data/lists")
+        .pointer("/data/info")
         .and_then(|v| v.as_array())
-        .ok_or(UnableToExtractJson("/data/lists", "string"))?;
+        .ok_or(UnableToExtractJson("/data/info", "string"))?;
 
     let selector = similar_song_selector_constructor(info).0;
 
