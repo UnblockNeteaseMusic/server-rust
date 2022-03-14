@@ -1,6 +1,6 @@
 use std::borrow::Cow;
 use reqwest::Proxy;
-use serde::Serialize;
+use serde::{Serialize, Deserialize};
 
 /**
  * The serialized identifier for passing to `retrieve()`.
@@ -8,7 +8,7 @@ use serde::Serialize;
 pub type SerializedIdentifier = String;
 
 /// The metadata of the artist of a song.
-#[derive(Clone, Default)]
+#[derive(Clone, Default, Serialize, Deserialize)]
 pub struct Artist {
     /// The identifier of this artist.
     pub id: String,
@@ -17,7 +17,7 @@ pub struct Artist {
 }
 
 /// The metadata of the album of a song.
-#[derive(Clone, Default)]
+#[derive(Clone, Default, Serialize, Deserialize)]
 pub struct Album {
     /// The identifier of this artist.
     pub id: String,
@@ -28,7 +28,7 @@ pub struct Album {
 }
 
 /// The metadata of a song.
-#[derive(Clone, Default)]
+#[derive(Clone, Default, Serialize, Deserialize)]
 pub struct Song<C = ()> {
     /// The identifier of this song.
     pub id: String,
@@ -47,7 +47,7 @@ pub struct Song<C = ()> {
 }
 
 /// The song identifier with the engine information.
-#[derive(Clone, Serialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct SongSearchInformation<'a> {
     /// The retrieve source of this song, for example: `bilibili`.
     pub source: Cow<'a, str>,
@@ -56,7 +56,7 @@ pub struct SongSearchInformation<'a> {
 }
 
 /// The information of the song retrieved with `retrieve()`.
-#[derive(Clone, Serialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct RetrievedSongInfo<'a> {
     /// The retrieve source of this song, for example: `bilibili`.
     pub source: Cow<'a, str>,
@@ -65,10 +65,10 @@ pub struct RetrievedSongInfo<'a> {
 }
 
 /// The context.
-#[derive(Clone, Default)]
+#[derive(Clone, Default, Serialize, Deserialize)]
 pub struct Context<'a> {
-    /// The proxy to be used in request.
-    pub proxy: Option<&'a Proxy>,
+    /// The proxy URI
+    pub proxy_uri: Option<String>,
 
     /// Whether to enable FLAC support.
     pub enable_flac: bool,
@@ -78,6 +78,12 @@ pub struct Context<'a> {
 
     /// Migu: The cookie "aversionid"
     pub migu_aversionid: Option<&'a str>,
+}
+
+impl<'a> Context<'a> {
+    pub fn try_get_proxy(&self) -> reqwest::Result<Option<Proxy>> {
+        self.proxy_uri.clone().map(Proxy::all).transpose()
+    }
 }
 
 impl Song {
