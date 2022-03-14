@@ -8,6 +8,7 @@ use async_trait::async_trait;
 use http::Method;
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use reqwest::Url;
+use serde::{Serialize, Deserialize};
 use urlencoding::encode;
 
 use crate::{request::request, utils::UnableToExtractJson};
@@ -24,7 +25,7 @@ const ENGINE_NAME: &str = "kugou";
 pub struct KugouEngine;
 
 /// The context for determining the song to fetch from Kugou Music.
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct KugouSongContext {
     /// The ID of HQ audio.
     pub id_hq: Option<String>,
@@ -39,12 +40,18 @@ impl Engine for KugouEngine {
         info: &'a Song,
         ctx: &'a Context,
     ) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
-        search(info, ctx).await.map(|x| {
-            x.map(|x| SongSearchInformation {
-                source: Cow::Borrowed(ENGINE_NAME),
-                identifier: x,
-            })
-        })
+        let response = search(info, ctx).await;
+
+        match response {
+            Ok(response) => match response {
+                Some(response) => Ok(Some(SongSearchInformation {
+                    source: Cow::Borrowed(ENGINE_NAME),
+                    identifier: serde_json::to_string(&response)?,
+                })),
+                None => Ok(None),
+            },
+            Err(err) => Err(err),
+        }
     }
 
     async fn retrieve<'a>(
