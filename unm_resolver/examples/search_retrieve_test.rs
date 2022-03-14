@@ -1,19 +1,13 @@
 use futures::FutureExt;
-use log::LevelFilter;
-use simple_logger::SimpleLogger;
 use unm_resolver::{
     engine::{Artist, Context, Song},
     resolve::{batch_search, retrieve, Engine},
 };
-use unm_test_utils::measure_async_function_time;
+use unm_test_utils::{measure_async_function_time, set_logger};
 
 #[tokio::main]
 async fn main() {
-    SimpleLogger::new()
-        .with_utc_timestamps()
-        .with_level(LevelFilter::Debug)
-        .init()
-        .unwrap();
+    set_logger();
 
     let song = Song {
         name: "青花瓷".to_string(),

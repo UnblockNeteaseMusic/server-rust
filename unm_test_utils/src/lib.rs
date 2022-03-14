@@ -1,4 +1,6 @@
 use futures::FutureExt;
+use log::LevelFilter;
+use simple_logger::SimpleLogger;
 use std::{future::Future, pin::Pin, time::Duration};
 use unm_resolver::{
     engine::{Artist, Context, Engine},
@@ -25,7 +27,18 @@ pub async fn measure_async_function_time<'a, T>(
     (start.elapsed(), response)
 }
 
+#[inline]
+pub fn set_logger() {
+    SimpleLogger::new()
+        .with_utc_timestamps()
+        .with_level(LevelFilter::Debug)
+        .init()
+        .unwrap();
+}
+
 pub async fn engine_example_wrapper(engine: impl Engine) {
+    set_logger();
+
     let song = Song {
         name: "青花瓷".to_string(),
         artists: vec![Artist {

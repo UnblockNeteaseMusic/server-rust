@@ -1473,7 +1473,6 @@ dependencies = [
  "reqwest",
  "serde",
  "serde_json",
- "simple_logger",
  "thiserror",
  "tokio",
  "unm_test_utils",
@@ -1487,6 +1486,8 @@ name = "unm_test_utils"
 version = "0.1.0"
 dependencies = [
  "futures",
+ "log",
+ "simple_logger",
  "unm_resolver",
 ]
 

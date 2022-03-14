@@ -36,7 +36,6 @@ unm_types = { version = "0.1.0", path = "../unm_types" }
 
 [dev-dependencies]
 criterion = "0.3.5"
-simple_logger = "2.1.0"
 unm_test_utils = { path = "../unm_test_utils" }
 
 [[bench]]
