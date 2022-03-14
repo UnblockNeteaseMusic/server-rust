@@ -11,7 +11,7 @@ use unm_test_utils::measure_async_function_time;
 async fn main() {
     SimpleLogger::new()
         .with_utc_timestamps()
-        .with_level(LevelFilter::Info)
+        .with_level(LevelFilter::Debug)
         .init()
         .unwrap();
 
