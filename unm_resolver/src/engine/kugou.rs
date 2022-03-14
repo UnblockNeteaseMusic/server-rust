@@ -2,7 +2,7 @@
 //!
 //! It can fetch audio from Kugou Music.
 
-use std::str::FromStr;
+use std::{borrow::Cow, str::FromStr};
 
 use async_trait::async_trait;
 use http::Method;
@@ -12,8 +12,13 @@ use urlencoding::encode;
 
 use crate::{request::request, utils::UnableToExtractJson};
 
-use super::{similar_song_selector_constructor, Album, Context, Engine, Song};
+use super::{
+    similar_song_selector_constructor, Album, Context, Engine, RetrievedSongInfo,
+    SerializedIdentifier, Song, SongSearchInformation,
+};
 use crate::engine::Json;
+
+const ENGINE_NAME: &str = "kugou";
 
 /// The search and track engine powered by Kugou Music.
 pub struct KugouEngine;
@@ -31,17 +36,22 @@ pub struct KugouSongContext {
 impl Engine for KugouEngine {
     async fn search<'a>(
         &self,
-        _info: &'a Song,
-        _ctx: &'a Context,
-    ) -> anyhow::Result<Option<super::SongSearchInformation<'static>>> {
-        todo!()
+        info: &'a Song,
+        ctx: &'a Context,
+    ) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
+        search(info, ctx).await.map(|x| {
+            x.map(|x| SongSearchInformation {
+                source: Cow::Borrowed(ENGINE_NAME),
+                identifier: x,
+            })
+        })
     }
 
     async fn retrieve<'a>(
         &self,
-        _identifier: &'a super::SerializedIdentifier,
+        _identifier: &'a SerializedIdentifier,
         _ctx: &'a Context,
-    ) -> anyhow::Result<super::RetrievedSongInfo<'static>> {
+    ) -> anyhow::Result<RetrievedSongInfo<'static>> {
         todo!()
     }
 }
@@ -72,7 +82,10 @@ fn format(entry: &Json) -> anyhow::Result<Song<KugouSongContext>> {
 }
 
 /// Search and get song (with metadata) from Kugou Music.
-pub async fn search(info: &Song, ctx: &Context<'_>) -> anyhow::Result<Song<KugouSongContext>> {
+pub async fn search(
+    info: &Song,
+    ctx: &Context<'_>,
+) -> anyhow::Result<Option<Song<KugouSongContext>>> {
     let url_str = format!(
         "http://mobilecdn.kugou.com/api/v3/search/song?keyword={}&page=1&pagesize=10",
         encode(&info.keyword())
@@ -87,16 +100,15 @@ pub async fn search(info: &Song, ctx: &Context<'_>) -> anyhow::Result<Song<Kugou
         .and_then(|v| v.as_array())
         .ok_or(UnableToExtractJson("/data/lists", "string"))?;
 
-    let selector = similar_song_selector_constructor(info).1;
+    let selector = similar_song_selector_constructor(info).0;
 
     let similar_song = lists
         .par_iter()
         .map(format)
-        .map(|v| v.ok())
-        .find_first(|s| selector(&s))
-        .expect("should be Some");
+        .filter_map(|v| v.ok())
+        .find_first(|s| selector(&s));
 
-    similar_song.ok_or_else(|| anyhow::anyhow!("no such a song"))
+    Ok(similar_song)
 }
 
 /*
