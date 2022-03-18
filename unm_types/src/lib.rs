@@ -108,3 +108,50 @@ impl Song {
         keyword
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::{Artist, Song};
+
+    #[test]
+    fn test_keyword_with_single_artist() {
+        let s = Song::<()> {
+            id: "123".to_string(),
+            name: "TT".to_string(),
+            artists: vec![
+                Artist {
+                    id: "114".to_string(),
+                    name: "Twice".to_string(),
+                }
+            ],
+            ..Default::default()
+        };
+
+        assert_eq!(s.keyword(), "TT - Twice");
+    }
+
+    #[test]
+    fn test_keyword_with_multiple_artist() {
+        let s = Song::<()> {
+            id: "123".to_string(),
+            name: "Hope for Tomorrow - Melchi Remix".to_string(),
+            artists: vec![
+                Artist {
+                    id: "1".to_string(),
+                    name: "Alex H".to_string(),
+                },
+                Artist {
+                    id: "2".to_string(),
+                    name: "Z8phyR".to_string(),
+                },
+                Artist {
+                    id: "3".to_string(),
+                    name: "Melchi".to_string(),
+                },
+            ],
+            ..Default::default()
+        };
+
+        assert_eq!(s.keyword(), "Hope for Tomorrow - Melchi Remix - Alex H, Z8phyR, Melchi");
+    }
+}
