@@ -128,7 +128,6 @@ mod test {
             album: Some(Album {
                 id: "334511".to_string(),
                 name: "OWOOW".to_string(),
-                ..Default::default()
             }),
             ..Default::default()
         };

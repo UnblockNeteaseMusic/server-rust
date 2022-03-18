@@ -121,7 +121,6 @@ fn format(entry: &Json) -> anyhow::Result<Song<KugouSongContext>> {
         album: Some(Album {
             id: valstr("album_id")?,
             name: valstr("album_name")?,
-            songs: vec![],
         }),
         context: KugouSongContext {
             id_hq: entry["320hash"].as_str().map(|v| v.to_string()),
