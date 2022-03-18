@@ -118,12 +118,10 @@ mod tests {
         let s = Song::<()> {
             id: "123".to_string(),
             name: "TT".to_string(),
-            artists: vec![
-                Artist {
-                    id: "114".to_string(),
-                    name: "Twice".to_string(),
-                }
-            ],
+            artists: vec![Artist {
+                id: "114".to_string(),
+                name: "Twice".to_string(),
+            }],
             ..Default::default()
         };
 
@@ -152,6 +150,9 @@ mod tests {
             ..Default::default()
         };
 
-        assert_eq!(s.keyword(), "Hope for Tomorrow - Melchi Remix - Alex H, Z8phyR, Melchi");
+        assert_eq!(
+            s.keyword(),
+            "Hope for Tomorrow - Melchi Remix - Alex H, Z8phyR, Melchi"
+        );
     }
 }

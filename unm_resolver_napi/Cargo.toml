@@ -11,6 +11,7 @@ async-recursion = "1.0.0"
 napi = { version = "2.2.0", features = ["full"] }
 napi-derive = "2.2.0"
 unm_resolver = { path = "../unm_resolver" }
+unm_types = { version = "0.1.0", path = "../unm_types" }
 
 [build-dependencies]
 napi-build = "1.2.1"
