@@ -23,8 +23,6 @@ pub struct Album {
     pub id: String,
     /// The name of this album.
     pub name: String,
-    /// The song this album includes.
-    pub songs: Vec<Song>,
 }
 
 /// The metadata of a song.
