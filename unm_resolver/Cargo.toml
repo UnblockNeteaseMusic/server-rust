@@ -9,7 +9,7 @@ repository = "https://github.com/UnblockNeteaseMusic/server-rust"
 
 [dependencies]
 anyhow = "1.0.56"
-async-trait = "0.1.52"
+async-trait = "0.1.53"
 futures = "0.3.21"
 http = "0.2.6"
 log = "0.4.16"
