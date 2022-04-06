@@ -17,7 +17,7 @@ use unm_request::request;
 use url::Url;
 use urlencoding::encode;
 
-const ENGINE_NAME: &str = "bilibili";
+pub const ENGINE_ID: &str = "bilibili";
 
 /// The `bilibili` engine that can fetch audio from Bilibili Music.
 pub struct BilibiliEngine;
@@ -43,7 +43,7 @@ impl Engine for BilibiliEngine {
 
         if let Some(song) = matched {
             Ok(Some(SongSearchInformation {
-                source: Cow::Borrowed(ENGINE_NAME),
+                source: Cow::Borrowed(ENGINE_ID),
                 identifier: song.id.to_string(),
                 song: Some(song),
             }))
@@ -80,7 +80,7 @@ impl Engine for BilibiliEngine {
             .replace("https", "http");
 
         Ok(RetrievedSongInfo {
-            source: Cow::Borrowed(ENGINE_NAME),
+            source: Cow::Borrowed(ENGINE_ID),
             url,
         })
     }
@@ -183,7 +183,7 @@ mod tests {
             .unwrap();
 
         assert_eq!(info.identifier, "349595");
-        assert_eq!(info.source, ENGINE_NAME);
+        assert_eq!(info.source, ENGINE_ID);
     }
 
     #[test]
@@ -193,7 +193,7 @@ mod tests {
             .await
             .unwrap();
 
-        assert_eq!(info.source, ENGINE_NAME);
+        assert_eq!(info.source, ENGINE_ID);
         println!("{}", info.url);
     }
 }
