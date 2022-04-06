@@ -1090,6 +1090,7 @@ dependencies = [
  "log",
  "thiserror",
  "tokio",
+ "unm_engine_bilibili",
  "unm_test_utils",
  "unm_types",
 ]
@@ -1106,6 +1107,7 @@ dependencies = [
  "unm_engine",
  "unm_request",
  "unm_selector",
+ "unm_test_utils",
  "unm_types",
  "url",
  "urlencoding",
