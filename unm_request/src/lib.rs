@@ -1,5 +1,8 @@
 pub mod ext;
 
+// FIXME: separate to a crate.
+pub mod json;
+
 use std::{collections::HashMap, time::Duration};
 
 use http::{
