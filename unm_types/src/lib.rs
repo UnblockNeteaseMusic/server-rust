@@ -1,6 +1,6 @@
 use reqwest::Proxy;
 use serde::{Deserialize, Serialize};
-use std::borrow::Cow;
+use std::{borrow::Cow, collections::HashMap};
 
 /**
  * The serialized identifier for passing to `retrieve()`.
@@ -27,7 +27,7 @@ pub struct Album {
 
 /// The metadata of a song.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct Song<C = ()> {
+pub struct Song {
     /// The identifier of this song.
     pub id: String,
     /// The name of this song.
@@ -41,7 +41,7 @@ pub struct Song<C = ()> {
     /// The context of this song.
     ///
     /// For example, the URI identifier of this song.
-    pub context: C,
+    pub context: HashMap<String, String>,
 }
 
 /// The song identifier with the engine information.
@@ -51,6 +51,8 @@ pub struct SongSearchInformation<'a> {
     pub source: Cow<'a, str>,
     /// The serialized identifier of this song.
     pub identifier: SerializedIdentifier,
+    /// The details of this song.
+    pub song: Song,
 }
 
 /// The information of the song retrieved with `retrieve()`.
@@ -72,10 +74,15 @@ pub struct Context<'a> {
     pub enable_flac: bool,
 
     /// Migu: The cookie "channel"
+    #[deprecated]
     pub migu_channel: Option<&'a str>,
 
     /// Migu: The cookie "aversionid"
+    #[deprecated]
     pub migu_aversionid: Option<&'a str>,
+
+    /// The config for engines.
+    pub config: Option<HashMap<&'a str, &'a str>>,
 }
 
 impl<'a> Context<'a> {
@@ -121,7 +128,7 @@ mod tests {
 
     #[test]
     fn test_keyword_with_single_artist() {
-        let s = Song::<()> {
+        let s = Song {
             id: "123".to_string(),
             name: "TT".to_string(),
             artists: vec![Artist {
@@ -136,7 +143,7 @@ mod tests {
 
     #[test]
     fn test_keyword_with_multiple_artist() {
-        let s = Song::<()> {
+        let s = Song {
             id: "123".to_string(),
             name: "Hope for Tomorrow - Melchi Remix".to_string(),
             artists: vec![
