@@ -95,6 +95,8 @@ impl Executor {
         song: &'a SongSearchInformation<'a>,
         ctx: &Context<'_>,
     ) -> ExecutorResult<RetrievedSongInfo<'static>> {
+        debug!("Retrieving song from {}…", song.source);
+
         let engine = self.resolve_engine(&song.source)?;
         engine
             .retrieve(&song.identifier, ctx)
@@ -104,7 +106,7 @@ impl Executor {
 
     /// Validate engines to check if the engines specified are all registered.
     fn validate_engines(&self, engines: &[EngineId]) -> ExecutorResult<()> {
-        debug!("Validating if all the engines ({engines:?}) are registered...");
+        debug!("Validating if all the engines ({engines:?}) are registered…");
         let mut missing_engines = Vec::new();
 
         for engine_id in engines {
@@ -130,7 +132,7 @@ impl Executor {
     ///
     /// See the `register()` method for further information.
     fn resolve_engine(&self, engine_id: &str) -> ExecutorResult<EngineImplementation> {
-        debug!("Resolving engine {engine_id}");
+        debug!("Resolving engine {engine_id}…");
         self.engine_map
             .get(engine_id)
             .cloned()
