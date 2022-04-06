@@ -41,7 +41,7 @@ pub struct Song {
     /// The context of this song.
     ///
     /// For example, the URI identifier of this song.
-    pub context: HashMap<String, String>,
+    pub context: Option<HashMap<String, String>>,
 }
 
 /// The song identifier with the engine information.
@@ -52,7 +52,7 @@ pub struct SongSearchInformation<'a> {
     /// The serialized identifier of this song.
     pub identifier: SerializedIdentifier,
     /// The details of this song.
-    pub song: Song,
+    pub song: Option<Song>,
 }
 
 /// The information of the song retrieved with `retrieve()`.
