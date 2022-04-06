@@ -84,6 +84,12 @@ impl<'a> Context<'a> {
     }
 }
 
+impl std::fmt::Display for Song {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.keyword())
+    }
+}
+
 impl Song {
     /// Generate the keyword of this song.
     pub fn keyword(&self) -> String {
