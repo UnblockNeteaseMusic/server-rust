@@ -14,6 +14,10 @@ pub struct UnableToExtractJson<'a> {
 impl<'a> std::error::Error for UnableToExtractJson<'a> {}
 impl<'a> std::fmt::Display for UnableToExtractJson<'a> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "unable to extract json: {} (type: {})", self.json_pointer, self.expected_type)
+        write!(
+            f,
+            "unable to extract json: {} (type: {})",
+            self.json_pointer, self.expected_type
+        )
     }
 }

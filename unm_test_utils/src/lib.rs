@@ -1,9 +1,9 @@
 use futures::FutureExt;
 use log::LevelFilter;
 use simple_logger::SimpleLogger;
-use unm_types::{Song, Artist, Context};
-use unm_engine::interface::Engine;
 use std::{future::Future, pin::Pin, time::Duration};
+use unm_engine::interface::Engine;
+use unm_types::{Artist, Context, Song};
 
 /// Measure the time taken by the given closure.
 #[inline]

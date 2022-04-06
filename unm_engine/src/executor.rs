@@ -2,7 +2,7 @@ use std::{collections::HashMap, sync::Arc};
 
 use futures::FutureExt;
 use log::{debug, error, info, trace};
-use unm_types::{Context, Song, SongSearchInformation, RetrievedSongInfo};
+use unm_types::{Context, RetrievedSongInfo, Song, SongSearchInformation};
 
 use crate::interface::Engine;
 
@@ -20,13 +20,13 @@ impl Executor {
     }
 
     /// Register the `engine_impl` with the `engine_id` to [`Executor`].
-    /// 
+    ///
     /// Better to use the `engine_id` provided by the engine trait,
     /// so we can take it correctly when received [`SongSearchInformation`].
-    /// 
+    ///
     /// ```ignore
     /// use unm_engine_bilibili::{BilibiliEngine, ENGINE_ID as BILIBILI_ENGINE_ID};
-    /// 
+    ///
     /// let mut executor = Executor::new();
     /// executor.register(BILIBILI_ENGINE_ID, BilibiliEngine::default());
     /// ```
@@ -90,9 +90,16 @@ impl Executor {
         }
     }
 
-    pub async fn retrieve<'a>(&self, song: &'a SongSearchInformation<'a>, ctx: &Context<'_>) -> ExecutorResult<RetrievedSongInfo<'static>> {
+    pub async fn retrieve<'a>(
+        &self,
+        song: &'a SongSearchInformation<'a>,
+        ctx: &Context<'_>,
+    ) -> ExecutorResult<RetrievedSongInfo<'static>> {
         let engine = self.resolve_engine(&song.source)?;
-        engine.retrieve(&song.identifier, ctx).await.map_err(ExecutorError::EngineRetrieveError)
+        engine
+            .retrieve(&song.identifier, ctx)
+            .await
+            .map_err(ExecutorError::EngineRetrieveError)
     }
 
     /// Validate engines to check if the engines specified are all registered.
@@ -127,7 +134,9 @@ impl Executor {
         self.engine_map
             .get(engine_id)
             .cloned()
-            .ok_or(ExecutorError::EngineResolveFailed { engine: engine_id.to_string() })
+            .ok_or(ExecutorError::EngineResolveFailed {
+                engine: engine_id.to_string(),
+            })
     }
 }
 

@@ -1,6 +1,6 @@
 use futures::FutureExt;
 use unm_test_utils::{measure_async_function_time, set_logger};
-use unm_types::{Song, Artist, Context};
+use unm_types::{Artist, Context, Song};
 
 #[tokio::main]
 async fn main() {
@@ -13,7 +13,7 @@ async fn main() {
         }],
         ..Default::default()
     };
-    
+
     let context = Context::default();
     let executor = {
         let mut e = unm_engine::executor::Executor::new();

@@ -7,7 +7,7 @@ use unm_types::Song;
 /// ```
 /// use unm_selector::SimilarSongSelector;
 /// use unm_types::Song;
-/// 
+///
 /// let SimilarSongSelector { selector, optional_selector } = SimilarSongSelector::new(&Song::default());
 /// vec![Song::default()].iter().find(selector);
 /// vec![Some(Song::default()), None].iter().find(optional_selector);
@@ -43,7 +43,7 @@ impl SimilarSongSelector {
                 false
             }
         };
-    
+
         Self {
             selector: Box::new(basic_func),
             optional_selector: Box::new(optional_func),
@@ -436,11 +436,12 @@ mod tests {
             ..Default::default()
         };
 
-        let SimilarSongSelector { selector, .. } = SimilarSongSelector::new(
-            &to_compare
-        );
+        let SimilarSongSelector { selector, .. } = SimilarSongSelector::new(&to_compare);
 
-        assert_eq!(TESTDATA.iter().find(selector).map(|v| v.duration), Some(Some(254293i64)));
+        assert_eq!(
+            TESTDATA.iter().find(selector).map(|v| v.duration),
+            Some(Some(254293i64))
+        );
     }
 
     #[test]
@@ -452,11 +453,12 @@ mod tests {
             ..Default::default()
         };
 
-        let SimilarSongSelector { selector, .. } = SimilarSongSelector::new(
-            &to_compare
-        );
+        let SimilarSongSelector { selector, .. } = SimilarSongSelector::new(&to_compare);
 
-        assert_eq!(TESTDATA.iter().find(selector).map(|v| v.duration), Some(Some(287529i64)));
+        assert_eq!(
+            TESTDATA.iter().find(selector).map(|v| v.duration),
+            Some(Some(287529i64))
+        );
     }
 
     #[test]
@@ -467,13 +469,23 @@ mod tests {
             ..Default::default()
         };
 
-        let SimilarSongSelector { optional_selector, .. } = SimilarSongSelector::new(
-            &to_compare
+        let SimilarSongSelector {
+            optional_selector, ..
+        } = SimilarSongSelector::new(&to_compare);
+
+        let testdata = TESTDATA
+            .clone()
+            .into_iter()
+            .map(Some)
+            .collect::<Vec<Option<Song>>>();
+
+        assert_eq!(
+            testdata
+                .iter()
+                .find(optional_selector)
+                .map(|v| v.as_ref().map(|v| v.duration)),
+            Some(Some(Some(254293i64)))
         );
-
-        let testdata = TESTDATA.clone().into_iter().map(Some).collect::<Vec<Option<Song>>>();
-
-        assert_eq!(testdata.iter().find(optional_selector).map(|v| v.as_ref().map(|v| v.duration)), Some(Some(Some(254293i64))));
     }
 
     #[test]
@@ -485,12 +497,22 @@ mod tests {
             ..Default::default()
         };
 
-        let SimilarSongSelector { optional_selector, .. } = SimilarSongSelector::new(
-            &to_compare
+        let SimilarSongSelector {
+            optional_selector, ..
+        } = SimilarSongSelector::new(&to_compare);
+
+        let testdata = TESTDATA
+            .clone()
+            .into_iter()
+            .map(Some)
+            .collect::<Vec<Option<Song>>>();
+
+        assert_eq!(
+            testdata
+                .iter()
+                .find(optional_selector)
+                .map(|v| v.as_ref().map(|v| v.duration)),
+            Some(Some(Some(287529i64)))
         );
-
-        let testdata = TESTDATA.clone().into_iter().map(Some).collect::<Vec<Option<Song>>>();
-
-        assert_eq!(testdata.iter().find(optional_selector).map(|v| v.as_ref().map(|v| v.duration)), Some(Some(Some(287529i64))));
     }
 }

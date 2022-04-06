@@ -5,7 +5,9 @@
 use async_trait::async_trait;
 use unm_engine::interface::Engine;
 use unm_selector::SimilarSongSelector;
-use unm_types::{Context, RetrievedSongInfo, SerializedIdentifier, Song, SongSearchInformation, Artist};
+use unm_types::{
+    Artist, Context, RetrievedSongInfo, SerializedIdentifier, Song, SongSearchInformation,
+};
 
 use std::{borrow::Cow, str::FromStr};
 
@@ -38,7 +40,7 @@ impl Engine for BilibiliEngine {
             })?;
 
         let matched = find_match(info, result).await?;
-       
+
         if let Some(song) = matched {
             Ok(Some(SongSearchInformation {
                 source: Cow::Borrowed(ENGINE_NAME),
