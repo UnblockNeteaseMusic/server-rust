@@ -3,8 +3,6 @@
 pub use serde_json::Value as Json;
 
 /// Throws when the JSON is not able to extract.
-///
-/// (pointer, expected_type)
 #[derive(Debug)]
 pub struct UnableToExtractJson<'a> {
     pub json_pointer: &'a str,
