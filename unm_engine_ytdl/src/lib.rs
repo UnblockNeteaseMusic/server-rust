@@ -13,8 +13,8 @@ use serde::Deserialize;
 use unm_engine::interface::Engine;
 use unm_types::{Song, Context, SongSearchInformation, SerializedIdentifier, RetrievedSongInfo};
 
-const DEFAULT_EXECUTABLE: &str = "yt-dlp";
-const ENGINE_NAME: &str = "ytdl";
+pub const DEFAULT_EXECUTABLE: &str = "yt-dlp";
+pub const ENGINE_ID: &str = "ytdl";
 
 /// The response that the `youtube-dl` instance will return.
 #[derive(Deserialize)]
@@ -41,7 +41,7 @@ impl Engine for YtDlEngine {
         // We return the URL we got from youtube-dl as the song identifier,
         // so we can return the URL in retrieve() easily.
         Ok(response.map(|url| SongSearchInformation {
-            source: Cow::Borrowed(ENGINE_NAME),
+            source: Cow::Borrowed(ENGINE_ID),
             identifier: url,
             song: None,
         }))
@@ -55,7 +55,7 @@ impl Engine for YtDlEngine {
         debug!("Retrieving {identifier}…");
         // We just return the identifier as the URL of song.
         Ok(RetrievedSongInfo {
-            source: Cow::Borrowed(ENGINE_NAME),
+            source: Cow::Borrowed(ENGINE_ID),
             url: identifier.to_string(),
         })
     }
