@@ -32,7 +32,7 @@ pub struct Song {
     pub id: String,
     /// The name of this song.
     pub name: String,
-    /// The duration of this song.
+    /// The duration of this song (ms).
     pub duration: Option<i64>,
     /// The artist of this song.
     pub artists: Vec<Artist>,
