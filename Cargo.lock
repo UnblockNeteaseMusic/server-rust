@@ -1110,6 +1110,7 @@ dependencies = [
  "anyhow",
  "async-trait",
  "http",
+ "log",
  "serde_json",
  "tokio",
  "unm_engine",
@@ -1135,12 +1136,34 @@ dependencies = [
 ]
 
 [[package]]
+name = "unm_engine_kugou"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "futures",
+ "http",
+ "log",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "tokio",
+ "unm_engine",
+ "unm_request",
+ "unm_selector",
+ "unm_test_utils",
+ "unm_types",
+ "urlencoding",
+]
+
+[[package]]
 name = "unm_engine_pyncm"
 version = "0.1.0"
 dependencies = [
  "anyhow",
  "async-trait",
  "http",
+ "log",
  "serde",
  "serde_json",
  "unm_engine",
