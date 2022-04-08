@@ -3,7 +3,7 @@
 //! It can fetch audio from Bilibili Music.
 
 use async_trait::async_trait;
-use log::{info, debug};
+use log::{debug, info};
 use unm_engine::interface::Engine;
 use unm_selector::SimilarSongSelector;
 use unm_types::{

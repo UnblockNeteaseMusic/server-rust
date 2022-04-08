@@ -168,19 +168,19 @@ fn format(entry: &Json) -> anyhow::Result<Song> {
             id: valstr("album_id")?,
             name: valstr("album_name")?,
         }),
-        context: Some(KugouSongContext {
-            id: entry["hash"].as_str().map(|v| v.to_string()),
-            id_hq: entry["320hash"].as_str().map(|v| v.to_string()),
-            id_sq: entry["sqhash"].as_str().map(|v| v.to_string()),
-        }.into()),
+        context: Some(
+            KugouSongContext {
+                id: entry["hash"].as_str().map(|v| v.to_string()),
+                id_hq: entry["320hash"].as_str().map(|v| v.to_string()),
+                id_sq: entry["sqhash"].as_str().map(|v| v.to_string()),
+            }
+            .into(),
+        ),
     })
 }
 
 /// Search and get song (with metadata) from Kugou Music.
-pub async fn search(
-    info: &Song,
-    ctx: &Context<'_>,
-) -> anyhow::Result<Option<Song>> {
+pub async fn search(info: &Song, ctx: &Context<'_>) -> anyhow::Result<Option<Song>> {
     info!("Searching with Kugou Engine…");
 
     let url_str = format!(

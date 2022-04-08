@@ -2,7 +2,7 @@
 //!
 //! It can fetch audio from YouTube with
 //! the specified `youtube-dl`-like command.
-//! 
+//!
 //! The default is `yt-dlp`. You can configure it by passing
 //! `ytdl:exe` in the ctx.config [`HashMap`] field.
 
@@ -11,7 +11,7 @@ use std::{borrow::Cow, collections::HashMap};
 use log::{debug, info};
 use serde::Deserialize;
 use unm_engine::interface::Engine;
-use unm_types::{Song, Context, SongSearchInformation, SerializedIdentifier, RetrievedSongInfo};
+use unm_types::{Context, RetrievedSongInfo, SerializedIdentifier, Song, SongSearchInformation};
 
 pub const DEFAULT_EXECUTABLE: &str = "yt-dlp";
 pub const ENGINE_ID: &str = "ytdl";
@@ -38,7 +38,9 @@ impl Engine for YtDlEngine {
 
         info!("Searching for {info} with {exe}…");
 
-        let response = fetch_from_youtube(exe, &info.keyword()).await?.map(|r| r.url);
+        let response = fetch_from_youtube(exe, &info.keyword())
+            .await?
+            .map(|r| r.url);
 
         // We return the URL we got from youtube-dl as the song identifier,
         // so we can return the URL in retrieve() easily.
@@ -75,7 +77,7 @@ fn decide_ytdl_exe<'a>(config: &Option<HashMap<&str, &'a str>>) -> &'a str {
 }
 
 /// Get the response from `<exe>`.
-/// 
+///
 /// The `<exe>` should be a `youtube-dl`-like command,
 /// such as `yt-dlp` or `youtube-dl`.
 ///

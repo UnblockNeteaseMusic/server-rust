@@ -6,11 +6,11 @@
 use std::{borrow::Cow, str::FromStr};
 
 use http::Method;
-use log::{info, debug};
+use log::{debug, info};
 use serde::Deserialize;
 use unm_engine::interface::Engine;
 use unm_request::request;
-use unm_types::{Song, Context, SongSearchInformation, RetrievedSongInfo, SerializedIdentifier};
+use unm_types::{Context, RetrievedSongInfo, SerializedIdentifier, Song, SongSearchInformation};
 
 #[derive(Deserialize)]
 struct PyNCMResponse {

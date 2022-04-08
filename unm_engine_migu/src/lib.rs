@@ -1,7 +1,7 @@
 //! UNM Engine: Migu
 //!
 //! It can fetch audio from Migu Music.
-//! 
+//!
 //! You would need to set `migu:aversionid` in your config
 //! to the `aversionid` value in your cookie.
 
@@ -99,7 +99,7 @@ impl Engine for MiguEngine {
     }
 }
 
-/// Get the `migu:aversionid` from config. 
+/// Get the `migu:aversionid` from config.
 fn get_aversionid<'a>(config: &Option<HashMap<&str, &'a str>>) -> Option<&'a str> {
     log::debug!("Getting migu:aversionid…");
 
@@ -109,7 +109,7 @@ fn get_aversionid<'a>(config: &Option<HashMap<&str, &'a str>>) -> Option<&'a str
             return Some(aversionid);
         }
     }
-    
+
     log::debug!("⚠️  aversionid did not specify!");
     None
 }

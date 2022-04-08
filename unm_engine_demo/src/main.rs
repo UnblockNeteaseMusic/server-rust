@@ -19,15 +19,40 @@ async fn main() {
     let context = Context::default();
     let executor = {
         let mut e = unm_engine::executor::Executor::new();
-        e.register(unm_engine_bilibili::ENGINE_ID, Arc::new(unm_engine_bilibili::BilibiliEngine));
-        e.register(unm_engine_ytdl::ENGINE_ID, Arc::new(unm_engine_ytdl::YtDlEngine));
-        e.register(unm_engine_kugou::ENGINE_ID, Arc::new(unm_engine_kugou::KugouEngine));
-        e.register(unm_engine_migu::ENGINE_ID, Arc::new(unm_engine_migu::MiguEngine));
+        e.register(
+            unm_engine_bilibili::ENGINE_ID,
+            Arc::new(unm_engine_bilibili::BilibiliEngine),
+        );
+        e.register(
+            unm_engine_ytdl::ENGINE_ID,
+            Arc::new(unm_engine_ytdl::YtDlEngine),
+        );
+        e.register(
+            unm_engine_kugou::ENGINE_ID,
+            Arc::new(unm_engine_kugou::KugouEngine),
+        );
+        e.register(
+            unm_engine_migu::ENGINE_ID,
+            Arc::new(unm_engine_migu::MiguEngine),
+        );
         e
     };
 
-    let (search_time_taken, search_result) =
-        measure_async_function_time(|| executor.search(&[unm_engine_bilibili::ENGINE_ID, unm_engine_ytdl::ENGINE_ID, unm_engine_kugou::ENGINE_ID, unm_engine_migu::ENGINE_ID], &song, &context).boxed()).await;
+    let (search_time_taken, search_result) = measure_async_function_time(|| {
+        executor
+            .search(
+                &[
+                    unm_engine_bilibili::ENGINE_ID,
+                    unm_engine_ytdl::ENGINE_ID,
+                    unm_engine_kugou::ENGINE_ID,
+                    unm_engine_migu::ENGINE_ID,
+                ],
+                &song,
+                &context,
+            )
+            .boxed()
+    })
+    .await;
     let search_result = search_result.expect("should has a search result");
 
     let (retrieve_time_taken, retrieved_result) =
