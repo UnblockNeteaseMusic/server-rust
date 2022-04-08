@@ -6,6 +6,7 @@
 use std::{borrow::Cow, str::FromStr};
 
 use http::Method;
+use log::{info, debug};
 use serde::Deserialize;
 use unm_engine::interface::Engine;
 use unm_request::request;
@@ -39,6 +40,8 @@ impl Engine for PyNCMEngine {
         info: &'a Song,
         ctx: &'a Context,
     ) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
+        info!("Searching with PyNCM engine…");
+
         let response = fetch_song_info(&info.id, ctx).await?;
 
         if response.code == 200 {
@@ -65,6 +68,8 @@ impl Engine for PyNCMEngine {
         identifier: &'a SerializedIdentifier,
         _: &'a Context,
     ) -> anyhow::Result<RetrievedSongInfo<'static>> {
+        info!("Retrieving with PyNCM engine…");
+
         // We just return the identifier as the URL of song.
         Ok(RetrievedSongInfo {
             source: Cow::Borrowed(ENGINE_NAME),
@@ -75,6 +80,8 @@ impl Engine for PyNCMEngine {
 
 /// Fetch the song info in [`PyNCMResponse`].
 async fn fetch_song_info(id: &str, ctx: &Context<'_>) -> anyhow::Result<PyNCMResponse> {
+    debug!("Fetching the song information…");
+
     let url_str = format!(
         "https://service-ghlrryee-1308098780.gz.apigw.tencentcs.com/release/pyncmd/track/GetTrackAudio?song_ids={id}&bitrate={bitrate}",
         id = id,
@@ -88,6 +95,8 @@ async fn fetch_song_info(id: &str, ctx: &Context<'_>) -> anyhow::Result<PyNCMRes
 
 /// Find the matched song from an array of [`PyNCMResponseEntry`].
 fn find_match(data: &[PyNCMResponseEntry], song_id: &str) -> anyhow::Result<Option<String>> {
+    info!("Finding the matched song…");
+
     data.iter()
         .find(|entry| {
             // Test if the ID of this entry matched what we want to fetch,

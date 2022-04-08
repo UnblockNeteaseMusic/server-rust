@@ -3,6 +3,7 @@
 //! It can fetch audio from Bilibili Music.
 
 use async_trait::async_trait;
+use log::{info, debug};
 use unm_engine::interface::Engine;
 use unm_selector::SimilarSongSelector;
 use unm_types::{
@@ -29,6 +30,8 @@ impl Engine for BilibiliEngine {
         info: &'a Song,
         ctx: &'a Context,
     ) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
+        info!("Searching with Bilibili engine…");
+
         let response = get_search_data(&info.keyword(), ctx).await?;
         let result = response
             .pointer("/data/result")
@@ -57,6 +60,8 @@ impl Engine for BilibiliEngine {
         identifier: &'a SerializedIdentifier,
         ctx: &'a Context,
     ) -> anyhow::Result<RetrievedSongInfo<'static>> {
+        info!("Retrieving the song by identifier…");
+
         let response = get_tracked_data(identifier.as_ref(), ctx).await?;
         let links = response
             .pointer("/data/cdns")
@@ -88,6 +93,8 @@ impl Engine for BilibiliEngine {
 
 /// Get search data from Bilibili Music.
 async fn get_search_data(keyword: &str, ctx: &Context<'_>) -> anyhow::Result<Json> {
+    debug!("Getting the search data from Bilibili Music…");
+
     let url_str = format!(
         "https://api.bilibili.com/audio/music-service-c/s?\
         search_type=music&page=1&pagesize=30&\
@@ -102,6 +109,8 @@ async fn get_search_data(keyword: &str, ctx: &Context<'_>) -> anyhow::Result<Jso
 
 /// Track the ID from Bilibili Music.
 async fn get_tracked_data(id: &str, ctx: &Context<'_>) -> anyhow::Result<Json> {
+    debug!("Tracking the ID from Bilibili Music…");
+
     let url_str = format!(
         "https://www.bilibili.com/audio/music-service-c/web/url?rivilege=2&quality=2&sid={id}"
     );
@@ -115,6 +124,8 @@ async fn get_tracked_data(id: &str, ctx: &Context<'_>) -> anyhow::Result<Json> {
 ///
 /// `data` is the `data/result` of the Bilibili Music response.
 async fn find_match(info: &Song, data: &[Json]) -> anyhow::Result<Option<Song>> {
+    info!("Finding the matched song from the response…");
+
     let selector = SimilarSongSelector::new(info).optional_selector;
     let similar_song = data
         .iter()
@@ -127,6 +138,8 @@ async fn find_match(info: &Song, data: &[Json]) -> anyhow::Result<Option<Song>> 
 
 /// Format the Bilibili song metadata to [`Song`].
 fn format(song: &Json) -> anyhow::Result<Song> {
+    debug!("Formatting the response to Song…");
+
     let id = song["id"].as_i64().ok_or(UnableToExtractJson {
         json_pointer: "/id",
         expected_type: "i64",

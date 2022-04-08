@@ -8,7 +8,7 @@
 
 use std::{borrow::Cow, collections::HashMap};
 
-use log::debug;
+use log::{debug, info};
 use serde::Deserialize;
 use unm_engine::interface::Engine;
 use unm_types::{Song, Context, SongSearchInformation, SerializedIdentifier, RetrievedSongInfo};
@@ -35,7 +35,9 @@ impl Engine for YtDlEngine {
         ctx: &'a Context,
     ) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
         let exe = decide_ytdl_exe(&ctx.config);
-        debug!("Searching for {info} with {exe}…");
+
+        info!("Searching for {info} with {exe}…");
+
         let response = fetch_from_youtube(exe, &info.keyword()).await?.map(|r| r.url);
 
         // We return the URL we got from youtube-dl as the song identifier,
@@ -52,7 +54,8 @@ impl Engine for YtDlEngine {
         identifier: &'a SerializedIdentifier,
         _: &'a Context,
     ) -> anyhow::Result<RetrievedSongInfo<'static>> {
-        debug!("Retrieving {identifier}…");
+        info!("Retrieving {identifier}…");
+
         // We just return the identifier as the URL of song.
         Ok(RetrievedSongInfo {
             source: Cow::Borrowed(ENGINE_ID),
@@ -82,8 +85,11 @@ fn decide_ytdl_exe<'a>(config: &Option<HashMap<&str, &'a str>>) -> &'a str {
 ///     --dump-json     dump the information as JSON without downloading it
 /// ```
 async fn fetch_from_youtube(exe: &str, keyword: &str) -> anyhow::Result<Option<YtDlResponse>> {
+    info!("Calling external application “{exe}”!");
+
     let mut cmd = tokio::process::Command::new(exe);
 
+    debug!("Receiving the search result from {exe}…");
     let child = cmd
         .args(&["-f", "bestaudio", "--dump-json"])
         .arg(format!("ytsearch1:{keyword}"))
@@ -97,6 +103,7 @@ async fn fetch_from_youtube(exe: &str, keyword: &str) -> anyhow::Result<Option<Y
         Ok(if response.is_empty() {
             None
         } else {
+            debug!("Serializing the search result…");
             let json = serde_json::from_str::<'_, YtDlResponse>(&response)?;
             Some(json)
         })
