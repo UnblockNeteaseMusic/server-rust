@@ -16,3 +16,4 @@ unm_engine = { version = "0.1.0", path = "../unm_engine" }
 # Engines
 unm_engine_bilibili = { version = "0.1.0", path = "../unm_engine_bilibili" }
 unm_engine_ytdl = { version = "0.1.0", path = "../unm_engine_ytdl" }
+unm_engine_kugou = { version = "0.1.0", path = "../unm_engine_kugou" }
