@@ -132,6 +132,18 @@ mod tests {
     use crate::{Artist, Song};
 
     #[test]
+    fn test_keyword_with_no_artist() {
+        let s = Song {
+            id: "114514".to_string(),
+            name: "Lost River".to_string(),
+            artists: vec![],
+            ..Default::default()
+        };
+
+        assert_eq!(s.keyword(), "Lost River");
+    }
+
+    #[test]
     fn test_keyword_with_single_artist() {
         let s = Song {
             id: "123".to_string(),
