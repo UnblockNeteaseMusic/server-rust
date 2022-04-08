@@ -48,7 +48,7 @@ impl Executor {
         song: &Song,
         ctx: &Context<'_>,
     ) -> ExecutorResult<SongSearchInformation<'static>> {
-        debug!("Searching {song} with engines {engines:?}");
+        info!("Searching {song} with engines {engines:?}");
         self.validate_engines(engines)?;
 
         let mut futures = Vec::new();
@@ -57,7 +57,7 @@ impl Executor {
             let engine = self.resolve_engine(engine_id)?;
 
             let future = async move {
-                debug!("Searching {song} with engine {engine_id}…");
+                info!("Searching {song} with engine {engine_id}…");
 
                 let result = engine
                     .search(song, ctx)
@@ -95,7 +95,7 @@ impl Executor {
         song: &'a SongSearchInformation<'a>,
         ctx: &Context<'_>,
     ) -> ExecutorResult<RetrievedSongInfo<'static>> {
-        debug!("Retrieving song from {}…", song.source);
+        info!("Retrieving song from {}…", song.source);
 
         let engine = self.resolve_engine(&song.source)?;
         engine
