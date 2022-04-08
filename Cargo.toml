@@ -13,6 +13,9 @@ members = [
     # Engines
     "unm_engine_bilibili",
     "unm_engine_ytdl",
+
+    # Demo
+    "unm_engine_demo",
 ]
 
 [profile.release]

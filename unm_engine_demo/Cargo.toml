@@ -1,0 +1,17 @@
+[package]
+name = "unm_engine_demo"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+unm_test_utils = { version = "0.1.0", path = "../unm_test_utils" }
+tokio = { version = "1.17.0", features = ["macros", "rt-multi-thread"] }
+futures = "0.3.21"
+unm_types = { version = "0.1.0", path = "../unm_types" }
+unm_engine = { version = "0.1.0", path = "../unm_engine" }
+
+# Engines
+unm_engine_bilibili = { path = "../unm_engine_bilibili" }

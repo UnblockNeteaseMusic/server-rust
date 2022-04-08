@@ -12,8 +12,3 @@ futures = "0.3.21"
 log = "0.4.16"
 thiserror = "1.0.30"
 unm_types = { version = "0.1.0", path = "../unm_types" }
-
-[dev-dependencies]
-unm_test_utils = { version = "0.1.0", path = "../unm_test_utils" }
-tokio = { version = "1.17.0", features = ["macros", "rt-multi-thread"] }
-unm_engine_bilibili = { path = "../unm_engine_bilibili" }

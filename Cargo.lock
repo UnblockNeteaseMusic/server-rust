@@ -1100,9 +1100,6 @@ dependencies = [
  "futures",
  "log",
  "thiserror",
- "tokio",
- "unm_engine_bilibili",
- "unm_test_utils",
  "unm_types",
 ]
 
@@ -1122,6 +1119,18 @@ dependencies = [
  "unm_types",
  "url",
  "urlencoding",
+]
+
+[[package]]
+name = "unm_engine_demo"
+version = "0.1.0"
+dependencies = [
+ "futures",
+ "tokio",
+ "unm_engine",
+ "unm_engine_bilibili",
+ "unm_test_utils",
+ "unm_types",
 ]
 
 [[package]]
