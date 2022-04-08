@@ -21,7 +21,6 @@ async fn main() {
         let mut e = unm_engine::executor::Executor::new();
         e.register(unm_engine_bilibili::ENGINE_ID, Arc::new(unm_engine_bilibili::BilibiliEngine));
         e.register(unm_engine_ytdl::ENGINE_ID, Arc::new(unm_engine_ytdl::YtDlEngine));
-        // e.register(, Arc::new(unm_engine::engine::BilibiliEngine::default()));
         e
     };
 

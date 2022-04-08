@@ -1135,6 +1135,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "unm_engine_pyncm"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "http",
+ "serde",
+ "serde_json",
+ "unm_engine",
+ "unm_request",
+ "unm_types",
+ "url",
+]
+
+[[package]]
 name = "unm_engine_ytdl"
 version = "0.1.0"
 dependencies = [

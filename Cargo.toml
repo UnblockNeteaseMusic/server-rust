@@ -13,6 +13,7 @@ members = [
     # Engines
     "unm_engine_bilibili",
     "unm_engine_ytdl",
+    "unm_engine_pyncm",
 
     # Demo
     "unm_engine_demo",
