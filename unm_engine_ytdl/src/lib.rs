@@ -11,7 +11,7 @@ use std::{borrow::Cow, collections::HashMap};
 use log::{debug, info};
 use serde::Deserialize;
 use unm_engine::interface::Engine;
-use unm_types::{Context, RetrievedSongInfo, SerializedIdentifier, Song, SongSearchInformation};
+use unm_types::{Context, RetrievedSongInfo, SerializedIdentifier, Song, SongSearchInformation, Artist};
 
 pub const DEFAULT_EXECUTABLE: &str = "yt-dlp";
 pub const ENGINE_ID: &str = "ytdl";
@@ -19,8 +19,18 @@ pub const ENGINE_ID: &str = "ytdl";
 /// The response that the `youtube-dl` instance will return.
 #[derive(Deserialize)]
 struct YtDlResponse {
+    /// The YouTube video ID.
+    id: String,
+    /// The YouTube video title.
+    title: String,
     /// The audio URL.
     url: String,
+    /// The duration of this audio (sec).
+    duration: i32,
+    /// The uploader's YouTube channel ID.
+    uploader_id: String,
+    /// The uploader's YouTube channel name.
+    uploader: String,
 }
 
 /// The search and track engine powered by the `youtube-dl`-like command.
@@ -39,16 +49,17 @@ impl Engine for YtDlEngine {
         info!("Searching for {info} with {exe}…");
 
         let response = fetch_from_youtube(exe, &info.keyword())
-            .await?
-            .map(|r| r.url);
+            .await?;
 
         // We return the URL we got from youtube-dl as the song identifier,
         // so we can return the URL in retrieve() easily.
-        Ok(response.map(|url| SongSearchInformation {
-            source: Cow::Borrowed(ENGINE_ID),
-            identifier: url,
-            song: None,
-        }))
+        if let Some(response) = response {
+            let url = response.url.to_string();
+            let song = Song::from(response);
+            Ok(Some(SongSearchInformation { source: Cow::Borrowed(ENGINE_ID), identifier: url, song: Some(song) }))
+        } else {
+            Ok(None)
+        }
     }
 
     async fn retrieve<'a>(
@@ -115,6 +126,24 @@ async fn fetch_from_youtube(exe: &str, keyword: &str) -> anyhow::Result<Option<Y
         log::error!("Stderr: {}", String::from_utf8_lossy(&child.stderr));
 
         Err(anyhow::anyhow!("Failed to run `{exe}`."))
+    }
+}
+
+impl From<YtDlResponse> for Song {
+    fn from(res: YtDlResponse) -> Self {
+        debug!("Formatting response…");
+
+        Song {
+            id: res.id,
+            name: res.title,
+            artists: vec![Artist {
+                id: res.uploader_id,
+                name: res.uploader,
+            }],
+            duration: Some(res.duration as i64 * 1000),
+            album: None,
+            context: None,
+        }
     }
 }
 
