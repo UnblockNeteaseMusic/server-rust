@@ -102,6 +102,11 @@ impl Song {
     pub fn keyword(&self) -> String {
         // {Song Name}
         let mut keyword = self.name.to_string();
+
+        if self.artists.is_empty() {
+            return keyword;
+        }
+
         let max_idx = self.artists.len() - 1;
 
         // Add hyphen between the song name and the following artist name.
