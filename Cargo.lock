@@ -1178,6 +1178,7 @@ dependencies = [
  "unm_engine",
  "unm_engine_bilibili",
  "unm_engine_kugou",
+ "unm_engine_migu",
  "unm_engine_ytdl",
  "unm_test_utils",
  "unm_types",
