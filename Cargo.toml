@@ -1,8 +1,6 @@
 [workspace]
 members = [
-    # "unm_resolver",
     # "unm_resolver_napi",
-
     "unm_test_utils",
     "unm_types",
     "unm_crypto",
