@@ -15,6 +15,7 @@ members = [
     "unm_engine_ytdl",
     "unm_engine_pyncm",
     "unm_engine_kugou",
+    "unm_engine_migu",
 
     # Demo
     "unm_engine_demo",
