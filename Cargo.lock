@@ -1129,6 +1129,7 @@ dependencies = [
  "tokio",
  "unm_engine",
  "unm_engine_bilibili",
+ "unm_engine_ytdl",
  "unm_test_utils",
  "unm_types",
 ]
