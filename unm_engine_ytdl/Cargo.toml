@@ -1,0 +1,20 @@
+[package]
+name = "unm_engine_ytdl"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+serde = { version = "1.0.136", features = ["derive"] }
+unm_types = { version = "0.1.0", path = "../unm_types" }
+unm_engine = { version = "0.1.0", path = "../unm_engine" }
+async-trait = "0.1.53"
+anyhow = "1.0.56"
+tokio = { version = "1.17.0", features = ["process"] }
+serde_json = "1.0.79"
+log = "0.4.16"
+
+[dev-dependencies]
+tokio = { version = "1.17.0", features = ["macros", "rt-multi-thread"] }
+unm_test_utils = { path = "../unm_test_utils" }

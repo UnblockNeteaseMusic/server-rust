@@ -11,7 +11,8 @@ members = [
     "unm_selector",
 
     # Engines
-    "unm_engine_bilibili"
+    "unm_engine_bilibili",
+    "unm_engine_ytdl",
 ]
 
 [profile.release]

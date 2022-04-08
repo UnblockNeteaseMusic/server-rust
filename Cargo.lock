@@ -855,6 +855,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "signal-hook-registry"
+version = "1.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e51e73328dc4ac0c7ccbda3a494dfa03df1de2f46018127f60c693f2648455b0"
+dependencies = [
+ "libc",
+]
+
+[[package]]
 name = "simple_logger"
 version = "2.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -972,7 +981,9 @@ dependencies = [
  "memchr",
  "mio",
  "num_cpus",
+ "once_cell",
  "pin-project-lite",
+ "signal-hook-registry",
  "socket2",
  "tokio-macros",
  "winapi",
@@ -1111,6 +1122,21 @@ dependencies = [
  "unm_types",
  "url",
  "urlencoding",
+]
+
+[[package]]
+name = "unm_engine_ytdl"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "log",
+ "serde",
+ "serde_json",
+ "tokio",
+ "unm_engine",
+ "unm_test_utils",
+ "unm_types",
 ]
 
 [[package]]
