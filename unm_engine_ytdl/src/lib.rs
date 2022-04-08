@@ -11,7 +11,9 @@ use std::{borrow::Cow, collections::HashMap};
 use log::{debug, info};
 use serde::Deserialize;
 use unm_engine::interface::Engine;
-use unm_types::{Context, RetrievedSongInfo, SerializedIdentifier, Song, SongSearchInformation, Artist};
+use unm_types::{
+    Artist, Context, RetrievedSongInfo, SerializedIdentifier, Song, SongSearchInformation,
+};
 
 pub const DEFAULT_EXECUTABLE: &str = "yt-dlp";
 pub const ENGINE_ID: &str = "ytdl";
@@ -48,15 +50,18 @@ impl Engine for YtDlEngine {
 
         info!("Searching for {info} with {exe}…");
 
-        let response = fetch_from_youtube(exe, &info.keyword())
-            .await?;
+        let response = fetch_from_youtube(exe, &info.keyword()).await?;
 
         // We return the URL we got from youtube-dl as the song identifier,
         // so we can return the URL in retrieve() easily.
         if let Some(response) = response {
             let url = response.url.to_string();
             let song = Song::from(response);
-            Ok(Some(SongSearchInformation { source: Cow::Borrowed(ENGINE_ID), identifier: url, song: Some(song) }))
+            Ok(Some(SongSearchInformation {
+                source: Cow::Borrowed(ENGINE_ID),
+                identifier: url,
+                song: Some(song),
+            }))
         } else {
             Ok(None)
         }
