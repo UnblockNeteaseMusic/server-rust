@@ -1,8 +1,12 @@
 //! UNM Engine: Migu
 //!
 //! It can fetch audio from Migu Music.
+//! 
+//! You would need to set `migu:aversionid` in your config
+//! to the `aversionid` value in your cookie.
 
 use std::borrow::Cow;
+use std::collections::HashMap;
 use std::str::FromStr;
 
 use anyhow::Ok;
@@ -95,6 +99,21 @@ impl Engine for MiguEngine {
     }
 }
 
+/// Get the `migu:aversionid` from config. 
+fn get_aversionid<'a>(config: &Option<HashMap<&str, &'a str>>) -> Option<&'a str> {
+    log::debug!("Getting migu:aversionid…");
+
+    if let Some(ctx) = config {
+        if let Some(aversionid) = ctx.get("migu:aversionid") {
+            log::debug!("✅ aversionid specified!");
+            return Some(aversionid);
+        }
+    }
+    
+    log::debug!("⚠️  aversionid did not specify!");
+    None
+}
+
 fn get_header(aversionid: Option<&str>) -> HeaderMap {
     log::debug!("Getting the header for request…");
 
@@ -137,7 +156,7 @@ async fn get_search_data(keyword: &str, ctx: &Context<'_>) -> Result<Json> {
     let res = request(
         Method::GET,
         &url,
-        Some(get_header(ctx.migu_aversionid)),
+        Some(get_header(get_aversionid(&ctx.config))),
         None,
         ctx.try_get_proxy()?,
     )
@@ -214,7 +233,7 @@ async fn get_single_data(id: &str, format: &str, num: &str, ctx: &Context<'_>) -
     let res = request(
         Method::GET,
         &url,
-        Some(get_header(ctx.migu_aversionid)),
+        Some(get_header(get_aversionid(&ctx.config))),
         None,
         ctx.try_get_proxy()?,
     )
