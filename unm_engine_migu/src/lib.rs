@@ -58,12 +58,12 @@ impl Engine for MiguEngine {
                 expected_type: "array",
             })?;
 
-        let matched = find_match(info, result).await?;
+        let matched_song = find_match(info, result).await?;
 
-        Ok(matched.map(|identifier| SongSearchInformation {
+        Ok(matched_song.map(|song| SongSearchInformation {
             source: Cow::Borrowed(ENGINE_ID),
-            identifier,
-            song: None,
+            identifier: song.id.clone(),
+            song: Some(song),
         }))
     }
 
@@ -164,7 +164,7 @@ async fn get_search_data(keyword: &str, ctx: &Context<'_>) -> Result<Json> {
     Ok(res.json().await?)
 }
 
-async fn find_match(info: &Song, data: &[Json]) -> Result<Option<String>> {
+async fn find_match(info: &Song, data: &[Json]) -> Result<Option<Song>> {
     log::debug!("Finding the matched song from data…");
 
     let SimilarSongSelector {
@@ -177,7 +177,7 @@ async fn find_match(info: &Song, data: &[Json]) -> Result<Option<String>> {
         .find(|s| optional_selector(&s))
         .expect("should be Some");
 
-    Ok(similar_song.map(|song| song.id))
+    Ok(similar_song)
 }
 
 fn format(song: &Json) -> Result<Song> {
