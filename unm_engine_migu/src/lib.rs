@@ -5,34 +5,18 @@
 //! You would need to set `migu:aversionid` in your config
 //! to the `aversionid` value in your cookie.
 
-use std::borrow::Cow;
-use std::collections::HashMap;
-use std::str::FromStr;
+mod types;
 
+use std::{borrow::Cow, collections::HashMap, str::FromStr};
 use anyhow::Ok;
-use anyhow::Result;
-
 use async_trait::async_trait;
-use futures::future::join_all;
-use http::header::HeaderName;
-use http::header::ORIGIN;
-use http::header::REFERER;
-use http::HeaderMap;
-
 use http::Method;
-use rand::Rng;
+use types::MiguResponse;
 use unm_engine::interface::Engine;
-use unm_request::json::{Json, UnableToExtractJson};
-use unm_request::request;
+use unm_request::{request, json::Json};
 use unm_selector::SimilarSongSelector;
-use unm_types::Artist;
-use unm_types::Context;
-use unm_types::RetrievedSongInfo;
-use unm_types::SerializedIdentifier;
-use unm_types::Song;
-use unm_types::SongSearchInformation;
+use unm_types::{SerializedIdentifier, Song, SongSearchInformation, Context, RetrievedSongInfo};
 use url::Url;
-use urlencoding::encode;
 
 pub const ENGINE_ID: &str = "migu";
 
@@ -48,23 +32,39 @@ impl Engine for MiguEngine {
     ) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
         log::info!("Searching “{info}” with Migu engine…");
 
-        let response = get_search_data(&info.keyword(), ctx).await?;
-        let result = response
-            .pointer("/musics")
-            .ok_or_else(|| anyhow::anyhow!("/musics not found"))?
-            .as_array()
-            .ok_or(UnableToExtractJson {
-                json_pointer: "/musics",
-                expected_type: "array",
-            })?;
+        let api = construct_search_api(info.keyword().as_str())?;
+        let response = request(Method::GET, &api, None, None, ctx.try_get_proxy()?).await?;
+        let result = response.json::<Json>().await?;
+        let migu_songs = {
+            let raw = result
+                .pointer("/songResultData/result")
+                .ok_or_else(|| {
+                    anyhow::anyhow!("Could not extract the field 'result' from response")
+                })?
+                .clone();
+            serde_json::from_value::<Vec<types::MiguResponse>>(raw)?
+        };
 
-        let matched_song = find_match(info, result).await?;
+        let matched_song = find_match(info, migu_songs);
 
-        Ok(matched_song.map(|song| SongSearchInformation {
-            source: Cow::Borrowed(ENGINE_ID),
-            identifier: song.id.clone(),
-            song: Some(song),
-        }))
+        if let Some(song) = matched_song {
+            let serialized_audio_map = {
+                let audio_map = song
+                    .context
+                    .clone()
+                    .ok_or_else(|| anyhow::anyhow!("context must be able to retrieve"))?;
+                
+                serde_json::to_string(&audio_map)?
+            };
+
+            Ok(Some(SongSearchInformation {
+                source: Cow::Borrowed(ENGINE_ID),
+                identifier: serialized_audio_map,
+                song: Some(song),
+            }))
+        } else {
+            Ok(None)
+        }
     }
 
     async fn retrieve<'a>(
@@ -74,281 +74,64 @@ impl Engine for MiguEngine {
     ) -> anyhow::Result<RetrievedSongInfo<'static>> {
         log::info!("Retrieving with Migu engine…");
 
-        let num = get_rand_num();
-        let enabled_flac = ctx.enable_flac;
-        let qualities = if enabled_flac {
+        let availables_qualities = serde_json::from_str::<'_, HashMap<String, String>>(identifier)?;
+        let prefered_qualities = if ctx.enable_flac {
             vec!["ZQ", "SQ", "HQ", "PQ"]
         } else {
-            vec!["HQ", "PQ"]
+            vec!["HQ", "PQ", "LQ"]
         };
 
-        let futures = qualities
-            .iter()
-            .map(|&format| single(identifier, format, &num, ctx));
+        let matched_song_url = prefered_qualities
+            .into_iter()
+            .filter_map(|quality| availables_qualities.get(quality))
+            .next();
 
-        let urls = join_all(futures).await;
-
-        urls.into_iter()
-            .find(|result_url| result_url.is_ok())
-            .map(|result_url| result_url.expect("should be Some"))
-            .map(|url| RetrievedSongInfo {
+        if let Some(url) = matched_song_url {
+            Ok(RetrievedSongInfo {
                 source: Cow::Borrowed(ENGINE_ID),
-                url,
+                url: url.clone(),
             })
-            .ok_or_else(|| anyhow::anyhow!("not able to retrieve identifier"))
-    }
-}
-
-/// Get the `migu:aversionid` from config.
-fn get_aversionid<'a>(config: &Option<HashMap<&str, &'a str>>) -> Option<&'a str> {
-    log::debug!("Getting migu:aversionid…");
-
-    if let Some(ctx) = config {
-        if let Some(aversionid) = ctx.get("migu:aversionid") {
-            log::debug!("✅ aversionid specified!");
-            return Some(aversionid);
+        } else {
+            Err(anyhow::anyhow!("Could not find any matched song"))
         }
     }
-
-    log::debug!("⚠️  aversionid did not specify!");
-    None
 }
 
-fn get_header(aversionid: Option<&str>) -> HeaderMap {
-    log::debug!("Getting the header for request…");
-
-    let mut header = HeaderMap::new();
-    header.insert(ORIGIN, "http://music.migu.cn/".parse().unwrap());
-    header.insert(REFERER, "http://m.music.migu.cn/v3/".parse().unwrap());
-    header.insert(HeaderName::from_static("channel"), "0".parse().unwrap());
-
-    if let Some(aversionid) = aversionid {
-        header.insert(
-            HeaderName::from_static("aversionid"),
-            aversionid.parse().unwrap(),
-        );
-    }
-
-    header
-}
-
-fn get_rand_num() -> String {
-    log::debug!("Taking a random number…");
-
-    let mut rng = rand::thread_rng();
-    let num = rng.gen_range(0.0..1.0);
-    num.to_string()
-        .split('.')
-        .nth(1)
-        .expect("index 2: nothing there")
-        .to_string()
-}
-
-async fn get_search_data(keyword: &str, ctx: &Context<'_>) -> Result<Json> {
-    log::debug!("Send a search request of “{keyword}” to Migu Music…");
-
-    let url_str = format!(
-        "https://m.music.migu.cn/migu/remoting/scr_search_tag?keyword={0}&type=2&rows=20&pgc=1",
-        encode(keyword)
+/// Construct the search API to request,
+/// which the `keyword` will be encoded and trimmed.
+fn construct_search_api(keyword: &str) -> anyhow::Result<Url> {
+    let url = format!(
+        r#"https://pd.musicapp.migu.cn/MIGUM2.0/v1.0/content/search_all.do?&ua=Android_migu&version=5.0.1&text={keyword}&pageNo=1&pageSize=10&searchSwitch={{"song":1,"album":0,"singer":0,"tagSong":0,"mvSong":0,"songlist":0,"bestShow":1}}"#,
+        keyword = urlencoding::encode(keyword.trim()),
     );
-    let url = Url::from_str(&url_str)?;
 
-    let res = request(
-        Method::GET,
-        &url,
-        Some(get_header(get_aversionid(&ctx.config))),
-        None,
-        ctx.try_get_proxy()?,
-    )
-    .await?;
-    Ok(res.json().await?)
+    Ok(Url::from_str(&url)?)
 }
 
-async fn find_match(info: &Song, data: &[Json]) -> Result<Option<Song>> {
+fn find_match(info: &Song, data: Vec<MiguResponse>) -> Option<Song> {
     log::debug!("Finding the matched song from data…");
 
-    let SimilarSongSelector {
-        optional_selector, ..
-    } = SimilarSongSelector::new(info);
+    let SimilarSongSelector { selector, .. } = SimilarSongSelector::new(info);
 
-    let similar_song = data
-        .iter()
-        .map(|entry| format(entry).ok())
-        .find(|s| optional_selector(&s))
-        .expect("should be Some");
-
-    Ok(similar_song)
+    data.into_iter()
+        .map(Song::from)
+        .find(|s| selector(&s))
 }
 
-fn format(song: &Json) -> Result<Song> {
-    log::debug!("Formatting the Migu Music data to Song…");
-
-    let id = song["id"].as_str().ok_or(UnableToExtractJson {
-        json_pointer: "id",
-        expected_type: "str",
-    })?;
-    let name = song["songName"].as_str().ok_or(UnableToExtractJson {
-        json_pointer: "name",
-        expected_type: "string",
-    })?;
-    let singer_id = song["singerId"].as_str().ok_or(UnableToExtractJson {
-        json_pointer: "singerId",
-        expected_type: "string",
-    })?;
-    let singer_name = song["singerName"].as_str().ok_or(UnableToExtractJson {
-        json_pointer: "singerName",
-        expected_type: "string",
-    })?;
-
-    let si: Vec<&str> = singer_id.split(',').collect();
-    let sn: Vec<&str> = singer_name.split(',').collect();
-
-    let mut artists = Vec::new();
-    for index in 0..si.len() {
-        artists.push(Artist {
-            id: si.get(index).cloned().unwrap_or_default().to_string(),
-            name: sn.get(index).cloned().unwrap_or_default().to_string(),
-        })
-    }
-
-    let x = Song {
-        id: String::from(id),
-        name: String::from(name),
-        artists,
-        ..Default::default()
-    };
-    Ok(x)
-}
-
-async fn get_single_data(id: &str, format: &str, num: &str, ctx: &Context<'_>) -> Result<Json> {
-    log::debug!("Getting the single data…");
-
-    let url_str = format!(
-        "https://app.c.nf.migu.cn/MIGUM2.0/strategy/listen-url/v2.2?lowerQualityContentId={0}&netType=01&resourceType=E&songId={1}&toneFlag={2}",
-        encode(num),
-        encode(id),
-        encode(format),
-    );
-    let url = Url::from_str(&url_str)?;
-    let res = request(
-        Method::GET,
-        &url,
-        Some(get_header(get_aversionid(&ctx.config))),
-        None,
-        ctx.try_get_proxy()?,
-    )
-    .await?;
-    Ok(res.json().await?)
-}
-
-async fn single(id: &str, format: &str, num: &str, ctx: &Context<'_>) -> Result<String> {
-    let response = get_single_data(id, format, num, ctx).await?;
-    let format_type = response
-        .pointer("/data/formatType")
-        .ok_or_else(|| anyhow::anyhow!("/data/formatType not found"))?
-        .as_str()
-        .ok_or(UnableToExtractJson {
-            json_pointer: "formatType",
-            expected_type: "string",
-        })?;
-    let url = response
-        .pointer("/data/url")
-        .ok_or_else(|| anyhow::anyhow!("/data/url not found"))?
-        .as_str()
-        .ok_or(UnableToExtractJson {
-            json_pointer: "url",
-            expected_type: "string",
-        })?;
-
-    if format_type == format {
-        Ok(String::from(url))
-    } else {
-        Err(anyhow::anyhow!("format not equals"))
-    }
-}
-
-#[cfg(all(test, migu_test))]
+#[cfg(test)]
 mod tests {
-    use tokio::test;
+    use reqwest::Url;
+    use std::str::FromStr;
 
-    use super::*;
-
-    fn get_info_1() -> Song {
-        // https://music.163.com/api/song/detail?ids=[385552]
-        Song {
-            name: String::from("干杯"),
-            artists: vec![Artist {
-                name: String::from("五月天"),
-                ..Default::default()
-            }],
-            ..Default::default()
-        }
-    }
+    use crate::construct_search_api;
 
     #[test]
-    async fn migu_search() {
-        let info = get_info_1();
-        let info = MiguEngine
-            .search(&info, &Context::default())
-            .await
-            .unwrap()
-            .unwrap();
+    fn construct_search_api_test() {
+        let url = |u| Url::from_str(u).unwrap();
 
-        assert_eq!(info.source, ENGINE_NAME);
-        assert_eq!(info.identifier, "4300399");
-    }
-
-    #[test]
-    async fn migu_search_json() {
-        let info = get_info_1();
-        let json = get_search_data(&info.keyword(), &Context::default())
-            .await
-            .unwrap();
-        println!("{}", json);
-    }
-
-    #[test]
-    async fn migu_single() {
-        let url = single(
-            "4300399",
-            "PQ",
-            get_rand_num().as_str(),
-            &Context::default(),
-        )
-        .await
-        .unwrap();
-        println!("{}", url);
-    }
-
-    #[test]
-    async fn migu_single_json() {
-        let json = get_single_data(
-            "4300399",
-            "PQ",
-            get_rand_num().as_str(),
-            &Context::default(),
-        )
-        .await
-        .unwrap();
-        println!("{}", json);
-    }
-
-    #[test]
-    async fn migu_track() {
-        let info = MiguEngine
-            .retrieve(&String::from("4300399"), &Context::default())
-            .await
-            .unwrap();
-
-        assert_eq!(info.source, ENGINE_NAME);
-        println!("{}", info.url);
-    }
-
-    #[test]
-    async fn migu_check() {
-        let p = MiguEngine;
-        let info = get_info_1();
-        let url = p.check(&info, &Context::default()).await.unwrap().unwrap();
-        println!("{}", url);
+        assert_eq!(construct_search_api("Twice - TT").unwrap(), url("https://pd.musicapp.migu.cn/MIGUM2.0/v1.0/content/search_all.do?&ua=Android_migu&version=5.0.1&text=Twice%20-%20TT&pageNo=1&pageSize=10&searchSwitch={\"song\":1,\"album\":0,\"singer\":0,\"tagSong\":0,\"mvSong\":0,\"songlist\":0,\"bestShow\":1}"));
+        assert_eq!(construct_search_api("Twice").unwrap(), url("https://pd.musicapp.migu.cn/MIGUM2.0/v1.0/content/search_all.do?&ua=Android_migu&version=5.0.1&text=Twice&pageNo=1&pageSize=10&searchSwitch={\"song\":1,\"album\":0,\"singer\":0,\"tagSong\":0,\"mvSong\":0,\"songlist\":0,\"bestShow\":1}"));
+        assert_eq!(construct_search_api("Twice    ").unwrap(), url("https://pd.musicapp.migu.cn/MIGUM2.0/v1.0/content/search_all.do?&ua=Android_migu&version=5.0.1&text=Twice&pageNo=1&pageSize=10&searchSwitch={\"song\":1,\"album\":0,\"singer\":0,\"tagSong\":0,\"mvSong\":0,\"songlist\":0,\"bestShow\":1}"));
+        assert_eq!(construct_search_api("     TT").unwrap(), url("https://pd.musicapp.migu.cn/MIGUM2.0/v1.0/content/search_all.do?&ua=Android_migu&version=5.0.1&text=TT&pageNo=1&pageSize=10&searchSwitch={\"song\":1,\"album\":0,\"singer\":0,\"tagSong\":0,\"mvSong\":0,\"songlist\":0,\"bestShow\":1}"));
     }
 }
