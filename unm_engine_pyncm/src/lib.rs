@@ -27,7 +27,7 @@ struct PyNCMResponseEntry {
     pub url: Option<String>,
 }
 
-const ENGINE_NAME: &str = "pyncm";
+pub const ENGINE_ID: &str = "pyncm";
 
 /// The `pyncm` engine that can fetch audio from
 /// the unofficial Netease Cloud Music API.
@@ -49,7 +49,7 @@ impl Engine for PyNCMEngine {
             // so we can return the URL in retrieve() easily.
             let match_result =
                 find_match(&response.data, &info.id)?.map(|url| SongSearchInformation {
-                    source: Cow::Borrowed(ENGINE_NAME),
+                    source: Cow::Borrowed(ENGINE_ID),
                     identifier: url,
                     song: None,
                 });
@@ -72,7 +72,7 @@ impl Engine for PyNCMEngine {
 
         // We just return the identifier as the URL of song.
         Ok(RetrievedSongInfo {
-            source: Cow::Borrowed(ENGINE_NAME),
+            source: Cow::Borrowed(ENGINE_ID),
             url: identifier.to_string(),
         })
     }
