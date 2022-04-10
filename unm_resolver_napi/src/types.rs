@@ -1,4 +1,4 @@
-use std::borrow::Cow;
+use std::{borrow::Cow, collections::HashMap};
 
 use napi_derive::napi;
 pub use unm_types::SerializedIdentifier;
@@ -19,8 +19,6 @@ pub struct Album {
     pub id: String,
     /// The name of this album.
     pub name: String,
-    /// The song this album includes.
-    pub songs: Vec<Song>,
 }
 
 /// [napi-rs] The metadata of a song.
@@ -36,6 +34,10 @@ pub struct Song {
     pub artists: Vec<Artist>,
     /// The album of this song.
     pub album: Option<Album>,
+    /// The context of this song.
+    ///
+    /// For example, the URI identifier of this song.
+    pub context: Option<HashMap<String, String>>,
 }
 
 /// [napi-rs] The song identifier with the engine information.
@@ -45,6 +47,8 @@ pub struct SongSearchInformation {
     pub source: String,
     /// The serialized identifier of this song.
     pub identifier: SerializedIdentifier,
+    /// The details of this song.
+    pub song: Option<Song>,
 }
 
 /// [napi-rs] The information of the song retrieved with `retrieve()`.
@@ -65,15 +69,21 @@ pub struct Context {
     /// Whether to enable FLAC support.
     pub enable_flac: bool,
 
-    /// Migu: The cookie "channel"
-    pub migu_channel: Option<String>,
-
-    /// Migu: The cookie "aversionid"
-    pub migu_aversionid: Option<String>,
+    /// The config for engines.
+    pub config: Option<HashMap<String, String>>,
 }
 
 impl From<Artist> for unm_types::Artist {
     fn from(artist: Artist) -> Self {
+        Self {
+            id: artist.id,
+            name: artist.name,
+        }
+    }
+}
+
+impl From<unm_types::Artist> for Artist {
+    fn from(artist: unm_types::Artist) -> Self {
         Self {
             id: artist.id,
             name: artist.name,
@@ -90,6 +100,15 @@ impl From<Album> for unm_types::Album {
     }
 }
 
+impl From<unm_types::Album> for Album {
+    fn from(album: unm_types::Album) -> Self {
+        Self {
+            id: album.id,
+            name: album.name,
+        }
+    }
+}
+
 impl From<Song> for unm_types::Song {
     fn from(song: Song) -> Self {
         Self {
@@ -98,7 +117,20 @@ impl From<Song> for unm_types::Song {
             duration: song.duration,
             artists: song.artists.into_iter().map(Into::into).collect(),
             album: song.album.map(Into::into),
-            context: (),
+            context: song.context,
+        }
+    }
+}
+
+impl From<unm_types::Song> for Song {
+    fn from(song: unm_types::Song) -> Self {
+        Self {
+            id: song.id,
+            name: song.name,
+            duration: song.duration,
+            artists: song.artists.into_iter().map(Into::into).collect(),
+            album: song.album.map(Into::into),
+            context: song.context,
         }
     }
 }
@@ -108,6 +140,7 @@ impl From<unm_types::SongSearchInformation<'_>> for SongSearchInformation {
         Self {
             source: song_information.source.to_string(),
             identifier: song_information.identifier,
+            song: song_information.song.map(Into::into),
         }
     }
 }
@@ -117,6 +150,7 @@ impl From<SongSearchInformation> for unm_types::SongSearchInformation<'_> {
         Self {
             source: Cow::Owned(song_information.source),
             identifier: song_information.identifier,
+            song: song_information.song.map(Into::into),
         }
     }
 }
@@ -135,8 +169,7 @@ impl Context {
         unm_types::Context {
             proxy_uri: self.proxy_uri.clone(),
             enable_flac: self.enable_flac,
-            migu_channel: self.migu_channel.as_deref(),
-            migu_aversionid: self.migu_aversionid.as_deref(),
+            config: self.config.clone(),
         }
     }
 }

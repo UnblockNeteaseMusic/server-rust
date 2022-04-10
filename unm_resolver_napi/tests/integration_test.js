@@ -3,7 +3,9 @@ const UNM = require("..");
 const ctx = { enableFlac: true };
 
 async function main() {
-  const searchResult = await UNM.batchSearch(
+  const executor = new UNM.Executor();
+  
+  const searchResult = await executor.search(
     Object.values(UNM.Engine),
     {
       id: "12345",
@@ -19,7 +21,7 @@ async function main() {
   );
   console.log(searchResult);
 
-  const retrieveResult = await UNM.retrieve(searchResult, ctx);
+  const retrieveResult = await executor.retrieve(searchResult, ctx);
   console.log(retrieveResult);
 }
 
