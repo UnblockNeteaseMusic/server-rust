@@ -1274,6 +1274,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "unm_engine_joox"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "http",
+ "log",
+ "once_cell",
+ "regex",
+ "reqwest",
+ "serde_json",
+ "tokio",
+ "unm_crypto",
+ "unm_engine",
+ "unm_request",
+ "unm_selector",
+ "unm_test_utils",
+ "unm_types",
+]
+
+[[package]]
 name = "unm_engine_kugou"
 version = "0.1.0"
 dependencies = [
