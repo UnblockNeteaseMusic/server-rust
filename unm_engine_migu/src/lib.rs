@@ -1,9 +1,6 @@
 //! UNM Engine: Migu
 //!
 //! It can fetch audio from Migu Music.
-//!
-//! You would need to set `migu:aversionid` in your config
-//! to the `aversionid` value in your cookie.
 
 mod types;
 
