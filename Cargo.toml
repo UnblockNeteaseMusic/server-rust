@@ -20,4 +20,4 @@ members = [
 ]
 
 [profile.release]
-lto = true
+lto = "thin"
