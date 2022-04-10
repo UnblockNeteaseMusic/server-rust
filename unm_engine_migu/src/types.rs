@@ -17,23 +17,21 @@ type MiguFormatType = String;
 
 #[derive(Serialize, Deserialize)]
 #[serde(untagged)]
-#[serde(rename_all = "camelCase")]
 pub enum MiguRateFormat {
     #[non_exhaustive]
     NormalQualityFormat {
+        #[serde(rename = "formatType")]
         format_type: String,
-        format: String,
         url: String,
-        size: u64,
     },
     #[non_exhaustive]
     HighQualityFormat {
+        #[serde(rename = "formatType")]
         format_type: String,
-        format: String,
+        #[serde(rename = "iosUrl")]
         ios_url: String,     // m4a, not used
+        #[serde(rename = "androidUrl")]
         android_url: String, // flac
-        ios_size: u64,
-        android_size: u64,
     },
 }
 
@@ -57,8 +55,8 @@ pub struct MiguAlbum {
 pub struct MiguResponse {
     id: String,
     name: String,
-    singer: Vec<MiguSinger>,
-    albums: Vec<MiguAlbum>,
+    singers: Vec<MiguSinger>,
+    albums: Option<Vec<MiguAlbum>>,
     rate_formats: Vec<MiguRateFormat>,
     new_rate_formats: Vec<MiguRateFormat>,
 }
@@ -111,7 +109,7 @@ impl From<MiguResponse> for Song {
         let id = response.id;
         let name = response.name;
         let artists = response
-            .singer
+            .singers
             .into_iter()
             .map(Artist::from)
             .collect::<Vec<Artist>>();
@@ -119,7 +117,7 @@ impl From<MiguResponse> for Song {
         // Return the first album recorded in Migu Music if
         // there are at least one albums. Otherwise, return None.
         let album = {
-            let album = response.albums.into_iter().next();
+            let album = response.albums.and_then(|album| album.into_iter().next());
             album.map(Album::from)
         };
 
@@ -180,25 +178,17 @@ mod tests {
     fn test_migu_rate_format_to_string_tuple() {
         let rate_format_nq = MiguRateFormat::NormalQualityFormat {
             format_type: "LQ".to_string(),
-            format: "".to_string(),
             url: "ftp://218.200.160.122:21/lq.mp3".to_string(),
-            size: 114514,
         };
         let rate_format_hq = MiguRateFormat::HighQualityFormat {
             format_type: "HQ".to_string(),
-            format: "".to_string(),
             ios_url: "ftp://218.200.160.122:21/sq.aac".to_string(),
             android_url: "ftp://218.200.160.122:21/sq.flac".to_string(),
-            ios_size: 114514,
-            android_size: 1919810,
         };
         let rate_format_hq_nd = MiguRateFormat::HighQualityFormat {
             format_type: "HQ".to_string(),
-            format: "".to_string(),
             ios_url: "https://somewhere.tld/sq.aac".to_string(),
             android_url: "https://somewhere.tld/sq.flac".to_string(),
-            ios_size: 114514,
-            android_size: 1919810,
         };
 
         let nq_tuple = MiguAudioSource::from(rate_format_nq);

@@ -42,8 +42,16 @@ impl Engine for MiguEngine {
                     anyhow::anyhow!("Could not extract the field 'result' from response")
                 })?
                 .clone();
-            serde_json::from_value::<Vec<types::MiguResponse>>(raw)?
-        };
+            let response = serde_json::from_value::<Vec<types::MiguResponse>>(raw);
+
+            match response {
+                Err(e) => {
+                    log::error!("json deserialization error at line {}, column {}", e.line(), e.column());
+                    Err(e)
+                },
+                t => t,
+            }
+        }?;
 
         let matched_song = find_match(info, migu_songs);
 
