@@ -193,8 +193,6 @@ fn fit(song: &Song) -> String {
 fn format(item: &Json) -> anyhow::Result<Song> {
     log::debug!("Formatting a Joox song item…");
 
-    log::debug!("{item:#?}");
-
     let valstr = |data: &Json, json_pointer| {
         data.as_str()
             .map(ToString::to_string)
@@ -226,7 +224,7 @@ fn format(item: &Json) -> anyhow::Result<Song> {
         .iter()
         .map(|singer| -> anyhow::Result<Artist> {
             Ok(Artist {
-                id: valstr(&singer["id"], "/singer_list/?/id")?,
+                id: vali64(&singer["id"], "/singer_list/?/id")?.to_string(),
                 name: b64_opt_decode(singer["name"].as_str())?,
             })
         })
@@ -244,7 +242,7 @@ fn format(item: &Json) -> anyhow::Result<Song> {
         name: b64_opt_decode(item["info1"].as_str())?,
         duration: Some(vali64(&item["playtime"], "/playtime")? * 1000),
         album: Some(Album {
-            id: valstr(&item["/albummid"], "/albummid")?,
+            id: valstr(&item["albummid"], "/albummid")?,
             name: b64_opt_decode(item["info3"].as_str())?,
         }),
         artists,
