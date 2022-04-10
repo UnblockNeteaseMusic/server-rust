@@ -9,6 +9,7 @@ pub type SerializedIdentifier = String;
 
 /// The metadata of the artist of a song.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
+// #[non_exhaustive]
 pub struct Artist {
     /// The identifier of this artist.
     pub id: String,
@@ -18,6 +19,7 @@ pub struct Artist {
 
 /// The metadata of the album of a song.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
+// #[non_exhaustive]
 pub struct Album {
     /// The identifier of this artist.
     pub id: String,
@@ -27,6 +29,7 @@ pub struct Album {
 
 /// The metadata of a song.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
+// #[non_exhaustive]
 pub struct Song {
     /// The identifier of this song.
     pub id: String,
@@ -46,6 +49,7 @@ pub struct Song {
 
 /// The song identifier with the engine information.
 #[derive(Clone, Serialize, Deserialize)]
+// #[non_exhaustive]
 pub struct SongSearchInformation<'a> {
     /// The retrieve source of this song, for example: `bilibili`.
     pub source: Cow<'a, str>,
@@ -57,6 +61,7 @@ pub struct SongSearchInformation<'a> {
 
 /// The information of the song retrieved with `retrieve()`.
 #[derive(Clone, Serialize, Deserialize)]
+// #[non_exhaustive]
 pub struct RetrievedSongInfo<'a> {
     /// The retrieve source of this song, for example: `bilibili`.
     pub source: Cow<'a, str>,
@@ -66,26 +71,19 @@ pub struct RetrievedSongInfo<'a> {
 
 /// The context.
 #[derive(Clone, Default, Serialize, Deserialize)]
-pub struct Context<'a> {
+// #[non_exhaustive]
+pub struct Context {
     /// The proxy URI
     pub proxy_uri: Option<String>,
 
     /// Whether to enable FLAC support.
     pub enable_flac: bool,
 
-    /// Migu: The cookie "channel"
-    #[deprecated]
-    pub migu_channel: Option<&'a str>,
-
-    /// Migu: The cookie "aversionid"
-    #[deprecated]
-    pub migu_aversionid: Option<&'a str>,
-
     /// The config for engines.
-    pub config: Option<HashMap<&'a str, &'a str>>,
+    pub config: Option<HashMap<String, String>>,
 }
 
-impl<'a> Context<'a> {
+impl Context {
     pub fn try_get_proxy(&self) -> reqwest::Result<Option<Proxy>> {
         self.proxy_uri.clone().map(Proxy::all).transpose()
     }

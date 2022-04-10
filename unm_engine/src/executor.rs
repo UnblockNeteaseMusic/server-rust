@@ -46,7 +46,7 @@ impl Executor {
         &self,
         engines: &[EngineId],
         song: &Song,
-        ctx: &Context<'_>,
+        ctx: &Context,
     ) -> ExecutorResult<SongSearchInformation<'static>> {
         info!("Searching {song} with engines {engines:?}");
         self.validate_engines(engines)?;
@@ -93,7 +93,7 @@ impl Executor {
     pub async fn retrieve<'a>(
         &self,
         song: &'a SongSearchInformation<'a>,
-        ctx: &Context<'_>,
+        ctx: &Context,
     ) -> ExecutorResult<RetrievedSongInfo<'static>> {
         info!("Retrieving song from {}…", song.source);
 

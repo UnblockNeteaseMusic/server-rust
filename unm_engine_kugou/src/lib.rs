@@ -180,7 +180,7 @@ fn format(entry: &Json) -> anyhow::Result<Song> {
 }
 
 /// Search and get song (with metadata) from Kugou Music.
-pub async fn search(info: &Song, ctx: &Context<'_>) -> anyhow::Result<Option<Song>> {
+pub async fn search(info: &Song, ctx: &Context) -> anyhow::Result<Option<Song>> {
     info!("Searching with Kugou Engine…");
 
     let url_str = format!(
@@ -215,7 +215,7 @@ pub async fn search(info: &Song, ctx: &Context<'_>) -> anyhow::Result<Option<Son
 pub async fn single(
     song: &Song,
     format: KugouFormat,
-    ctx: &Context<'_>,
+    ctx: &Context,
 ) -> anyhow::Result<Option<String>> {
     debug!("Retriving the audio file in the format “{format}” from “{song}”…");
 

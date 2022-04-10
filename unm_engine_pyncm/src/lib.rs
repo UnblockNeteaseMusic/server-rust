@@ -79,7 +79,7 @@ impl Engine for PyNCMEngine {
 }
 
 /// Fetch the song info in [`PyNCMResponse`].
-async fn fetch_song_info(id: &str, ctx: &Context<'_>) -> anyhow::Result<PyNCMResponse> {
+async fn fetch_song_info(id: &str, ctx: &Context) -> anyhow::Result<PyNCMResponse> {
     debug!("Fetching the song information…");
 
     let url_str = format!(

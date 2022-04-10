@@ -82,11 +82,11 @@ impl Engine for YtDlEngine {
     }
 }
 
-fn decide_ytdl_exe<'a>(config: &Option<HashMap<&str, &'a str>>) -> &'a str {
+fn decide_ytdl_exe(config: &Option<HashMap<String, String>>) -> &str {
     debug!("Deciding the executable to use in `ytdl` engine…");
 
     if let Some(config) = config {
-        config.get(&"ytdl.exe").unwrap_or(&DEFAULT_EXECUTABLE)
+        config.get(&"ytdl.exe".to_string()).map(|v| v.as_str()).unwrap_or(DEFAULT_EXECUTABLE)
     } else {
         DEFAULT_EXECUTABLE
     }
@@ -164,7 +164,7 @@ mod tests {
         assert_eq!(decide_ytdl_exe(&config), DEFAULT_EXECUTABLE);
 
         let mut config = HashMap::new();
-        config.insert("ytdl.exe", "youtube-dl");
+        config.insert("ytdl.exe".to_string(), "youtube-dl".to_string());
         assert_eq!(decide_ytdl_exe(&Some(config)), "youtube-dl");
     }
 }

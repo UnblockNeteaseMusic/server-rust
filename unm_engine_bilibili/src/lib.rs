@@ -92,7 +92,7 @@ impl Engine for BilibiliEngine {
 }
 
 /// Get search data from Bilibili Music.
-async fn get_search_data(keyword: &str, ctx: &Context<'_>) -> anyhow::Result<Json> {
+async fn get_search_data(keyword: &str, ctx: &Context) -> anyhow::Result<Json> {
     debug!("Getting the search data from Bilibili Music…");
 
     let url_str = format!(
@@ -108,7 +108,7 @@ async fn get_search_data(keyword: &str, ctx: &Context<'_>) -> anyhow::Result<Jso
 }
 
 /// Track the ID from Bilibili Music.
-async fn get_tracked_data(id: &str, ctx: &Context<'_>) -> anyhow::Result<Json> {
+async fn get_tracked_data(id: &str, ctx: &Context) -> anyhow::Result<Json> {
     debug!("Tracking the ID from Bilibili Music…");
 
     let url_str = format!(
