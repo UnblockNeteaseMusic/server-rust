@@ -1,5 +1,5 @@
-use napi_derive::napi;
 use napi::bindgen_prelude::*;
+use napi_derive::napi;
 
 #[napi]
 pub enum Engine {

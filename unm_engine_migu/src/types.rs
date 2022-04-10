@@ -29,7 +29,7 @@ pub enum MiguRateFormat {
         #[serde(rename = "formatType")]
         format_type: String,
         #[serde(rename = "iosUrl")]
-        ios_url: String,     // m4a, not used
+        ios_url: String, // m4a, not used
         #[serde(rename = "androidUrl")]
         android_url: String, // flac
     },
@@ -63,7 +63,8 @@ pub struct MiguResponse {
 
 impl From<MiguRateFormat> for MiguAudioSource {
     fn from(value: MiguRateFormat) -> Self {
-        let correct_url = |url: String| url.replace("ftp://218.200.160.122:21", "http://freetyst.nf.migu.cn");
+        let correct_url =
+            |url: String| url.replace("ftp://218.200.160.122:21", "http://freetyst.nf.migu.cn");
 
         match value {
             MiguRateFormat::NormalQualityFormat {
@@ -121,14 +122,8 @@ impl From<MiguResponse> for Song {
             album.map(Album::from)
         };
 
-        let rate_format = response
-            .rate_formats
-            .into_iter()
-            .map(Into::into);
-        let new_rate_format = response
-            .new_rate_formats
-            .into_iter()
-            .map(Into::into);
+        let rate_format = response.rate_formats.into_iter().map(Into::into);
+        let new_rate_format = response.new_rate_formats.into_iter().map(Into::into);
         let context = MergedAudioFileMap::merge(rate_format, new_rate_format);
 
         Self {
@@ -150,20 +145,20 @@ impl MergedAudioFileMap {
         log::debug!("Merging rate formats…");
 
         let mut map = HashMap::new();
-    
+
         rate_format.for_each(|source| {
             log::trace!("rate_format: {}", source.format_type);
             map.insert(source.format_type, source.url);
         });
-    
+
         new_rate_format.for_each(|source| {
             log::trace!("new_rate_format: {}", source.format_type);
-    
+
             if map.insert(source.format_type, source.url).is_some() {
                 log::trace!("Get duplicated format type. Use new_rate_format one.");
             }
         });
-    
+
         Self(map)
     }
 }
@@ -172,7 +167,7 @@ impl MergedAudioFileMap {
 mod tests {
     use std::collections::HashMap;
 
-    use crate::types::{MiguRateFormat, MiguAudioSource};
+    use crate::types::{MiguAudioSource, MiguRateFormat};
 
     #[test]
     fn test_migu_rate_format_to_string_tuple() {
@@ -229,7 +224,8 @@ mod tests {
                 format_type: "SQ".to_string(),
                 url: "ftp://218.200.160.122:21/sq.flac".to_string(),
             },
-        ].into_iter();
+        ]
+        .into_iter();
         let new_rate_format = vec![
             MiguAudioSource {
                 format_type: "SQ".to_string(),
@@ -239,17 +235,24 @@ mod tests {
                 format_type: "XQ".to_string(),
                 url: "http://freetyst.nf.migu.cn/xq.flac".to_string(),
             },
-        ].into_iter();
+        ]
+        .into_iter();
 
         let expected = {
             let mut hm = HashMap::new();
 
-            hm.insert("LQ".to_string(), "http://freetyst.nf.migu.cn/lq.mp3".to_string());
+            hm.insert(
+                "LQ".to_string(),
+                "http://freetyst.nf.migu.cn/lq.mp3".to_string(),
+            );
             hm.insert(
                 "SQ".to_string(),
                 "http://somewhere.tld/sq2.flac".to_string(),
             );
-            hm.insert("XQ".to_string(), "http://freetyst.nf.migu.cn/xq.flac".to_string());
+            hm.insert(
+                "XQ".to_string(),
+                "http://freetyst.nf.migu.cn/xq.flac".to_string(),
+            );
 
             hm
         };

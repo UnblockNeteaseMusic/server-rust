@@ -46,7 +46,9 @@ pub async fn engine_example_wrapper(engine: impl Engine) {
         ..Default::default()
     };
     let context = Context {
-        enable_flac: std::env::var("ENABLE_FLAC").map(|v| v == "true").unwrap_or(false),
+        enable_flac: std::env::var("ENABLE_FLAC")
+            .map(|v| v == "true")
+            .unwrap_or(false),
         ..Default::default()
     };
 

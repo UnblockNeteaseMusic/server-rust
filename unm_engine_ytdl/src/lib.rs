@@ -86,7 +86,10 @@ fn decide_ytdl_exe(config: &Option<HashMap<String, String>>) -> &str {
     debug!("Deciding the executable to use in `ytdl` engine…");
 
     if let Some(config) = config {
-        config.get(&"ytdl.exe".to_string()).map(|v| v.as_str()).unwrap_or(DEFAULT_EXECUTABLE)
+        config
+            .get(&"ytdl.exe".to_string())
+            .map(|v| v.as_str())
+            .unwrap_or(DEFAULT_EXECUTABLE)
     } else {
         DEFAULT_EXECUTABLE
     }

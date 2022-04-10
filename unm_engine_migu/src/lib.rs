@@ -4,15 +4,15 @@
 
 mod types;
 
-use std::{borrow::Cow, collections::HashMap, str::FromStr};
 use anyhow::Ok;
 use async_trait::async_trait;
 use http::Method;
+use std::{borrow::Cow, collections::HashMap, str::FromStr};
 use types::MiguResponse;
 use unm_engine::interface::Engine;
-use unm_request::{request, json::Json};
+use unm_request::{json::Json, request};
 use unm_selector::SimilarSongSelector;
-use unm_types::{SerializedIdentifier, Song, SongSearchInformation, Context, RetrievedSongInfo};
+use unm_types::{Context, RetrievedSongInfo, SerializedIdentifier, Song, SongSearchInformation};
 use url::Url;
 
 pub const ENGINE_ID: &str = "migu";
@@ -43,9 +43,13 @@ impl Engine for MiguEngine {
 
             match response {
                 Err(e) => {
-                    log::error!("json deserialization error at line {}, column {}", e.line(), e.column());
+                    log::error!(
+                        "json deserialization error at line {}, column {}",
+                        e.line(),
+                        e.column()
+                    );
                     Err(e)
-                },
+                }
                 t => t,
             }
         }?;
@@ -58,7 +62,7 @@ impl Engine for MiguEngine {
                     .context
                     .clone()
                     .ok_or_else(|| anyhow::anyhow!("context must be able to retrieve"))?;
-                
+
                 serde_json::to_string(&audio_map)?
             };
 
@@ -118,9 +122,7 @@ fn find_match(info: &Song, data: Vec<MiguResponse>) -> Option<Song> {
 
     let SimilarSongSelector { selector, .. } = SimilarSongSelector::new(info);
 
-    data.into_iter()
-        .map(Song::from)
-        .find(|s| selector(&s))
+    data.into_iter().map(Song::from).find(|s| selector(&s))
 }
 
 #[cfg(test)]
