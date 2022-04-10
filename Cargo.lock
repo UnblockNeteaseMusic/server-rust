@@ -1390,6 +1390,7 @@ dependencies = [
  "napi",
  "napi-build",
  "napi-derive",
+ "simple_logger",
  "unm_engine",
  "unm_engine_bilibili",
  "unm_engine_kugou",

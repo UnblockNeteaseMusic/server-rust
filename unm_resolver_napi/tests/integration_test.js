@@ -3,6 +3,7 @@ const UNM = require("..");
 const ctx = { enableFlac: true };
 
 async function main() {
+  UNM.enableLogging(UNM.LoggingType.ConsoleEnv);
   const executor = new UNM.Executor();
   
   const searchResult = await executor.search(
