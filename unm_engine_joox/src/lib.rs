@@ -8,6 +8,8 @@
 //! `ctx.config` HashMap. For example:
 //!
 //! ```
+//! # use std::collections::HashMap;
+//!
 //! let config = {
 //!     let mut hm = HashMap::<String, String>::new();
 //!     hm.insert(
