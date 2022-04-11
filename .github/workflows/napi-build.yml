@@ -124,7 +124,7 @@ jobs:
             build: |
               cd $APP_DIR
               yarn build --target aarch64-pc-windows-msvc
-    name: stable - ${{ matrix.settings.target }} - node@16
+    name: beta - ${{ matrix.settings.target }} - node@16
     runs-on: ${{ matrix.settings.host }}
     steps:
       - uses: actions/checkout@v3
@@ -191,7 +191,7 @@ jobs:
           if-no-files-found: error
   build-freebsd:
     runs-on: macos-10.15
-    name: Build FreeBSD
+    name: beta - freebsd - node@16
     steps:
       - uses: actions/checkout@v3
       - name: Build
@@ -211,7 +211,7 @@ jobs:
             curl -qL https://www.npmjs.com/install.sh | sh
             npm install -g yarn
             curl https://sh.rustup.rs -sSf --output rustup.sh
-            sh rustup.sh -y --profile minimal --default-toolchain stable
+            sh rustup.sh -y --profile minimal --default-toolchain beta
             export PATH="/usr/local/cargo/bin:$PATH"
             echo "~~~~ rustc --version ~~~~"
             rustc --version
