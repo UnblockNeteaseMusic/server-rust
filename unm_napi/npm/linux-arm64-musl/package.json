@@ -1,5 +1,5 @@
 {
-  "name": "@unblockneteasemusic/rust-napi-linux-arm64-gnu",
+  "name": "@unblockneteasemusic/rust-napi-linux-arm64-musl",
   "version": "0.0.0",
   "os": [
     "linux"
@@ -7,15 +7,15 @@
   "cpu": [
     "arm64"
   ],
-  "main": "rust-napi.linux-arm64-gnu.node",
+  "main": "rust-napi.linux-arm64-musl.node",
   "files": [
-    "rust-napi.linux-arm64-gnu.node"
+    "rust-napi.linux-arm64-musl.node"
   ],
   "license": "MIT",
   "engines": {
     "node": ">= 10"
   },
   "libc": [
-    "glibc"
+    "musl"
   ]
 }

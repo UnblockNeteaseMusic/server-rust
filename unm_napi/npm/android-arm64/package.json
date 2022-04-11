@@ -1,20 +1,18 @@
 {
   "name": "@unblockneteasemusic/rust-napi-android-arm64",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "os": [
     "android"
   ],
   "cpu": [
     "arm64"
   ],
-  "main": "server-rust-napi.android-arm64.node",
+  "main": "rust-napi.android-arm64.node",
   "files": [
-    "server-rust-napi.android-arm64.node"
+    "rust-napi.android-arm64.node"
   ],
-  "description": " UnblockNeteaseMusic/server-rust 的 Node.js binding",
-  "license": "GPL-3.0-or-later",
+  "license": "MIT",
   "engines": {
     "node": ">= 10"
-  },
-  "repository": "https://github.com/UnblockNeteaseMusic/server-rust"
+  }
 }

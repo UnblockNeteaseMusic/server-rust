@@ -1,15 +1,15 @@
 {
-  "name": "@unblockneteasemusic/rust-napi-darwin-x64",
+  "name": "@unblockneteasemusic/rust-napi-freebsd-x64",
   "version": "0.0.0",
   "os": [
-    "darwin"
+    "freebsd"
   ],
   "cpu": [
     "x64"
   ],
-  "main": "rust-napi.darwin-x64.node",
+  "main": "rust-napi.freebsd-x64.node",
   "files": [
-    "rust-napi.darwin-x64.node"
+    "rust-napi.freebsd-x64.node"
   ],
   "license": "MIT",
   "engines": {

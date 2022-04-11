@@ -1,20 +1,18 @@
 {
   "name": "@unblockneteasemusic/rust-napi-win32-arm64-msvc",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "os": [
     "win32"
   ],
   "cpu": [
     "arm64"
   ],
-  "main": "server-rust-napi.win32-arm64-msvc.node",
+  "main": "rust-napi.win32-arm64-msvc.node",
   "files": [
-    "server-rust-napi.win32-arm64-msvc.node"
+    "rust-napi.win32-arm64-msvc.node"
   ],
-  "description": " UnblockNeteaseMusic/server-rust 的 Node.js binding",
-  "license": "GPL-3.0-or-later",
+  "license": "MIT",
   "engines": {
     "node": ">= 10"
-  },
-  "repository": "https://github.com/UnblockNeteaseMusic/server-rust"
+  }
 }
