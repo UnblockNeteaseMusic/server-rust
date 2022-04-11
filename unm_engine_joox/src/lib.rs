@@ -217,8 +217,8 @@ fn format(item: &Json) -> anyhow::Result<Song> {
 
     let b64_opt_decode = |data: Option<&str>| -> anyhow::Result<String> {
         if let Some(data) = data {
-            let bytes = unm_crypto::base64::decode_block(data)?;
-            Ok(String::from_utf8(bytes)?)
+            let bytes = &base64::decode(data).unwrap()[..];
+            Ok(String::from_utf8_lossy(bytes).to_string())
         } else {
             Ok("".to_string())
         }
