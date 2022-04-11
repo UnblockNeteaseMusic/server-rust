@@ -86,6 +86,7 @@ jobs:
           node-version: 16
           check-latest: true
           cache: yarn
+          cache-dependency-path: ./unm_napi/yarn.lock
           architecture: ${{ matrix.settings.architecture }}
       - name: Install
         uses: actions-rs/toolchain@v1
