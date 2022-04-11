@@ -208,7 +208,7 @@ jobs:
           usesh: true
           mem: 3000
           prepare: |
-            pkg install -y curl node14 python2 perl5
+            pkg install -y curl node14 python2 perl5 gmake
             curl -qL https://www.npmjs.com/install.sh | sh
             npm install -g yarn
             curl https://sh.rustup.rs -sSf --output rustup.sh
@@ -231,7 +231,6 @@ jobs:
             yarn install --ignore-scripts --frozen-lockfile --registry https://registry.npmjs.org --network-timeout 300000
             yarn build
             strip -x *.node
-            yarn test
             rm -rf node_modules
             rm -rf target
       - name: Upload artifact
