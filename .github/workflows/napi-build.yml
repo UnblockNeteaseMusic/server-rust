@@ -5,6 +5,7 @@ env:
   MACOSX_DEPLOYMENT_TARGET: '10.13'
   APP_DIR: unm_napi
 'on':
+  workflow_dispatch:
   push:
     branches:
       - main
