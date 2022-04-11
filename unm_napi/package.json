@@ -1,10 +1,10 @@
 {
-  "name": "unm_resolver_napi",
-  "version": "0.0.0",
+  "name": "@unblockneteasemusic/rust-napi",
+  "version": "0.1.0",
   "main": "index.js",
   "types": "index.d.ts",
   "napi": {
-    "name": "unm_resolver_napi",
+    "name": "server-rust-napi",
     "triples": {
       "additional": [
         "aarch64-apple-darwin",
@@ -15,7 +15,7 @@
       ]
     }
   },
-  "license": "MIT",
+  "license": "GPL-3.0-or-later",
   "devDependencies": {
     "@napi-rs/cli": "^2.4.4"
   },
@@ -28,5 +28,7 @@
     "build:debug": "napi build --platform",
     "prepublishOnly": "napi prepublish -t npm",
     "version": "napi version"
-  }
+  },
+  "repository": "https://github.com/UnblockNeteaseMusic/server-rust",
+  "description": " UnblockNeteaseMusic/server-rust 的 Node.js binding"
 }

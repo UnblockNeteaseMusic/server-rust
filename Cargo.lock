@@ -1369,21 +1369,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "unm_request"
+name = "unm_napi"
 version = "0.1.0"
-dependencies = [
- "http",
- "once_cell",
- "reqwest",
- "serde",
- "serde_json",
- "thiserror",
- "url",
-]
-
-[[package]]
-name = "unm_resolver_napi"
-version = "0.0.0"
 dependencies = [
  "async-recursion",
  "concat-idents",
@@ -1398,6 +1385,19 @@ dependencies = [
  "unm_engine_pyncm",
  "unm_engine_ytdl",
  "unm_types",
+]
+
+[[package]]
+name = "unm_request"
+version = "0.1.0"
+dependencies = [
+ "http",
+ "once_cell",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "url",
 ]
 
 [[package]]

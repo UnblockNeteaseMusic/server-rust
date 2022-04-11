@@ -1,6 +1,5 @@
 [workspace]
 members = [
-    "unm_resolver_napi",
     "unm_test_utils",
     "unm_types",
     "unm_crypto",
@@ -18,6 +17,9 @@ members = [
 
     # Demo
     "unm_engine_demo",
+
+    # N-API
+    "unm_napi",
 ]
 
 [profile.release]

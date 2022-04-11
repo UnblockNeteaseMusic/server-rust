@@ -1,0 +1,20 @@
+{
+  "name": "@unblockneteasemusic/rust-napi-darwin-arm64",
+  "version": "0.1.0",
+  "os": [
+    "darwin"
+  ],
+  "cpu": [
+    "arm64"
+  ],
+  "main": "server-rust-napi.darwin-arm64.node",
+  "files": [
+    "server-rust-napi.darwin-arm64.node"
+  ],
+  "description": " UnblockNeteaseMusic/server-rust 的 Node.js binding",
+  "license": "GPL-3.0-or-later",
+  "engines": {
+    "node": ">= 10"
+  },
+  "repository": "https://github.com/UnblockNeteaseMusic/server-rust"
+}
