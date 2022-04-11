@@ -113,7 +113,7 @@ async fn get_tracked_data(id: &str, ctx: &Context) -> anyhow::Result<Json> {
     debug!("Tracking the ID from Bilibili Music…");
 
     let url = Url::parse_with_params(
-        "https://api.bilibili.com/audio/music-service-c/url",
+        "https://www.bilibili.com/audio/music-service-c/web/url",
         &[
             ("rivilege", "2"),
             ("quality", "2"),
