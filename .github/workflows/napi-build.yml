@@ -125,7 +125,7 @@ jobs:
             build: |
               cd $APP_DIR
               yarn build --target aarch64-pc-windows-msvc
-    name: beta - ${{ matrix.settings.target }} - node@16
+    name: stable - ${{ matrix.settings.target }} - node@16
     runs-on: ${{ matrix.settings.host }}
     steps:
       - uses: actions/checkout@v3
@@ -144,7 +144,7 @@ jobs:
         with:
           profile: minimal
           override: true
-          toolchain: beta
+          toolchain: stable
           target: ${{ matrix.settings.target }}
       # - name: Generate Cargo.lock
       #   uses: actions-rs/cargo@v1
@@ -192,7 +192,7 @@ jobs:
           if-no-files-found: error
   build-freebsd:
     runs-on: macos-10.15
-    name: beta - freebsd - node@16
+    name: stable - freebsd - node@16
     steps:
       - uses: actions/checkout@v3
       - name: Build
@@ -208,11 +208,11 @@ jobs:
           usesh: true
           mem: 3000
           prepare: |
-            pkg install -y curl node14 python2
+            pkg install -y curl node14 python2 perl
             curl -qL https://www.npmjs.com/install.sh | sh
             npm install -g yarn
             curl https://sh.rustup.rs -sSf --output rustup.sh
-            sh rustup.sh -y --profile minimal --default-toolchain beta
+            sh rustup.sh -y --profile minimal --default-toolchain stable
             export PATH="/usr/local/cargo/bin:$PATH"
             echo "~~~~ rustc --version ~~~~"
             rustc --version
