@@ -1,5 +1,5 @@
-use std::{collections::HashMap, borrow::Cow, ops::Deref};
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
+use std::{borrow::Cow, collections::HashMap, ops::Deref};
 use thiserror::Error;
 
 pub type ConfigKey = Cow<'static, str>;
@@ -29,14 +29,15 @@ impl ConfigManager {
         }
     }
 
-    pub fn get_or_err(&self, k: ConfigKey, purpose: Cow<'static, str>) -> ConfigManagerResult<&str> {
+    pub fn get_or_err(
+        &self,
+        k: ConfigKey,
+        purpose: Cow<'static, str>,
+    ) -> ConfigManagerResult<&str> {
         if let Some(value) = self.get(&k) {
             Ok(value.as_str())
         } else {
-            Err(ConfigManagerError::NoSuchKey {
-                key: k,
-                purpose,
-            })
+            Err(ConfigManagerError::NoSuchKey { key: k, purpose })
         }
     }
 

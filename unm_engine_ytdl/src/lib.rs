@@ -13,7 +13,8 @@ use log::{debug, info};
 use serde::Deserialize;
 use unm_engine::interface::Engine;
 use unm_types::{
-    Artist, Context, RetrievedSongInfo, SerializedIdentifier, Song, SongSearchInformation, config::ConfigManager,
+    config::ConfigManager, Artist, Context, RetrievedSongInfo, SerializedIdentifier, Song,
+    SongSearchInformation,
 };
 
 pub const DEFAULT_EXECUTABLE: &str = "yt-dlp";

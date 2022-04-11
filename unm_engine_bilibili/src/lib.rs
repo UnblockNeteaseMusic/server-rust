@@ -101,7 +101,7 @@ async fn get_search_data(keyword: &str, ctx: &Context) -> anyhow::Result<Json> {
             ("page", "1"),
             ("pagesize", "30"),
             ("keyword", keyword),
-        ]
+        ],
     )?;
 
     let res = request(Method::GET, &url, None, None, ctx.try_get_proxy()?).await?;
@@ -114,11 +114,7 @@ async fn get_tracked_data(id: &str, ctx: &Context) -> anyhow::Result<Json> {
 
     let url = Url::parse_with_params(
         "https://www.bilibili.com/audio/music-service-c/web/url",
-        &[
-            ("rivilege", "2"),
-            ("quality", "2"),
-            ("sid", id)
-        ],
+        &[("rivilege", "2"), ("quality", "2"), ("sid", id)],
     )?;
 
     let res = request(Method::GET, &url, None, None, ctx.try_get_proxy()?).await?;

@@ -33,7 +33,7 @@ use unm_engine::interface::Engine;
 use unm_request::{
     extract_jsonp,
     json::{Json, UnableToExtractJson},
-    request
+    request,
 };
 use unm_selector::SimilarSongSelector;
 use unm_types::{
@@ -64,7 +64,7 @@ impl Engine for JooxEngine {
                 ("lang", "zh_TW"),
                 ("sin", "0"),
                 ("ein", "30"),
-                ("search_input", keyword.as_str())
+                ("search_input", keyword.as_str()),
             ],
         )?;
 
@@ -127,8 +127,8 @@ impl Engine for JooxEngine {
                 ("from_type", "-1"),
                 ("channel_id", "-1"),
                 ("song_id", identifier),
-                ("_", &get_timestamp().to_string())
-            ]
+                ("_", &get_timestamp().to_string()),
+            ],
         )?;
 
         let response = request(

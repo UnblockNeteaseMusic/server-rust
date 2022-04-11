@@ -3,7 +3,7 @@
 //! It can fetch audio from the unofficial
 //! Netease Cloud Music API.
 
-use std::{borrow::Cow};
+use std::borrow::Cow;
 
 use http::Method;
 use log::{debug, info};

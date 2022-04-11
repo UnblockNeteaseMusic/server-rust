@@ -185,7 +185,7 @@ pub async fn search(info: &Song, ctx: &Context) -> anyhow::Result<Option<Song>> 
 
     let url = Url::parse_with_params(
         "http://mobilecdn.kugou.com/api/v3/search/song?page=1&pagesize=10",
-        &[("keyword", &info.keyword())]
+        &[("keyword", &info.keyword())],
     )?;
 
     let resp = request(Method::GET, &url, None, None, ctx.try_get_proxy()?).await?;
@@ -229,11 +229,7 @@ pub async fn single(
 
     let url = Url::parse_with_params(
         "http://trackercdn.kugou.com/i/v2/?appid=1005&pid=2&cmd=25&behavior=play",
-        &[
-            ("key", &key),
-            ("hash", &hash),
-            ("album_id", &album_id),
-        ]
+        &[("key", &key), ("hash", &hash), ("album_id", &album_id)],
     )?;
 
     let response = request(Method::GET, &url, None, None, ctx.try_get_proxy()?).await?;
