@@ -111,17 +111,17 @@ jobs:
         with:
           command: generate-lockfile
       - name: Cache cargo registry
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.cargo/registry
           key: ${{ matrix.settings.target }}-node@16-cargo-registry-trimmed-${{ hashFiles('**/Cargo.lock') }}
       - name: Cache cargo index
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.cargo/git
           key: ${{ matrix.settings.target }}-node@16-cargo-index-trimmed-${{ hashFiles('**/Cargo.lock') }}
       - name: Cache NPM dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ env.APP_DIR }}/node_modules
           key: npm-cache-${{ matrix.settings.target }}-node@16-${{ hashFiles('yarn.lock') }}
@@ -170,7 +170,7 @@ jobs:
   #         check-latest: true
   #         cache: yarn
   #     - name: Cache NPM dependencies
-  #       uses: actions/cache@v2
+  #       uses: actions/cache@v3
   #       with:
   #         path: ${{ env.APP_DIR }}/node_modules
   #         key: npm-cache-test-${{ matrix.settings.target }}-${{ matrix.node }}-${{ hashFiles('yarn.lock') }}
@@ -210,7 +210,7 @@ jobs:
   #         check-latest: true
   #         cache: yarn
   #     - name: Cache NPM dependencies
-  #       uses: actions/cache@v2
+  #       uses: actions/cache@v3
   #       with:
   #         path: node_modules
   #         key: npm-cache-test-linux-x64-gnu-${{ matrix.node }}-${{ hashFiles('yarn.lock') }}
@@ -247,7 +247,7 @@ jobs:
   #         check-latest: true
   #         cache: yarn
   #     - name: Cache NPM dependencies
-  #       uses: actions/cache@v2
+  #       uses: actions/cache@v3
   #       with:
   #         path: node_modules
   #         key: npm-cache-test-x86_64-unknown-linux-musl-${{ matrix.node }}-${{ hashFiles('yarn.lock') }}
@@ -287,7 +287,7 @@ jobs:
   #       run: ls -R .
   #       shell: bash
   #     - name: Cache NPM dependencies
-  #       uses: actions/cache@v2
+  #       uses: actions/cache@v3
   #       with:
   #         path: node_modules
   #         key: npm-cache-test-linux-aarch64-gnu-${{ matrix.node }}-${{ hashFiles('yarn.lock') }}
