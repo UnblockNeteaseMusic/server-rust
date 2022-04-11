@@ -41,7 +41,6 @@ jobs:
             build: |
               cd $APP_DIR
               yarn build --target i686-pc-windows-msvc
-              yarn test
             target: i686-pc-windows-msvc
             architecture: x86
           - host: ubuntu-latest
@@ -49,13 +48,14 @@ jobs:
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine-zig
             build: |-
               set -e &&
+              apk add perl &&
               rustup target add x86_64-unknown-linux-gnu &&
               yarn build --target x86_64-unknown-linux-gnu --zig --zig-abi-suffix 2.12 &&
               llvm-strip -x *.node
           - host: ubuntu-latest
             target: x86_64-unknown-linux-musl
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
-            build: set -e && yarn build && strip *.node
+            build: set -e && apk add perl && yarn build && strip *.node
           - host: macos-latest
             target: aarch64-apple-darwin
             build: |
@@ -72,6 +72,7 @@ jobs:
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine-zig
             build: |-
               set -e &&
+              apk add perl &&
               rustup target add aarch64-unknown-linux-gnu &&
               yarn build --target aarch64-unknown-linux-gnu --zig --zig-abi-suffix 2.17 &&
               llvm-strip -x *.node
@@ -113,6 +114,7 @@ jobs:
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
             build: |-
               set -e &&
+              apk add perl &&
               rustup target add aarch64-unknown-linux-musl &&
               yarn build --target aarch64-unknown-linux-musl &&
               /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip *.node
