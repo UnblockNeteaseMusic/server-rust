@@ -9,14 +9,13 @@ use unm_selector::SimilarSongSelector;
 use unm_types::{
     Artist, Context, RetrievedSongInfo, SerializedIdentifier, Song, SongSearchInformation,
 };
+use url::Url;
 
-use std::{borrow::Cow, str::FromStr};
+use std::borrow::Cow;
 
 use http::Method;
 use unm_request::json::{Json, UnableToExtractJson};
 use unm_request::request;
-use url::Url;
-use urlencoding::encode;
 
 pub const ENGINE_ID: &str = "bilibili";
 
@@ -95,13 +94,15 @@ impl Engine for BilibiliEngine {
 async fn get_search_data(keyword: &str, ctx: &Context) -> anyhow::Result<Json> {
     debug!("Getting the search data from Bilibili Music…");
 
-    let url_str = format!(
-        "https://api.bilibili.com/audio/music-service-c/s?\
-        search_type=music&page=1&pagesize=30&\
-        keyword=${0}",
-        encode(keyword)
-    );
-    let url = Url::from_str(&url_str)?;
+    let url = Url::parse_with_params(
+        "https://api.bilibili.com/audio/music-service-c/s",
+        &[
+            ("search_type", "music"),
+            ("page", "1"),
+            ("pagesize", "30"),
+            ("keyword", keyword),
+        ]
+    )?;
 
     let res = request(Method::GET, &url, None, None, ctx.try_get_proxy()?).await?;
     Ok(res.json().await?)
@@ -111,10 +112,14 @@ async fn get_search_data(keyword: &str, ctx: &Context) -> anyhow::Result<Json> {
 async fn get_tracked_data(id: &str, ctx: &Context) -> anyhow::Result<Json> {
     debug!("Tracking the ID from Bilibili Music…");
 
-    let url_str = format!(
-        "https://www.bilibili.com/audio/music-service-c/web/url?rivilege=2&quality=2&sid={id}"
-    );
-    let url = Url::from_str(&url_str)?;
+    let url = Url::parse_with_params(
+        "https://api.bilibili.com/audio/music-service-c/url",
+        &[
+            ("rivilege", "2"),
+            ("quality", "2"),
+            ("sid", id)
+        ],
+    )?;
 
     let res = request(Method::GET, &url, None, None, ctx.try_get_proxy()?).await?;
     Ok(res.json().await?)

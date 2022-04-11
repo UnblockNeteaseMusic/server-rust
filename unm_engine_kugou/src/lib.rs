@@ -2,7 +2,7 @@
 //!
 //! It can fetch audio from Kugou Music.
 
-use std::{borrow::Cow, collections::HashMap, str::FromStr, sync::Arc};
+use std::{borrow::Cow, collections::HashMap, sync::Arc};
 
 use async_trait::async_trait;
 use futures::FutureExt;
@@ -19,7 +19,6 @@ use unm_selector::SimilarSongSelector;
 use unm_types::{
     Album, Context, RetrievedSongInfo, SerializedIdentifier, Song, SongSearchInformation,
 };
-use urlencoding::encode;
 
 pub const ENGINE_ID: &str = "kugou";
 
@@ -183,11 +182,10 @@ fn format(entry: &Json) -> anyhow::Result<Song> {
 pub async fn search(info: &Song, ctx: &Context) -> anyhow::Result<Option<Song>> {
     info!("Searching with Kugou Engine…");
 
-    let url_str = format!(
-        "http://mobilecdn.kugou.com/api/v3/search/song?keyword={}&page=1&pagesize=10",
-        encode(&info.keyword())
-    );
-    let url = Url::from_str(&url_str)?;
+    let url = Url::parse_with_params(
+        "http://mobilecdn.kugou.com/api/v3/search/song?page=1&pagesize=10",
+        &[("keyword", &info.keyword())]
+    )?;
 
     let resp = request(Method::GET, &url, None, None, ctx.try_get_proxy()?).await?;
     let data = resp.json::<Json>().await?;
@@ -228,8 +226,14 @@ pub async fn single(
         .map(|v| v.id.to_string())
         .unwrap_or_else(|| String::from(""));
 
-    let url_str = format!("http://trackercdn.kugou.com/i/v2/?key={key}&hash={hash}&appid=1005&pid=2&cmd=25&behavior=play&album_id={album_id}");
-    let url = Url::from_str(&url_str)?;
+    let url = Url::parse_with_params(
+        "http://trackercdn.kugou.com/i/v2/?appid=1005&pid=2&cmd=25&behavior=play",
+        &[
+            ("key", &key),
+            ("hash", &hash),
+            ("album_id", &album_id),
+        ]
+    )?;
 
     let response = request(Method::GET, &url, None, None, ctx.try_get_proxy()?).await?;
     let data = response.json::<Json>().await?;

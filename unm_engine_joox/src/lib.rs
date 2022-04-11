@@ -20,7 +20,7 @@
 //! };
 //! ```
 
-use std::{borrow::Cow, str::FromStr};
+use std::borrow::Cow;
 
 use http::{
     header::{COOKIE, ORIGIN, REFERER},
@@ -33,7 +33,7 @@ use unm_engine::interface::Engine;
 use unm_request::{
     extract_jsonp,
     json::{Json, UnableToExtractJson},
-    request,
+    request
 };
 use unm_selector::SimilarSongSelector;
 use unm_types::{
@@ -57,15 +57,16 @@ impl Engine for JooxEngine {
         let keyword = fit(song);
         let joox_cookie = get_cookie(ctx);
 
-        let url_str = format!(
-            concat!(
-                "http://api-jooxtt.sanook.com/web-fcgi-bin/web_search?",
-                "country=hk&lang=zh_TW&sin=0&ein=30&",
-                "search_input={}",
-            ),
-            keyword
-        );
-        let url = Url::from_str(&url_str)?;
+        let url = Url::parse_with_params(
+            "http://api-jooxtt.sanook.com/web-fcgi-bin/web_search",
+            &[
+                ("country", "hk"),
+                ("lang", "zh_TW"),
+                ("sin", "0"),
+                ("ein", "30"),
+                ("search_input", keyword.as_str())
+            ],
+        )?;
 
         let response = request(
             Method::GET,
@@ -118,16 +119,17 @@ impl Engine for JooxEngine {
             .get_or_init(|| Regex::new(r#"M\d00([\w]+).mp3"#).expect("should be constructable"));
         let joox_cookie = get_cookie(ctx);
 
-        let url_str = format!(
-            concat!(
-                "http://api.joox.com/web-fcgi-bin/web_get_songinfo?",
-                "country=hk&lang=zh_cn&from_type=-1&channel_id=-1&",
-                "song_id={id}&_={timestamp}",
-            ),
-            id = identifier,
-            timestamp = get_timestamp(),
-        );
-        let url = Url::from_str(&url_str)?;
+        let url = Url::parse_with_params(
+            "http://api.joox.com/web-fcgi-bin/web_get_songinfo",
+            &[
+                ("country", "hk"),
+                ("lang", "zh_cn"),
+                ("from_type", "-1"),
+                ("channel_id", "-1"),
+                ("song_id", identifier),
+                ("_", &get_timestamp().to_string())
+            ]
+        )?;
 
         let response = request(
             Method::GET,

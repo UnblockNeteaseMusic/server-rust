@@ -15,7 +15,6 @@ unm_request = { version = "0.1.0", path = "../unm_request" }
 unm_selector = { version = "0.1.0", path = "../unm_selector" }
 unm_types = { version = "0.1.0", path = "../unm_types" }
 url = "2.2.2"
-urlencoding = "2.1.0"
 log = "0.4.16"
 
 [dev-dependencies]

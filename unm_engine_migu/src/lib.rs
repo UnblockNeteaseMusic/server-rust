@@ -7,7 +7,7 @@ mod types;
 use anyhow::Ok;
 use async_trait::async_trait;
 use http::Method;
-use std::{borrow::Cow, collections::HashMap, str::FromStr};
+use std::{borrow::Cow, collections::HashMap};
 use types::MiguResponse;
 use unm_engine::interface::Engine;
 use unm_request::{json::Json, request};
@@ -109,12 +109,12 @@ impl Engine for MiguEngine {
 /// Construct the search API to request,
 /// which the `keyword` will be encoded and trimmed.
 fn construct_search_api(keyword: &str) -> anyhow::Result<Url> {
-    let url = format!(
-        r#"https://pd.musicapp.migu.cn/MIGUM2.0/v1.0/content/search_all.do?&ua=Android_migu&version=5.0.1&text={keyword}&pageNo=1&pageSize=10&searchSwitch={{"song":1,"album":0,"singer":0,"tagSong":0,"mvSong":0,"songlist":0,"bestShow":1}}"#,
-        keyword = urlencoding::encode(keyword.trim()),
-    );
-
-    Ok(Url::from_str(&url)?)
+    Ok(Url::parse_with_params(
+        r#"https://pd.musicapp.migu.cn/MIGUM2.0/v1.0/content/search_all.do?&ua=Android_migu&version=5.0.1&pageNo=1&pageSize=10&searchSwitch={{"song":1,"album":0,"singer":0,"tagSong":0,"mvSong":0,"songlist":0,"bestShow":1}}"#,
+        &[
+            ("text", keyword.trim()),
+        ]
+    )?)
 }
 
 fn find_match(info: &Song, data: Vec<MiguResponse>) -> Option<Song> {
@@ -128,13 +128,11 @@ fn find_match(info: &Song, data: Vec<MiguResponse>) -> Option<Song> {
 #[cfg(test)]
 mod tests {
     use reqwest::Url;
-    use std::str::FromStr;
-
     use crate::construct_search_api;
 
     #[test]
     fn construct_search_api_test() {
-        let url = |u| Url::from_str(u).unwrap();
+        let url = |u| Url::parse(u).unwrap();
 
         assert_eq!(construct_search_api("Twice - TT").unwrap(), url("https://pd.musicapp.migu.cn/MIGUM2.0/v1.0/content/search_all.do?&ua=Android_migu&version=5.0.1&text=Twice%20-%20TT&pageNo=1&pageSize=10&searchSwitch={\"song\":1,\"album\":0,\"singer\":0,\"tagSong\":0,\"mvSong\":0,\"songlist\":0,\"bestShow\":1}"));
         assert_eq!(construct_search_api("Twice").unwrap(), url("https://pd.musicapp.migu.cn/MIGUM2.0/v1.0/content/search_all.do?&ua=Android_migu&version=5.0.1&text=Twice&pageNo=1&pageSize=10&searchSwitch={\"song\":1,\"album\":0,\"singer\":0,\"tagSong\":0,\"mvSong\":0,\"songlist\":0,\"bestShow\":1}"));

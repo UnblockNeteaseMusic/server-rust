@@ -3,7 +3,7 @@
 //! It can fetch audio from the unofficial
 //! Netease Cloud Music API.
 
-use std::{borrow::Cow, str::FromStr};
+use std::{borrow::Cow};
 
 use http::Method;
 use log::{debug, info};
@@ -11,6 +11,7 @@ use serde::Deserialize;
 use unm_engine::interface::Engine;
 use unm_request::request;
 use unm_types::{Context, RetrievedSongInfo, SerializedIdentifier, Song, SongSearchInformation};
+use url::Url;
 
 #[derive(Deserialize)]
 struct PyNCMResponse {
@@ -82,12 +83,11 @@ impl Engine for PyNCMEngine {
 async fn fetch_song_info(id: &str, ctx: &Context) -> anyhow::Result<PyNCMResponse> {
     debug!("Fetching the song information…");
 
-    let url_str = format!(
-        "https://service-ghlrryee-1308098780.gz.apigw.tencentcs.com/release/pyncmd/track/GetTrackAudio?song_ids={id}&bitrate={bitrate}",
-        id = id,
-        bitrate = if ctx.enable_flac { 999000 } else { 320000 }
-    );
-    let url = url::Url::from_str(&url_str)?;
+    let bitrate = if ctx.enable_flac { 999000 } else { 320000 };
+    let url = Url::parse_with_params(
+        "https://service-ghlrryee-1308098780.gz.apigw.tencentcs.com/release/pyncmd/track/GetTrackAudio",
+        &[("song_ids", id), ("bitrate", &bitrate.to_string())],
+    )?;
 
     let response = request(Method::GET, &url, None, None, ctx.try_get_proxy()?).await?;
     Ok(response.json::<PyNCMResponse>().await?)
