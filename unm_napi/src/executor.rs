@@ -33,7 +33,7 @@ impl JsExecutor {
             .map(|engine| engine.as_str())
             .collect::<Vec<&str>>();
         self.executor
-            .search(&engines, &song.into(), &ctx.to_unm_context())
+            .search(&engines, &song.into(), &ctx.into())
             .await
             .map(|v| v.into())
             .map_err(|e| Error::new(Status::GenericFailure, format!("Unable to search: {:?}", e)))
@@ -46,7 +46,7 @@ impl JsExecutor {
         ctx: Context,
     ) -> Result<RetrievedSongInfo> {
         self.executor
-            .retrieve(&song.into(), &ctx.to_unm_context())
+            .retrieve(&song.into(), &ctx.into())
             .await
             .map(|v| v.into())
             .map_err(|e| {

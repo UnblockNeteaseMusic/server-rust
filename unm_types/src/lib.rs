@@ -1,3 +1,6 @@
+pub mod config;
+
+use config::ConfigManager;
 use reqwest::Proxy;
 use serde::{Deserialize, Serialize};
 use std::{borrow::Cow, collections::HashMap};
@@ -80,7 +83,7 @@ pub struct Context {
     pub enable_flac: bool,
 
     /// The config for engines.
-    pub config: Option<HashMap<String, String>>,
+    pub config: Option<ConfigManager>,
 }
 
 impl Context {

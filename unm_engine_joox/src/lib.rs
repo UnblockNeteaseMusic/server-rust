@@ -55,10 +55,7 @@ impl Engine for JooxEngine {
         log::debug!("Searching “{song}” with Joox Engine…");
 
         let keyword = fit(song);
-        let joox_cookie = ctx
-            .config
-            .as_ref()
-            .and_then(|hm| hm.get("joox:cookie").cloned());
+        let joox_cookie = get_cookie(ctx);
 
         let url_str = format!(
             concat!(
@@ -73,7 +70,7 @@ impl Engine for JooxEngine {
         let response = request(
             Method::GET,
             &url,
-            Some(construct_header(joox_cookie.as_deref())?),
+            Some(construct_header(joox_cookie)?),
             None,
             ctx.try_get_proxy()?,
         )
@@ -119,10 +116,7 @@ impl Engine for JooxEngine {
 
         let replace_audio_url_regex = REPLACE_AUDIO_URL_REGEX
             .get_or_init(|| Regex::new(r#"M\d00([\w]+).mp3"#).expect("should be constructable"));
-        let joox_cookie = ctx
-            .config
-            .as_ref()
-            .and_then(|hm| hm.get("joox:cookie").cloned());
+        let joox_cookie = get_cookie(ctx);
 
         let url_str = format!(
             concat!(
@@ -138,7 +132,7 @@ impl Engine for JooxEngine {
         let response = request(
             Method::GET,
             &url,
-            Some(construct_header(joox_cookie.as_deref())?),
+            Some(construct_header(joox_cookie)?),
             None,
             ctx.try_get_proxy()?,
         )
@@ -161,6 +155,14 @@ impl Engine for JooxEngine {
         } else {
             Err(anyhow::anyhow!("No audio URL found."))
         }
+    }
+}
+
+fn get_cookie(context: &Context) -> Option<&str> {
+    if let Some(ref config) = context.config {
+        config.get_deref(Cow::Borrowed("joox:cookie"))
+    } else {
+        None
     }
 }
 

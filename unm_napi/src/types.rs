@@ -2,6 +2,7 @@ use std::{borrow::Cow, collections::HashMap};
 
 use napi_derive::napi;
 pub use unm_types::SerializedIdentifier;
+use unm_types::config::ConfigManager;
 
 /// [napi-rs] The metadata of the artist of a song.
 #[napi(object)]
@@ -164,12 +165,16 @@ impl From<unm_types::RetrievedSongInfo<'_>> for RetrievedSongInfo {
     }
 }
 
-impl Context {
-    pub(crate) fn to_unm_context(&self) -> unm_types::Context {
-        unm_types::Context {
-            proxy_uri: self.proxy_uri.clone(),
-            enable_flac: self.enable_flac,
-            config: self.config.clone(),
+impl From<Context> for unm_types::Context {
+    fn from(context: Context) -> Self {
+        let config = context.config.map(|c| {
+            c.into_iter().map(|(k, v)| (k.into(), v)).collect()
+        });
+
+        Self {
+            proxy_uri: context.proxy_uri,
+            enable_flac: context.enable_flac,
+            config: config.map(ConfigManager::new),
         }
     }
 }

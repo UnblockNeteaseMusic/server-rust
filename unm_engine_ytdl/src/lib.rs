@@ -6,13 +6,13 @@
 //! The default is `yt-dlp`. You can configure it by passing
 //! `ytdl:exe` in the ctx.config [`HashMap`] field.
 
-use std::{borrow::Cow, collections::HashMap};
+use std::borrow::Cow;
 
 use log::{debug, info};
 use serde::Deserialize;
 use unm_engine::interface::Engine;
 use unm_types::{
-    Artist, Context, RetrievedSongInfo, SerializedIdentifier, Song, SongSearchInformation,
+    Artist, Context, RetrievedSongInfo, SerializedIdentifier, Song, SongSearchInformation, config::ConfigManager,
 };
 
 pub const DEFAULT_EXECUTABLE: &str = "yt-dlp";
@@ -82,17 +82,13 @@ impl Engine for YtDlEngine {
     }
 }
 
-fn decide_ytdl_exe(config: &Option<HashMap<String, String>>) -> &str {
+fn decide_ytdl_exe(config: &Option<ConfigManager>) -> &str {
     debug!("Deciding the executable to use in `ytdl` engine…");
 
-    if let Some(config) = config {
-        config
-            .get(&"ytdl.exe".to_string())
-            .map(|v| v.as_str())
-            .unwrap_or(DEFAULT_EXECUTABLE)
-    } else {
-        DEFAULT_EXECUTABLE
-    }
+    config
+        .as_ref()
+        .map(|c| c.get_or_default(Cow::Borrowed("ytdl:exe"), DEFAULT_EXECUTABLE))
+        .unwrap_or(DEFAULT_EXECUTABLE)
 }
 
 /// Get the response from `<exe>`.
@@ -157,17 +153,21 @@ impl From<YtDlResponse> for Song {
 
 #[cfg(test)]
 mod tests {
+    use std::collections::HashMap;
+
     #[test]
     fn test_decide_ytdl_exe() {
         use super::*;
 
         assert_eq!(decide_ytdl_exe(&None), DEFAULT_EXECUTABLE);
 
-        let config = Some(HashMap::new());
-        assert_eq!(decide_ytdl_exe(&config), DEFAULT_EXECUTABLE);
+        let config = HashMap::new();
+        let config = ConfigManager::new(config);
+        assert_eq!(decide_ytdl_exe(&Some(config)), DEFAULT_EXECUTABLE);
 
         let mut config = HashMap::new();
-        config.insert("ytdl.exe".to_string(), "youtube-dl".to_string());
+        config.insert(Cow::Borrowed("ytdl:exe"), "youtube-dl".to_string());
+        let config = ConfigManager::new(config);
         assert_eq!(decide_ytdl_exe(&Some(config)), "youtube-dl");
     }
 }
