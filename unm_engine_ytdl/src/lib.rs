@@ -8,6 +8,7 @@
 
 use std::borrow::Cow;
 
+use concat_string::concat_string;
 use log::{debug, info};
 use serde::Deserialize;
 use unm_engine::interface::Engine;
@@ -109,7 +110,7 @@ async fn fetch_from_youtube(exe: &str, keyword: &str) -> anyhow::Result<Option<Y
     debug!("Receiving the search result from {exe}…");
     let child = cmd
         .args(&["-f", "bestaudio", "--dump-json"])
-        .arg(format!("ytsearch1:{keyword}"))
+        .arg(concat_string!("ytsearch1:", keyword))
         .kill_on_drop(true)
         .output()
         .await?;

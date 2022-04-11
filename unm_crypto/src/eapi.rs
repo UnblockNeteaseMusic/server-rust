@@ -1,6 +1,8 @@
 use regex::Regex;
 use serde::Serialize;
 
+use concat_string::concat_string;
+
 use crate::aes_128;
 use crate::aes_128::AesResult;
 use crate::error::CryptoResult;
@@ -25,11 +27,14 @@ pub fn encrypt_request<T: Serialize>(
     object: &T,
 ) -> CryptoResult<EncryptRequestResponse> {
     let serialized: String = serde_json::to_string(object)?;
-    let message = format!("deprecate{}md5{}please", url, serialized);
+    let message = concat_string!("deprecate", url, "md5", serialized, "please");
     let digest = md5::compute(message.into_bytes());
-    let data = format!(
-        "{}-36cd479b6b5-{}-36cd479b6b5-{:x}",
-        url, serialized, digest
+    let data = concat_string!(
+        url,
+        "-36cd479b6b5-",
+        serialized,
+        "-36cd479b6b5-",
+        faster_hex::hex_string(digest.as_slice())
     );
 
     Ok(EncryptRequestResponse {
@@ -39,9 +44,11 @@ pub fn encrypt_request<T: Serialize>(
             .to_string(),
         // Since there is no special chars in the uppercase hex string,
         // we don't need to use something like serde_qs to serialize it.
-        body: format!(
-            "params={}",
-            hex::encode(encrypt(data.as_bytes())?).to_uppercase()
+        body: concat_string!(
+            "params=",
+            faster_hex::hex_string(
+                encrypt(data.as_bytes())?.as_slice()
+            ).to_uppercase()
         ),
     })
 }

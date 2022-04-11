@@ -5,6 +5,7 @@
 use std::{borrow::Cow, collections::HashMap, sync::Arc};
 
 use async_trait::async_trait;
+use concat_string::concat_string;
 use futures::FutureExt;
 use http::Method;
 use log::{debug, info};
@@ -218,7 +219,7 @@ pub async fn single(
     debug!("Retriving the audio file in the format “{format}” from “{song}”…");
 
     let hash = extract_hash_id(song, format)?;
-    let key = format!("{hash}kgcloudv2");
+    let key = concat_string!(hash, "kgcloudv2");
 
     let album_id = song
         .album

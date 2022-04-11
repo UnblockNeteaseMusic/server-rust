@@ -18,6 +18,7 @@ unm_request = { version = "0.1.0", path = "../unm_request" }
 unm_selector = { version = "0.1.0", path = "../unm_selector" }
 unm_types = { version = "0.1.0", path = "../unm_types" }
 log = "0.4.16"
+concat-string = "1.0.1"
 
 [dev-dependencies]
 tokio = { version = "1.17.0", features = ["macros", "rt-multi-thread"] }

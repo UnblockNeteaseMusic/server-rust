@@ -1,5 +1,6 @@
 use crate::base64::encode_crypto_base64;
 use crate::error::{CryptoError, CryptoResult};
+use concat_string::concat_string;
 
 const URI_KEY: &[u8] = b"3go8&$8*3*3h0k(2)2";
 
@@ -26,7 +27,7 @@ pub fn retrieve(id: &str) -> CryptoResult<String> {
     let result = md5::compute(result).0;
     let result = encode_crypto_base64(&result);
 
-    Ok(format!("http://p1.music.126.net/{}/{}", result, id))
+    Ok(concat_string!("http://p1.music.126.net/", result, "/", id))
 }
 
 #[cfg(test)]

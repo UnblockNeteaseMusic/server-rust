@@ -1,3 +1,4 @@
+use concat_string::concat_string;
 use serde::Serialize;
 use url::Url;
 
@@ -42,9 +43,11 @@ pub fn encrypt_request<T: Serialize>(
 
     Ok(EncryptRequestResponse {
         url: response_url.to_string(),
-        body: format!(
-            "eparams={}",
-            hex::encode(encrypt(serialized.as_bytes())?).to_uppercase()
+        body: concat_string!(
+            "eparams=",
+            faster_hex::hex_string(
+                encrypt(serialized.as_bytes())?.as_slice()
+            ).to_uppercase()
         ),
     })
 }

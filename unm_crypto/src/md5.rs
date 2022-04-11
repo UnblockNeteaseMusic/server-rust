@@ -1,3 +1,3 @@
 pub fn digest<T: AsRef<[u8]>>(value: T) -> String {
-    format!("{:x}", md5::compute(value))
+    faster_hex::hex_string(md5::compute(value).as_slice())
 }

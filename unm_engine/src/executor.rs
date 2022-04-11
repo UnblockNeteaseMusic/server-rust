@@ -64,7 +64,7 @@ impl Executor {
                     .await
                     .map_err(ExecutorError::EngineSearchError)?
                     .ok_or_else(|| ExecutorError::NoMatchedSong {
-                        keyword: format!("{}", song),
+                        keyword: song.keyword(),
                     })?;
 
                 // Specify the Error type explicitly.
