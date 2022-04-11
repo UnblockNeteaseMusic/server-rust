@@ -1,6 +1,6 @@
 [package]
 edition = "2021"
-name = "unm_napi"
+name = "rust_napi"
 version = "0.1.0"
 publish = false
 

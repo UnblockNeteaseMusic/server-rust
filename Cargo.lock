@@ -892,6 +892,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "rust_napi"
+version = "0.1.0"
+dependencies = [
+ "async-recursion",
+ "concat-idents",
+ "napi",
+ "napi-build",
+ "napi-derive",
+ "simple_logger",
+ "unm_engine",
+ "unm_engine_bilibili",
+ "unm_engine_kugou",
+ "unm_engine_migu",
+ "unm_engine_pyncm",
+ "unm_engine_ytdl",
+ "unm_types",
+]
+
+[[package]]
 name = "ryu"
 version = "1.0.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1370,25 +1389,6 @@ dependencies = [
  "tokio",
  "unm_engine",
  "unm_test_utils",
- "unm_types",
-]
-
-[[package]]
-name = "unm_napi"
-version = "0.1.0"
-dependencies = [
- "async-recursion",
- "concat-idents",
- "napi",
- "napi-build",
- "napi-derive",
- "simple_logger",
- "unm_engine",
- "unm_engine_bilibili",
- "unm_engine_kugou",
- "unm_engine_migu",
- "unm_engine_pyncm",
- "unm_engine_ytdl",
  "unm_types",
 ]
 
