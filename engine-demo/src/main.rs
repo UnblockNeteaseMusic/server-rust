@@ -1,9 +1,9 @@
 use std::sync::Arc;
 
 use futures::FutureExt;
+use mimalloc::MiMalloc;
 use unm_test_utils::{measure_async_function_time, set_logger};
 use unm_types::{Artist, Context, Song};
-use mimalloc::MiMalloc;
 
 #[global_allocator]
 static GLOBAL: MiMalloc = MiMalloc;
