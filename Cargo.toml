@@ -1,19 +1,10 @@
 [workspace]
 members = [
-    "unm_test_utils",
-    "unm_types",
-    # "unm_crypto",
-    "unm_engine",
-    "unm_request",
-    "unm_selector",
+    # Core
+    "unm_*",
 
     # Engines
-    "unm_engine_bilibili",
-    "unm_engine_ytdl",
-    "unm_engine_pyncm",
-    "unm_engine_kugou",
-    "unm_engine_migu",
-    "unm_engine_joox",
+    "unm_engine_*",
 
     # Demo
     "unm_engine_demo",
