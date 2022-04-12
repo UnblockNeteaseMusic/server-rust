@@ -20,6 +20,7 @@ unm_engine_ytdl = { version = "0.1.0", path = "../engines/ytdl" }
 unm_types = { version = "0.1.0", path = "../types" }
 concat-idents = "1.1.3"
 simple_logger = "2.1.0"
+mimalloc = "0.1.28"
 
 [build-dependencies]
 napi-build = "1.2.1"

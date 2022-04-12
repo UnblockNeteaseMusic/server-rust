@@ -2,8 +2,12 @@ pub mod engines;
 pub mod executor;
 pub mod types;
 
+use mimalloc::MiMalloc;
 use napi::bindgen_prelude::*;
 use napi_derive::napi;
+
+#[global_allocator]
+static GLOBAL: MiMalloc = MiMalloc;
 
 /// The available logging output.
 #[non_exhaustive]
