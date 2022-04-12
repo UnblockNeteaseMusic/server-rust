@@ -45,9 +45,7 @@ pub fn encrypt_request<T: Serialize>(
         url: response_url.to_string(),
         body: concat_string!(
             "eparams=",
-            faster_hex::hex_string(
-                encrypt(serialized.as_bytes())?.as_slice()
-            ).to_uppercase()
+            faster_hex::hex_string(encrypt(serialized.as_bytes())?.as_slice()).to_uppercase()
         ),
     })
 }

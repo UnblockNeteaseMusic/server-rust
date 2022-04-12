@@ -46,9 +46,7 @@ pub fn encrypt_request<T: Serialize>(
         // we don't need to use something like serde_qs to serialize it.
         body: concat_string!(
             "params=",
-            faster_hex::hex_string(
-                encrypt(data.as_bytes())?.as_slice()
-            ).to_uppercase()
+            faster_hex::hex_string(encrypt(data.as_bytes())?.as_slice()).to_uppercase()
         ),
     })
 }
