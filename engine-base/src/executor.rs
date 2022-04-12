@@ -51,7 +51,7 @@ impl Executor {
         info!("Searching {song} with engines {engines:?}");
         self.validate_engines(engines)?;
 
-        let mut futures = Vec::new();
+        let mut futures = Vec::with_capacity(engines.len());
 
         for engine_id in engines {
             let engine = self.resolve_engine(engine_id)?;
@@ -107,7 +107,7 @@ impl Executor {
     /// Validate engines to check if the engines specified are all registered.
     fn validate_engines(&self, engines: &[EngineId]) -> ExecutorResult<()> {
         debug!("Validating if all the engines ({engines:?}) are registered…");
-        let mut missing_engines = Vec::new();
+        let mut missing_engines = Vec::with_capacity(engines.len());
 
         for engine_id in engines {
             trace!("Validating: {engine_id}");

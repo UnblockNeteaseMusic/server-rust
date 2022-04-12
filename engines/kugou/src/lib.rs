@@ -64,7 +64,7 @@ impl From<KugouSongContext> for HashMap<String, String> {
     fn from(ctx: KugouSongContext) -> Self {
         debug!("Constructing the context HashMap from KugouSongContext…");
 
-        let mut map = HashMap::new();
+        let mut map = HashMap::with_capacity(3);
 
         [
             (KugouFormat::Hash, ctx.id),

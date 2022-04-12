@@ -167,7 +167,7 @@ mod tests {
         let config = ConfigManager::new(config);
         assert_eq!(decide_ytdl_exe(&Some(config)), DEFAULT_EXECUTABLE);
 
-        let mut config = HashMap::new();
+        let mut config = HashMap::with_capacity(1);
         config.insert(Cow::Borrowed("ytdl:exe"), "youtube-dl".to_string());
         let config = ConfigManager::new(config);
         assert_eq!(decide_ytdl_exe(&Some(config)), "youtube-dl");

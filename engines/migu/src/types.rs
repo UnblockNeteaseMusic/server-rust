@@ -239,7 +239,7 @@ mod tests {
         .into_iter();
 
         let expected = {
-            let mut hm = HashMap::new();
+            let mut hm = HashMap::with_capacity(3);
 
             hm.insert(
                 "LQ".to_string(),

@@ -170,7 +170,7 @@ mod tests {
     use std::collections::HashMap;
 
     static TRANSLATE_MAP: Lazy<HashMap<&str, &str>> = Lazy::new(|| {
-        let mut map = HashMap::new();
+        let mut map = HashMap::with_capacity(2);
         map.insert("www.cloudflare.com", "1.1.1.1");
         map.insert("www.google.com", "www.bing.com");
 
