@@ -1,16 +1,23 @@
 [workspace]
 members = [
     # Core
-    "unm_*",
+    "engine",
+    "types",
+
+    # Utilities
+    "crypto",
+    "selector",
+    "request",
+    "test-utils",
 
     # Engines
-    "unm_engine_*",
+    "engines/*",
 
     # Demo
-    "unm_engine_demo",
+    "engine-demo",
 
     # N-API
-    "unm_napi",
+    "napi",
 ]
 
 [profile.release]
