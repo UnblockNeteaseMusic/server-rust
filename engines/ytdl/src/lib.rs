@@ -42,7 +42,6 @@ pub struct YtDlEngine;
 
 #[async_trait::async_trait]
 impl Engine for YtDlEngine {
-    // TODO: allow specifying proxy
     async fn search<'a>(
         &self,
         info: &'a Song,
@@ -52,7 +51,11 @@ impl Engine for YtDlEngine {
 
         info!("Searching for {info} with {exe}…");
 
-        let response = fetch_from_youtube(exe, &info.keyword()).await?;
+        let response = fetch_from_youtube(
+            exe,
+            &info.keyword(),
+            ctx.proxy_uri.as_deref()
+        ).await?;
 
         // We return the URL we got from youtube-dl as the song identifier,
         // so we can return the URL in retrieve() easily.
@@ -99,19 +102,36 @@ fn decide_ytdl_exe(config: &Option<ConfigManager>) -> &str {
 /// such as `yt-dlp` or `youtube-dl`.
 ///
 /// ```plain
-/// <exe> -f bestaudio --dump-json ytsearch1:{keyword}
+/// <exe> -f bestaudio --dump-json [--proxy <proxy>] ytsearch1:<keyword>
 ///     -f bestaudio    choose the best quality of the audio
 ///     --dump-json     dump the information as JSON without downloading it
+///     --proxy URL     Use the specified HTTP/HTTPS/SOCKS proxy.
+///                     To enable SOCKS proxy, specify a proper
+///                     scheme. For example
+///                     socks5://user:pass@127.0.0.1:1080/. Pass in
+///                     an empty string (--proxy "") for direct
+///                     connection
 /// ```
-async fn fetch_from_youtube(exe: &str, keyword: &str) -> anyhow::Result<Option<YtDlResponse>> {
+async fn fetch_from_youtube(exe: &str, keyword: &str, proxy: Option<&str>) -> anyhow::Result<Option<YtDlResponse>> {
     info!("Calling external application “{exe}”!");
 
     let mut cmd = tokio::process::Command::new(exe);
 
     debug!("Receiving the search result from {exe}…");
+    
+    // <cmd> -f bestaudio --dumpjson
+    cmd
+        .args(&["-f", "bestaudio", "--dump-json"]);
+    
+    // --proxy <proxy>
+    if let Some(proxy) = proxy {
+        cmd.args(&["--proxy", proxy]);
+    }
+
+    // search query
+    cmd.arg(concat_string!("ytsearch1:", keyword));
+
     let child = cmd
-        .args(&["-f", "bestaudio", "--dump-json"])
-        .arg(concat_string!("ytsearch1:", keyword))
         .kill_on_drop(true)
         .output()
         .await?;
