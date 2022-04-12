@@ -3,7 +3,7 @@ env:
   DEBUG: napi:*
   APP_NAME: rust-napi
   MACOSX_DEPLOYMENT_TARGET: '10.13'
-  APP_DIR: unm_napi
+  APP_DIR: napi
 'on':
   workflow_dispatch:
   push:
