@@ -11,7 +11,7 @@ crate-type = ["cdylib"]
 async-recursion = "1.0.0"
 napi = { version = "2.2.0", features = ["full"] }
 napi-derive = "2.2.0"
-unm_engine = { version = "0.1.0", path = "../engine" }
+unm_engine = { version = "0.1.0", path = "../engine-base" }
 unm_engine_bilibili = { version = "0.1.0", path = "../engines/bilibili" }
 unm_engine_kugou = { version = "0.1.0", path = "../engines/kugou" }
 unm_engine_migu = { version = "0.1.0", path = "../engines/migu" }

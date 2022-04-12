@@ -1,7 +1,7 @@
 [workspace]
 members = [
     # Core
-    "engine",
+    "engine-base",
     "types",
 
     # Utilities
