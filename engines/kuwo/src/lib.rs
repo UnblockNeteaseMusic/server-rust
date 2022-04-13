@@ -24,6 +24,8 @@ impl Engine for KuwoEngine {
         info: &'a Song,
         ctx: &'a Context,
     ) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
+        log::info!("Searching “{info}” in Kuwo Music…");
+
         let response = api::search_music_by_keyword(&info.keyword(), 1, 30, ctx).await?;
 
         let mut song_iterator = response
@@ -49,6 +51,8 @@ impl Engine for KuwoEngine {
         identifier: &'a SerializedIdentifier,
         ctx: &'a Context,
     ) -> anyhow::Result<RetrievedSongInfo<'static>> {
+        log::info!("Retrieving MID “{identifier}” from Kuwo Music…");
+
         let mid = MusicID::from_str_radix(identifier, 10)?;
         let response = api::get_music(mid, ctx).await?;
         let url = response.data.url;

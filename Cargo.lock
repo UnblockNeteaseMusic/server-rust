@@ -1404,6 +1404,7 @@ dependencies = [
  "async-trait",
  "concat-string",
  "http",
+ "log",
  "random-string",
  "reqwest",
  "serde",

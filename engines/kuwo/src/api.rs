@@ -12,12 +12,14 @@ use unm_types::Context;
 use self::typing::{MusicID, SearchResponse, GetPlayUrlResponse};
 
 pub fn genenate_kw_token() -> String {
+    log::debug!("Generating kw_token…");
     let charset = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
+    
     random_string::generate(11, charset)
 }
 
 pub fn construct_header() -> anyhow::Result<HeaderMap> {
+    log::debug!("Constructing header to pass to Kuwo Music…");
     let token = genenate_kw_token();
     let mut hm = HeaderMap::with_capacity(3);
 
@@ -37,6 +39,8 @@ pub async fn search_music_by_keyword(
     entries_per_page: i32,
     ctx: &Context,
 ) -> anyhow::Result<SearchResponse> {
+    log::debug!("Searching music in Kuwo by keyword “{keyword}”… [Page {page_number}, {entries_per_page} entries]");
+    
     let url = Url::parse_with_params(
         "http://www.kuwo.cn/api/www/search/searchMusicBykeyWord",
         &[
@@ -64,6 +68,8 @@ pub async fn get_music(
     mid: MusicID,
     ctx: &Context,
 ) -> anyhow::Result<GetPlayUrlResponse> {
+    log::debug!("Fetch the music with MID “{mid}” from Kuwo Music…");
+
     let url = Url::parse_with_params(
         "http://www.kuwo.cn/api/v1/www/music/playUrl",
         &[

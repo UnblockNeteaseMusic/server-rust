@@ -63,6 +63,8 @@ pub type GetPlayUrlResponse = KuwoResponse<KuwoPlayUrlData>;
 
 impl From<KuwoAudioInfo> for Song {
     fn from(info: KuwoAudioInfo) -> Self {
+        log::debug!("Converting KuwoAudioInfo to Song…");
+
         let artist = Artist {
             id: info.artistid.to_string(),
             name: info.artist,
