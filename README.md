@@ -80,6 +80,7 @@ let result = executor.retrieve(&search_result, &context).await?;
 ```js
 const UNM = require("@unblockneteasemusic/rust-napi");
 
+// 啟用後，可以使用 `RUST_LOG` 環境變數調整 log 的詳細程度
 UNM.enableLogging(UNM.LoggingType.ConsoleEnv);
 ```
 
