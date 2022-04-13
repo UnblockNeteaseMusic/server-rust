@@ -11,7 +11,6 @@ pub trait Engine {
         info: &'a Song,
         ctx: &'a Context,
     ) -> anyhow::Result<Option<SongSearchInformation<'static>>>;
-    // FIXME: allow dynamically generate the source name.
 
     /// Retrieve the audio URL of the specified `identifier`.
     async fn retrieve<'a>(
@@ -19,5 +18,4 @@ pub trait Engine {
         identifier: &'a SerializedIdentifier,
         ctx: &'a Context,
     ) -> anyhow::Result<RetrievedSongInfo<'static>>;
-    // FIXME: allow dynamically generate the source name.
 }
