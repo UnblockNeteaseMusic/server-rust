@@ -1,7 +1,7 @@
 use std::{borrow::Cow, collections::HashMap};
 
 use napi_derive::napi;
-use unm_types::config::ConfigManager;
+use unm_types::{config::ConfigManager, ContextBuilder};
 pub use unm_types::SerializedIdentifier;
 
 /// [napi-rs] The metadata of the artist of a song.
@@ -171,10 +171,10 @@ impl From<Context> for unm_types::Context {
       .config
       .map(|c| c.into_iter().map(|(k, v)| (k.into(), v)).collect());
 
-    Self {
-      proxy_uri: context.proxy_uri,
-      enable_flac: context.enable_flac,
-      config: config.map(ConfigManager::new),
-    }
+    ContextBuilder::default()
+      .proxy_uri(context.proxy_uri)
+      .enable_flac(context.enable_flac)
+      .config(config.map(ConfigManager::new))
+      .build().unwrap()
   }
 }

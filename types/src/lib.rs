@@ -1,6 +1,7 @@
 pub mod config;
 
 use config::ConfigManager;
+use derive_builder::Builder;
 use reqwest::Proxy;
 use serde::{Deserialize, Serialize};
 use std::{borrow::Cow, collections::HashMap};
@@ -73,8 +74,8 @@ pub struct RetrievedSongInfo<'a> {
 }
 
 /// The context.
-#[derive(Clone, Default, Serialize, Deserialize)]
-// #[non_exhaustive]
+#[derive(Clone, Default, Serialize, Deserialize, Builder)]
+#[non_exhaustive]
 pub struct Context {
     /// The proxy URI
     ///
