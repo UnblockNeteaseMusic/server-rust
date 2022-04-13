@@ -35,6 +35,7 @@ impl Engine for KuwoEngine {
             .filter(|d| d.pay == "0")
             .map(Song::from);
 
+        log::debug!("Matching the song…");
         let unm_selector::SimilarSongSelector { selector, .. } =
             unm_selector::SimilarSongSelector::new(info);
         let matched_song = song_iterator.find(|s| selector(&s));
