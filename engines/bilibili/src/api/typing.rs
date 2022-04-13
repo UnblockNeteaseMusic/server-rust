@@ -5,21 +5,25 @@ pub type SearchResult = BilibiliApiResponse<BilibiliSearchApiData>;
 pub type TrackResult = BilibiliApiResponse<BilibiliTrackApiData>;
 
 #[derive(Debug, Clone, Deserialize)]
+#[non_exhaustive]
 pub struct BilibiliSearchApiData {
     pub result: Vec<BilibiliSearchResult>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
+#[non_exhaustive]
 pub struct BilibiliTrackApiData {
     pub cdns: Vec<String>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
+#[non_exhaustive]
 pub struct BilibiliApiResponse<T> {
     pub data: T,
 }
 
 #[derive(Debug, Clone, Deserialize)]
+#[non_exhaustive]
 pub struct BilibiliSearchResult {
     /// The song ID.
     pub id: i64,

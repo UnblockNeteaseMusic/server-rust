@@ -4,6 +4,7 @@ use unm_types::{Album, Artist, Song};
 pub type MusicID = i64;
 
 #[derive(Debug, Clone, Deserialize)]
+#[non_exhaustive]
 pub struct KuwoResponseList<T> {
     /// The total entries count.
     pub total: String,
@@ -12,6 +13,7 @@ pub struct KuwoResponseList<T> {
 }
 
 #[derive(Debug, Clone, Deserialize)]
+#[non_exhaustive]
 pub struct KuwoResponse<T> {
     /// The HTTP code of this response. Should be `200`.
     pub code: i32,
@@ -21,6 +23,7 @@ pub struct KuwoResponse<T> {
 
 #[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
+#[non_exhaustive]
 pub struct KuwoAudioInfo {
     /// The music ID (MID) of this audio.
     pub rid: MusicID,
@@ -53,6 +56,7 @@ pub struct KuwoAudioInfo {
 }
 
 #[derive(Debug, Clone, Deserialize)]
+#[non_exhaustive]
 pub struct KuwoPlayUrlData {
     /// The url of this MID.
     pub url: String,

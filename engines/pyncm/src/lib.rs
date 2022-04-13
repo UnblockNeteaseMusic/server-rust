@@ -14,6 +14,7 @@ use unm_types::{Context, RetrievedSongInfo, SerializedIdentifier, Song, SongSear
 use url::Url;
 
 #[derive(Deserialize)]
+#[non_exhaustive]
 struct PyNCMResponse {
     /// The status code of this response.
     pub code: i32,
@@ -21,6 +22,7 @@ struct PyNCMResponse {
 }
 
 #[derive(Deserialize)]
+#[non_exhaustive]
 struct PyNCMResponseEntry {
     /// The NCM ID of this song.
     pub id: String,

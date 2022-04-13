@@ -22,6 +22,7 @@ pub const ENGINE_ID: &str = "ytdl";
 
 /// The response that the `youtube-dl` instance will return.
 #[derive(Deserialize)]
+#[non_exhaustive]
 struct YtDlResponse {
     /// The YouTube video ID.
     id: String,
