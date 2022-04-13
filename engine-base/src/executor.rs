@@ -86,6 +86,7 @@ impl Executor {
                 debug!("Use SearchMode::OrderFirst mode!");
                 futures::stream::FuturesOrdered::from_iter(futures.into_iter()).boxed()
             },
+            _ => unimplemented!()
         };
     
         while let Some(future) = futures.next().await {

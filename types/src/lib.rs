@@ -35,30 +35,36 @@ impl Default for SearchMode {
 }
 
 /// The metadata of the artist of a song.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-// #[non_exhaustive]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, Builder)]
+#[builder(setter(into), default)]
+#[non_exhaustive]
 pub struct Artist {
     /// The identifier of this artist.
+    #[builder(default = r#""".to_string()"#)]
     pub id: String,
     /// The name of this artist.
     pub name: String,
 }
 
 /// The metadata of the album of a song.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-// #[non_exhaustive]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, Builder)]
+#[builder(setter(into), default)]
+#[non_exhaustive]
 pub struct Album {
     /// The identifier of this artist.
+    #[builder(default = r#""".to_string()"#)]
     pub id: String,
     /// The name of this album.
     pub name: String,
 }
 
 /// The metadata of a song.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-// #[non_exhaustive]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, Builder)]
+#[builder(setter(into), default)]
+#[non_exhaustive]
 pub struct Song {
     /// The identifier of this song.
+    #[builder(default = r#""".to_string()"#)]
     pub id: String,
     /// The name of this song.
     pub name: String,
@@ -76,7 +82,6 @@ pub struct Song {
 
 /// The song identifier with the engine information.
 #[derive(Clone, Serialize, Deserialize)]
-// #[non_exhaustive]
 pub struct SongSearchInformation<'a> {
     /// The retrieve source of this song, for example: `bilibili`.
     pub source: Cow<'a, str>,
@@ -88,7 +93,6 @@ pub struct SongSearchInformation<'a> {
 
 /// The information of the song retrieved with `retrieve()`.
 #[derive(Clone, Serialize, Deserialize)]
-// #[non_exhaustive]
 pub struct RetrievedSongInfo<'a> {
     /// The retrieve source of this song, for example: `bilibili`.
     pub source: Cow<'a, str>,
