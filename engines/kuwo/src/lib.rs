@@ -57,6 +57,9 @@ impl Engine for KuwoEngine {
         let response = api::get_music(mid, ctx).await?;
         let url = response.data.url;
 
-        Ok(RetrievedSongInfo { source: Cow::Borrowed(ENGINE_ID), url })
+        Ok(RetrievedSongInfo {
+            source: Cow::Borrowed(ENGINE_ID),
+            url,
+        })
     }
 }

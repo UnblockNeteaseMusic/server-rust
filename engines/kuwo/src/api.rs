@@ -9,12 +9,12 @@ use reqwest::{header::HeaderMap, Url};
 use unm_request::request;
 use unm_types::Context;
 
-use self::typing::{MusicID, SearchResponse, GetPlayUrlResponse};
+use self::typing::{GetPlayUrlResponse, MusicID, SearchResponse};
 
 pub fn genenate_kw_token() -> String {
     log::debug!("Generating kw_token…");
     let charset = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    
+
     random_string::generate(11, charset)
 }
 
@@ -40,7 +40,7 @@ pub async fn search_music_by_keyword(
     ctx: &Context,
 ) -> anyhow::Result<SearchResponse> {
     log::debug!("Searching music in Kuwo by keyword “{keyword}”… [Page {page_number}, {entries_per_page} entries]");
-    
+
     let url = Url::parse_with_params(
         "http://www.kuwo.cn/api/www/search/searchMusicBykeyWord",
         &[
@@ -64,10 +64,7 @@ pub async fn search_music_by_keyword(
     Ok(json)
 }
 
-pub async fn get_music(
-    mid: MusicID,
-    ctx: &Context,
-) -> anyhow::Result<GetPlayUrlResponse> {
+pub async fn get_music(mid: MusicID, ctx: &Context) -> anyhow::Result<GetPlayUrlResponse> {
     log::debug!("Fetch the music with MID “{mid}” from Kuwo Music…");
 
     let url = Url::parse_with_params(
@@ -102,11 +99,12 @@ mod tests {
     #[test]
     fn construct_header_test() {
         let h = construct_header().expect("should be able to construct header");
-        let getstr = |k: &str| h
-            .get(k)
-            .expect("should has cookie")
-            .to_str()
-            .expect("should able to convert to string");
+        let getstr = |k: &str| {
+            h.get(k)
+                .expect("should has cookie")
+                .to_str()
+                .expect("should able to convert to string")
+        };
 
         let token = getstr(COOKIE.as_str()).replace("kw_token=", "");
 

@@ -77,9 +77,9 @@ pub struct RetrievedSongInfo<'a> {
 // #[non_exhaustive]
 pub struct Context {
     /// The proxy URI
-    /// 
+    ///
     /// For example: `https://secure.example` or
-    /// `"socks5://192.168.1.1:9000"` 
+    /// `"socks5://192.168.1.1:9000"`
     pub proxy_uri: Option<String>,
 
     /// Whether to enable FLAC support.

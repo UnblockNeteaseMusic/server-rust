@@ -51,11 +51,7 @@ impl Engine for YtDlEngine {
 
         info!("Searching for {info} with {exe}…");
 
-        let response = fetch_from_youtube(
-            exe,
-            &info.keyword(),
-            ctx.proxy_uri.as_deref()
-        ).await?;
+        let response = fetch_from_youtube(exe, &info.keyword(), ctx.proxy_uri.as_deref()).await?;
 
         // We return the URL we got from youtube-dl as the song identifier,
         // so we can return the URL in retrieve() easily.
@@ -112,17 +108,20 @@ fn decide_ytdl_exe(config: &Option<ConfigManager>) -> &str {
 ///                     an empty string (--proxy "") for direct
 ///                     connection
 /// ```
-async fn fetch_from_youtube(exe: &str, keyword: &str, proxy: Option<&str>) -> anyhow::Result<Option<YtDlResponse>> {
+async fn fetch_from_youtube(
+    exe: &str,
+    keyword: &str,
+    proxy: Option<&str>,
+) -> anyhow::Result<Option<YtDlResponse>> {
     info!("Calling external application “{exe}”!");
 
     let mut cmd = tokio::process::Command::new(exe);
 
     debug!("Receiving the search result from {exe}…");
-    
+
     // <cmd> -f bestaudio --dumpjson
-    cmd
-        .args(&["-f", "bestaudio", "--dump-json"]);
-    
+    cmd.args(&["-f", "bestaudio", "--dump-json"]);
+
     // --proxy <proxy>
     if let Some(proxy) = proxy {
         cmd.args(&["--proxy", proxy]);
@@ -131,10 +130,7 @@ async fn fetch_from_youtube(exe: &str, keyword: &str, proxy: Option<&str>) -> an
     // search query
     cmd.arg(concat_string!("ytsearch1:", keyword));
 
-    let child = cmd
-        .kill_on_drop(true)
-        .output()
-        .await?;
+    let child = cmd.kill_on_drop(true).output().await?;
 
     if child.status.success() {
         let response = String::from_utf8_lossy(&child.stdout);
