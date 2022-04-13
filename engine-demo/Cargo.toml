@@ -18,4 +18,6 @@ unm_engine_bilibili = { version = "0.1.0", path = "../engines/bilibili" }
 unm_engine_ytdl = { version = "0.1.0", path = "../engines/ytdl" }
 unm_engine_kugou = { version = "0.1.0", path = "../engines/kugou" }
 unm_engine_migu = { version = "0.1.0", path = "../engines/migu" }
+unm_engine_kuwo = { version = "0.1.0", path = "../engines/kuwo" }
 mimalloc = "0.1.28"
+concat-idents = "1.1.3"

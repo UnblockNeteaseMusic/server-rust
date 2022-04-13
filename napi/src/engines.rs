@@ -8,6 +8,7 @@ pub enum Engine {
   Migu,
   PyNCM,
   YtDl,
+  Kuwo,
 }
 
 impl Engine {
@@ -18,6 +19,7 @@ impl Engine {
       Engine::Migu => "migu",
       Engine::PyNCM => "pyncm",
       Engine::YtDl => "ytdl",
+      Engine::Kuwo => "kuwo",
     }
   }
 }

@@ -23,22 +23,21 @@ async fn main() {
     let context = Context::default();
     let executor = {
         let mut e = unm_engine::executor::Executor::new();
-        e.register(
-            unm_engine_bilibili::ENGINE_ID,
-            Arc::new(unm_engine_bilibili::BilibiliEngine),
-        );
-        e.register(
-            unm_engine_ytdl::ENGINE_ID,
-            Arc::new(unm_engine_ytdl::YtDlEngine),
-        );
-        e.register(
-            unm_engine_kugou::ENGINE_ID,
-            Arc::new(unm_engine_kugou::KugouEngine),
-        );
-        e.register(
-            unm_engine_migu::ENGINE_ID,
-            Arc::new(unm_engine_migu::MiguEngine),
-        );
+
+        macro_rules! push_engine {
+            ($engine_name:ident: $engine_struct:ident) => {
+                concat_idents::concat_idents!(engine_crate = unm_engine_, $engine_name {
+                    e.register(engine_crate::ENGINE_ID, Arc::new(engine_crate::$engine_struct));
+                })
+            };
+        }
+
+        push_engine!(bilibili: BilibiliEngine);
+        push_engine!(ytdl: YtDlEngine);
+        push_engine!(kugou: KugouEngine);
+        push_engine!(migu: MiguEngine);
+        push_engine!(kuwo: KuwoEngine);
+
         e
     };
 

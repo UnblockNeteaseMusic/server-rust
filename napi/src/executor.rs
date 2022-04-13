@@ -84,6 +84,7 @@ fn construct_executor() -> Executor {
   push_engine!(migu: MiguEngine);
   push_engine!(pyncm: PyNCMEngine);
   push_engine!(ytdl: YtDlEngine);
+  push_engine!(kuwo: KuwoEngine);
 
   executor
 }

@@ -1340,12 +1340,14 @@ dependencies = [
 name = "unm_engine_demo"
 version = "0.1.0"
 dependencies = [
+ "concat-idents",
  "futures",
  "mimalloc",
  "tokio",
  "unm_engine",
  "unm_engine_bilibili",
  "unm_engine_kugou",
+ "unm_engine_kuwo",
  "unm_engine_migu",
  "unm_engine_ytdl",
  "unm_test_utils",
@@ -1480,6 +1482,7 @@ dependencies = [
  "unm_engine",
  "unm_engine_bilibili",
  "unm_engine_kugou",
+ "unm_engine_kuwo",
  "unm_engine_migu",
  "unm_engine_pyncm",
  "unm_engine_ytdl",
