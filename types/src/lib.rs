@@ -11,6 +11,7 @@ pub type SerializedIdentifier = String;
 
 /// The search mode.
 #[derive(Clone, Copy, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum SearchMode {
     /// Return the first response.
     /// 
