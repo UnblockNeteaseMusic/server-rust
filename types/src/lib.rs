@@ -6,10 +6,32 @@ use reqwest::Proxy;
 use serde::{Deserialize, Serialize};
 use std::{borrow::Cow, collections::HashMap};
 
-/**
- * The serialized identifier for passing to `retrieve()`.
- */
+/// The serialized identifier for passing to `retrieve()`.
 pub type SerializedIdentifier = String;
+
+/// The search mode.
+#[derive(Clone, Copy, Serialize, Deserialize)]
+pub enum SearchMode {
+    /// Return the first response.
+    /// 
+    /// For example, `["a", "b", "c"]` and `"c"` returns the fast,
+    /// we return `"c"`.
+    /// 
+    /// This is the default mode.
+    FastFirst,
+    /// Return according to the order of the response.
+    /// 
+    /// For example, even if `["a", "b", "c"]` and `"c"` returns the fast,
+    /// we still wait for `"a"` and return `"a"`. If `"a"` has no result,
+    /// we return `"b"`.
+    OrderFirst,
+}
+
+impl Default for SearchMode {
+    fn default() -> Self {
+        SearchMode::FastFirst
+    }
+}
 
 /// The metadata of the artist of a song.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -75,6 +97,7 @@ pub struct RetrievedSongInfo<'a> {
 
 /// The context.
 #[derive(Clone, Default, Serialize, Deserialize, Builder)]
+#[builder(default)]
 #[non_exhaustive]
 pub struct Context {
     /// The proxy URI
@@ -85,6 +108,9 @@ pub struct Context {
 
     /// Whether to enable FLAC support.
     pub enable_flac: bool,
+
+    /// The search mode for waiting the response.
+    pub search_mode: SearchMode,
 
     /// The config for engines.
     pub config: Option<ConfigManager>,

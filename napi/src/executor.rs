@@ -1,7 +1,7 @@
 use concat_idents::concat_idents;
 use napi::bindgen_prelude::*;
 use napi_derive::napi;
-use std::sync::Arc;
+use std::{sync::Arc, borrow::Cow};
 use unm_engine::executor::Executor;
 
 use crate::{
@@ -30,8 +30,9 @@ impl JsExecutor {
   ) -> Result<SongSearchInformation> {
     let engines = engines
       .into_iter()
-      .map(|engine| engine.as_str())
-      .collect::<Vec<&str>>();
+      .map(|engine| engine.as_str().into())
+      .collect::<Vec<Cow<'static, str>>>();
+  
     self
       .executor
       .search(&engines, &song.into(), &ctx.into())
@@ -74,7 +75,7 @@ fn construct_executor() -> Executor {
   macro_rules! push_engine {
         ($engine_name:ident: $engine_struct:ident) => {
             concat_idents!(engine_crate = unm_engine_, $engine_name {
-                executor.register(engine_crate::ENGINE_ID, Arc::new(engine_crate::$engine_struct));
+                executor.register(engine_crate::ENGINE_ID.into(), Arc::new(engine_crate::$engine_struct));
             })
         };
     }

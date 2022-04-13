@@ -1,12 +1,12 @@
-use std::{collections::HashMap, sync::Arc};
+use std::{collections::HashMap, sync::Arc, borrow::Cow};
 
-use futures::FutureExt;
+use futures::{FutureExt, StreamExt};
 use log::{debug, error, info, trace};
-use unm_types::{Context, RetrievedSongInfo, Song, SongSearchInformation};
+use unm_types::{Context, RetrievedSongInfo, Song, SongSearchInformation, SearchMode};
 
 use crate::interface::Engine;
 
-pub type EngineId = &'static str;
+pub type EngineId = Cow<'static, str>;
 pub type EngineImplementation = Arc<dyn Engine + Send + Sync>;
 
 #[derive(Default)]
@@ -38,7 +38,7 @@ impl Executor {
     /// Deregister the `engine_id` from [`Executor`].
     pub fn deregister(&mut self, engine_id: EngineId) {
         debug!("Deregistering engine: {engine_id}");
-        self.engine_map.remove(engine_id);
+        self.engine_map.remove(&engine_id);
     }
 
     /// Search with the specified engines.
@@ -76,18 +76,33 @@ impl Executor {
         }
 
         trace!("Executing futures…");
-        let selected_future = futures::future::select_ok(futures.into_iter()).await;
 
-        match selected_future {
-            Ok((result, _)) => {
-                info!("Found {} with engine {}!", song, result.source);
-                Ok(result)
-            }
-            Err(e) => {
-                error!("Failed to run: {:?}", e);
-                Err(e)
+        let mut futures = match ctx.search_mode {
+            SearchMode::FastFirst => {
+                debug!("Use SearchMode::FastFirst mode!");
+                futures::stream::FuturesUnordered::from_iter(futures.into_iter()).boxed()
+            },
+            SearchMode::OrderFirst => {
+                debug!("Use SearchMode::OrderFirst mode!");
+                futures::stream::FuturesOrdered::from_iter(futures.into_iter()).boxed()
+            },
+        };
+    
+        while let Some(future) = futures.next().await {
+            match future {
+                Ok(result) => {
+                    info!("Found {} with engine {}!", song, result.source);
+                    return Ok(result);
+                }
+                Err(e) => {
+                    error!("Failed to run: {:?}, waiting for next candidate…", e);
+                    continue;
+                }
             }
         }
+
+        error!("All futures have been run, and no any result found. Give up.");
+        Err(ExecutorError::NoMatchedSong { keyword: song.keyword() })
     }
 
     pub async fn retrieve<'a>(

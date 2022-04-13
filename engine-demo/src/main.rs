@@ -1,9 +1,9 @@
-use std::sync::Arc;
+use std::{sync::Arc, borrow::Cow};
 
 use futures::FutureExt;
 use mimalloc::MiMalloc;
 use unm_test_utils::{measure_async_function_time, set_logger};
-use unm_types::{Artist, Context, Song};
+use unm_types::{Artist, Song, ContextBuilder, SearchMode};
 
 #[global_allocator]
 static GLOBAL: MiMalloc = MiMalloc;
@@ -20,14 +20,22 @@ async fn main() {
         ..Default::default()
     };
 
-    let context = Context::default();
+    let context = ContextBuilder::default()
+        .enable_flac(std::env::var("ENABLE_FLAC").unwrap_or_else(|_| "".into()) == "true")
+        .search_mode(match std::env::var("SEARCH_MODE") {
+                Ok(v) if v == "fast_first" => SearchMode::FastFirst,
+                Ok(v) if v == "order_first" => SearchMode::OrderFirst,
+                _ => SearchMode::FastFirst,
+        })
+        .build().unwrap();
+
     let executor = {
         let mut e = unm_engine::executor::Executor::new();
 
         macro_rules! push_engine {
             ($engine_name:ident: $engine_struct:ident) => {
                 concat_idents::concat_idents!(engine_crate = unm_engine_, $engine_name {
-                    e.register(engine_crate::ENGINE_ID, Arc::new(engine_crate::$engine_struct));
+                    e.register(engine_crate::ENGINE_ID.into(), Arc::new(engine_crate::$engine_struct));
                 })
             };
         }
@@ -41,15 +49,16 @@ async fn main() {
         e
     };
 
+    let engines_to_use = std::env::var("ENGINES")
+        .unwrap_or_else(|_| "bilibili ytdl kugou migu".to_string())
+        .split_whitespace()
+        .map(|v| Cow::Owned(v.to_string()))
+        .collect::<Vec<Cow<'static, str>>>();
+
     let (search_time_taken, search_result) = measure_async_function_time(|| {
         executor
             .search(
-                &[
-                    unm_engine_bilibili::ENGINE_ID,
-                    unm_engine_ytdl::ENGINE_ID,
-                    unm_engine_kugou::ENGINE_ID,
-                    unm_engine_migu::ENGINE_ID,
-                ],
+                &engines_to_use,
                 &song,
                 &context,
             )
