@@ -11,6 +11,8 @@ pub enum CryptoError {
     SerdeError(#[from] serde_json::error::Error),
     #[error("Failed to parse URI: {0}")]
     UriParseError(#[from] url::ParseError),
+    #[error("Failed to decode from base64: {0}")]
+    Base64DecodeError(#[from] base64::DecodeError),
 }
 
 pub type CryptoResult<T> = Result<T, CryptoError>;
