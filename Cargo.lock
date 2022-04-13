@@ -1326,6 +1326,7 @@ dependencies = [
  "async-trait",
  "http",
  "log",
+ "serde",
  "serde_json",
  "tokio",
  "unm_engine",

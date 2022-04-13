@@ -16,6 +16,7 @@ unm_selector = { version = "0.1.0", path = "../../selector" }
 unm_types = { version = "0.1.0", path = "../../types" }
 url = "2.2.2"
 log = "0.4.16"
+serde = { version = "1.0.136", features = ["derive"] }
 
 [dev-dependencies]
 tokio = { version = "1.17.0", features = ["macros", "rt-multi-thread"] }
