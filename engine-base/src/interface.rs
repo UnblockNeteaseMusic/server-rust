@@ -10,12 +10,12 @@ pub trait Engine {
         &self,
         info: &'a Song,
         ctx: &'a Context,
-    ) -> anyhow::Result<Option<SongSearchInformation<'static>>>;
+    ) -> anyhow::Result<Option<SongSearchInformation>>;
 
     /// Retrieve the audio URL of the specified `identifier`.
     async fn retrieve<'a>(
         &self,
         identifier: &'a SerializedIdentifier,
         ctx: &'a Context,
-    ) -> anyhow::Result<RetrievedSongInfo<'static>>;
+    ) -> anyhow::Result<RetrievedSongInfo>;
 }

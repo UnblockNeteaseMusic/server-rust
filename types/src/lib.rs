@@ -81,10 +81,12 @@ pub struct Song {
 }
 
 /// The song identifier with the engine information.
-#[derive(Clone, Serialize, Deserialize)]
-pub struct SongSearchInformation<'a> {
+#[derive(Clone, Serialize, Deserialize, Builder)]
+#[builder(setter(into))]
+#[non_exhaustive]
+pub struct SongSearchInformation {
     /// The retrieve source of this song, for example: `bilibili`.
-    pub source: Cow<'a, str>,
+    pub source: Cow<'static, str>,
     /// The serialized identifier of this song.
     pub identifier: SerializedIdentifier,
     /// The details of this song.
@@ -92,10 +94,12 @@ pub struct SongSearchInformation<'a> {
 }
 
 /// The information of the song retrieved with `retrieve()`.
-#[derive(Clone, Serialize, Deserialize)]
-pub struct RetrievedSongInfo<'a> {
+#[derive(Clone, Serialize, Deserialize, Builder)]
+#[builder(setter(into))]
+#[non_exhaustive]
+pub struct RetrievedSongInfo {
     /// The retrieve source of this song, for example: `bilibili`.
-    pub source: Cow<'a, str>,
+    pub source: Cow<'static, str>,
     /// The URL of this song.
     pub url: String,
 }
