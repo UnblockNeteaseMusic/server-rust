@@ -98,8 +98,8 @@ impl Engine for KugouEngine {
                         .source(ENGINE_ID.into())
                         .identifier(serde_json::to_string(&response)?)
                         .song(Some(response))
-                        .build()
-                    )),
+                        .build(),
+                )),
                 None => Ok(None),
             },
             Err(err) => Err(err),
@@ -141,7 +141,10 @@ impl Engine for KugouEngine {
 
         let url = futures::future::select_ok(song_futures).await?.0;
 
-        Ok(RetrievedSongInfo::builder().url(url).source(ENGINE_ID.into()).build())
+        Ok(RetrievedSongInfo::builder()
+            .url(url)
+            .source(ENGINE_ID.into())
+            .build())
     }
 }
 
@@ -163,10 +166,12 @@ fn format(entry: &Json) -> anyhow::Result<Song> {
         .name(valstr("songname")?)
         .duration(entry["duration"].as_i64().map(|v| v * 1000))
         .artists(vec![])
-        .album(Some(Album::builder()
-            .id(valstr("album_id")?)
-            .name(valstr("album_name")?)
-            .build()))
+        .album(Some(
+            Album::builder()
+                .id(valstr("album_id")?)
+                .name(valstr("album_name")?)
+                .build(),
+        ))
         .context(Some(
             KugouSongContext {
                 id: entry["hash"].as_str().map(|v| v.to_string()),

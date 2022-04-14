@@ -59,11 +59,13 @@ impl Engine for YtDlEngine {
         if let Some(response) = response {
             let url = response.url.to_string();
             let song = Song::from(response);
-            Ok(Some(SongSearchInformation::builder()
-                .source(ENGINE_ID.into())
-                .identifier(url)
-                .song(Some(song))
-                .build()))
+            Ok(Some(
+                SongSearchInformation::builder()
+                    .source(ENGINE_ID.into())
+                    .identifier(url)
+                    .song(Some(song))
+                    .build(),
+            ))
         } else {
             Ok(None)
         }
@@ -159,7 +161,10 @@ impl From<YtDlResponse> for Song {
         Song::builder()
             .id(res.id)
             .name(res.title)
-            .artists(vec![Artist::builder().id(res.uploader_id).name(res.uploader).build()])
+            .artists(vec![Artist::builder()
+                .id(res.uploader_id)
+                .name(res.uploader)
+                .build()])
             .duration(Some(res.duration as i64 * 1000))
             .build()
     }

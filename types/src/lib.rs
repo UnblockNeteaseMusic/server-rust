@@ -4,8 +4,8 @@ use config::ConfigManager;
 use derive_builder::Builder;
 use reqwest::Proxy;
 use serde::{Deserialize, Serialize};
-use typed_builder::TypedBuilder;
 use std::{borrow::Cow, collections::HashMap};
+use typed_builder::TypedBuilder;
 
 /// The serialized identifier for passing to `retrieve()`.
 pub type SerializedIdentifier = String;
@@ -15,14 +15,14 @@ pub type SerializedIdentifier = String;
 #[non_exhaustive]
 pub enum SearchMode {
     /// Return the first response.
-    /// 
+    ///
     /// For example, `["a", "b", "c"]` and `"c"` returns the fast,
     /// we return `"c"`.
-    /// 
+    ///
     /// This is the default mode.
     FastFirst,
     /// Return according to the order of the response.
-    /// 
+    ///
     /// For example, even if `["a", "b", "c"]` and `"c"` returns the fast,
     /// we still wait for `"a"` and return `"a"`. If `"a"` has no result,
     /// we return `"b"`.
@@ -128,7 +128,10 @@ pub struct Context {
 
 impl Context {
     pub fn try_get_proxy(&self) -> reqwest::Result<Option<Proxy>> {
-        self.proxy_uri.as_ref().map(|uri| Proxy::all(uri.to_string())).transpose()
+        self.proxy_uri
+            .as_ref()
+            .map(|uri| Proxy::all(uri.to_string()))
+            .transpose()
     }
 }
 

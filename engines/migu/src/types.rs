@@ -87,19 +87,13 @@ impl From<MiguRateFormat> for MiguAudioSource {
 
 impl From<MiguSinger> for Artist {
     fn from(singer: MiguSinger) -> Self {
-        Self::builder()
-            .id(singer.id)
-            .name(singer.name)
-            .build()
+        Self::builder().id(singer.id).name(singer.name).build()
     }
 }
 
 impl From<MiguAlbum> for Album {
     fn from(singer: MiguAlbum) -> Self {
-        Self::builder()
-            .id(singer.id)
-            .name(singer.name)
-            .build()
+        Self::builder().id(singer.id).name(singer.name).build()
     }
 }
 

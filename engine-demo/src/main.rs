@@ -1,9 +1,9 @@
-use std::{sync::Arc, borrow::Cow};
+use std::{borrow::Cow, sync::Arc};
 
 use futures::FutureExt;
 use mimalloc::MiMalloc;
 use unm_test_utils::{measure_async_function_time, set_logger};
-use unm_types::{Artist, Song, ContextBuilder, SearchMode};
+use unm_types::{Artist, ContextBuilder, SearchMode, Song};
 
 #[global_allocator]
 static GLOBAL: MiMalloc = MiMalloc;
@@ -14,19 +14,18 @@ async fn main() {
 
     let song = Song::builder()
         .name("青花瓷".to_string())
-        .artists(vec![Artist::builder()
-            .name("周杰伦".to_string())
-            .build()])
+        .artists(vec![Artist::builder().name("周杰伦".to_string()).build()])
         .build();
 
     let context = ContextBuilder::default()
         .enable_flac(std::env::var("ENABLE_FLAC").unwrap_or_else(|_| "".into()) == "true")
         .search_mode(match std::env::var("SEARCH_MODE") {
-                Ok(v) if v == "fast_first" => SearchMode::FastFirst,
-                Ok(v) if v == "order_first" => SearchMode::OrderFirst,
-                _ => SearchMode::FastFirst,
+            Ok(v) if v == "fast_first" => SearchMode::FastFirst,
+            Ok(v) if v == "order_first" => SearchMode::OrderFirst,
+            _ => SearchMode::FastFirst,
         })
-        .build().unwrap();
+        .build()
+        .unwrap();
 
     let executor = {
         let mut e = unm_engine::executor::Executor::new();
@@ -54,16 +53,9 @@ async fn main() {
         .map(|v| Cow::Owned(v.to_string()))
         .collect::<Vec<Cow<'static, str>>>();
 
-    let (search_time_taken, search_result) = measure_async_function_time(|| {
-        executor
-            .search(
-                &engines_to_use,
-                &song,
-                &context,
-            )
-            .boxed()
-    })
-    .await;
+    let (search_time_taken, search_result) =
+        measure_async_function_time(|| executor.search(&engines_to_use, &song, &context).boxed())
+            .await;
     let search_result = search_result.expect("should has a search result");
 
     let (retrieve_time_taken, retrieved_result) =

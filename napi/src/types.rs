@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
 use napi_derive::napi;
-use unm_types::{config::ConfigManager, ContextBuilder};
 pub use unm_types::SerializedIdentifier;
+use unm_types::{config::ConfigManager, ContextBuilder};
 
 /// [napi-rs] The metadata of the artist of a song.
 #[napi(object)]
@@ -76,10 +76,7 @@ pub struct Context {
 
 impl From<Artist> for unm_types::Artist {
   fn from(artist: Artist) -> Self {
-    Self::builder()
-      .id(artist.id)
-      .name(artist.name)
-      .build()
+    Self::builder().id(artist.id).name(artist.name).build()
   }
 }
 
@@ -94,10 +91,7 @@ impl From<unm_types::Artist> for Artist {
 
 impl From<Album> for unm_types::Album {
   fn from(album: Album) -> Self {
-    Self::builder()
-      .id(album.id)
-      .name(album.name)
-      .build()
+    Self::builder().id(album.id).name(album.name).build()
   }
 }
 
@@ -175,6 +169,7 @@ impl From<Context> for unm_types::Context {
       .proxy_uri(context.proxy_uri.map(Into::into))
       .enable_flac(context.enable_flac)
       .config(config.map(ConfigManager::new))
-      .build().unwrap()
+      .build()
+      .unwrap()
   }
 }

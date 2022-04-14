@@ -66,11 +66,13 @@ impl Engine for MiguEngine {
                 serde_json::to_string(&audio_map)?
             };
 
-            Ok(Some(SongSearchInformation::builder()
-                .source(ENGINE_ID.into())
-                .identifier(serialized_audio_map)
-                .song(Some(song))
-                .build()))
+            Ok(Some(
+                SongSearchInformation::builder()
+                    .source(ENGINE_ID.into())
+                    .identifier(serialized_audio_map)
+                    .song(Some(song))
+                    .build(),
+            ))
         } else {
             Ok(None)
         }

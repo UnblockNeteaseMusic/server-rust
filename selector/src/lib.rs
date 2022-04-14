@@ -430,9 +430,7 @@ mod tests {
 
     #[test]
     fn selector_without_duration_test() {
-        let to_compare = Song::builder()
-            .name("Now We Are Free".into())
-            .build();
+        let to_compare = Song::builder().name("Now We Are Free".into()).build();
 
         let SimilarSongSelector { selector, .. } = SimilarSongSelector::new(&to_compare);
 

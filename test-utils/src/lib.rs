@@ -3,7 +3,7 @@ use log::LevelFilter;
 use simple_logger::SimpleLogger;
 use std::{future::Future, pin::Pin, time::Duration};
 use unm_engine::interface::Engine;
-use unm_types::{Artist, Song, ContextBuilder};
+use unm_types::{Artist, ContextBuilder, Song};
 
 /// Measure the time taken by the given closure.
 #[inline]
@@ -39,16 +39,10 @@ pub async fn engine_example_wrapper(engine: impl Engine) {
 
     let song = Song::builder()
         .name("青花瓷".into())
-        .artists(vec![
-            Artist::builder()
-                .name("周杰伦".into())
-                .build(),
-        ])
+        .artists(vec![Artist::builder().name("周杰伦".into()).build()])
         .build();
 
-    let context = ContextBuilder::default()
-        .enable_flac(true)
-        .build().unwrap();
+    let context = ContextBuilder::default().enable_flac(true).build().unwrap();
 
     let (search_time_taken, search_result) =
         measure_async_function_time(|| engine.search(&song, &context).boxed()).await;

@@ -48,11 +48,12 @@ impl Engine for PyNCMEngine {
         if response.code == 200 {
             // We return the URL we got from PyNCM as the song identifier,
             // so we can return the URL in retrieve() easily.
-            let match_result =
-                find_match(&response.data, &info.id)?.map(|url| SongSearchInformation::builder()
+            let match_result = find_match(&response.data, &info.id)?.map(|url| {
+                SongSearchInformation::builder()
                     .source(ENGINE_ID.into())
                     .identifier(url)
-                    .build());
+                    .build()
+            });
 
             Ok(match_result)
         } else {

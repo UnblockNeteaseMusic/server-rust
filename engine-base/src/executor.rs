@@ -1,8 +1,8 @@
-use std::{collections::HashMap, sync::Arc, borrow::Cow};
+use std::{borrow::Cow, collections::HashMap, sync::Arc};
 
 use futures::{FutureExt, StreamExt};
 use log::{debug, error, info, trace};
-use unm_types::{Context, RetrievedSongInfo, Song, SongSearchInformation, SearchMode};
+use unm_types::{Context, RetrievedSongInfo, SearchMode, Song, SongSearchInformation};
 
 use crate::interface::Engine;
 
@@ -81,14 +81,14 @@ impl Executor {
             SearchMode::FastFirst => {
                 debug!("Use SearchMode::FastFirst mode!");
                 futures::stream::FuturesUnordered::from_iter(futures.into_iter()).boxed()
-            },
+            }
             SearchMode::OrderFirst => {
                 debug!("Use SearchMode::OrderFirst mode!");
                 futures::stream::FuturesOrdered::from_iter(futures.into_iter()).boxed()
-            },
-            _ => unimplemented!()
+            }
+            _ => unimplemented!(),
         };
-    
+
         while let Some(future) = futures.next().await {
             match future {
                 Ok(result) => {
@@ -103,7 +103,9 @@ impl Executor {
         }
 
         error!("All futures have been run, and no any result found. Give up.");
-        Err(ExecutorError::NoMatchedSong { keyword: song.keyword() })
+        Err(ExecutorError::NoMatchedSong {
+            keyword: song.keyword(),
+        })
     }
 
     pub async fn retrieve<'a>(

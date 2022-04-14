@@ -1,7 +1,7 @@
 use concat_idents::concat_idents;
 use napi::bindgen_prelude::*;
 use napi_derive::napi;
-use std::{sync::Arc, borrow::Cow};
+use std::{borrow::Cow, sync::Arc};
 use unm_engine::executor::Executor;
 
 use crate::{
@@ -32,7 +32,7 @@ impl JsExecutor {
       .into_iter()
       .map(|engine| engine.as_str().into())
       .collect::<Vec<Cow<'static, str>>>();
-  
+
     self
       .executor
       .search(&engines, &song.into(), &ctx.into())

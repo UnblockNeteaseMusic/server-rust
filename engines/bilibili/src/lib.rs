@@ -29,11 +29,13 @@ impl Engine for BilibiliEngine {
         let SimilarSongSelector { selector, .. } = SimilarSongSelector::new(info);
         let matched = song_iterator.find(|s| selector(&s));
 
-        Ok(matched.map(|song| SongSearchInformation::builder()
-            .source(ENGINE_ID.into())
-            .identifier(song.id.to_string())
-            .song(Some(song))
-            .build()))
+        Ok(matched.map(|song| {
+            SongSearchInformation::builder()
+                .source(ENGINE_ID.into())
+                .identifier(song.id.to_string())
+                .song(Some(song))
+                .build()
+        }))
     }
 
     async fn retrieve<'a>(
@@ -49,6 +51,9 @@ impl Engine for BilibiliEngine {
             .get_music_url()
             .ok_or_else(|| anyhow::anyhow!("unable to retrieve the identifier"))?;
 
-        Ok(RetrievedSongInfo::builder().source(ENGINE_ID.into()).url(url).build())
+        Ok(RetrievedSongInfo::builder()
+            .source(ENGINE_ID.into())
+            .url(url)
+            .build())
     }
 }

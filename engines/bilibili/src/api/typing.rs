@@ -45,12 +45,10 @@ impl From<BilibiliSearchResult> for Song {
         Song::builder()
             .id(result.id.to_string())
             .name(result.title)
-            .artists(vec![
-                Artist::builder()
-                    .id(result.mid.to_string())
-                    .name(result.author)
-                    .build()
-            ])
+            .artists(vec![Artist::builder()
+                .id(result.mid.to_string())
+                .name(result.author)
+                .build()])
             .build()
     }
 }

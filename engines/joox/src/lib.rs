@@ -100,11 +100,13 @@ impl Engine for JooxEngine {
         let SimilarSongSelector { selector, .. } = SimilarSongSelector::new(song);
         let matched = song_iterator.find(|s| selector(&s));
 
-        Ok(matched.map(|matched| SongSearchInformation::builder()
-            .source(ENGINE_ID.into())
-            .identifier(matched.id.clone())
-            .song(Some(matched))
-            .build()))
+        Ok(matched.map(|matched| {
+            SongSearchInformation::builder()
+                .source(ENGINE_ID.into())
+                .identifier(matched.id.clone())
+                .song(Some(matched))
+                .build()
+        }))
     }
 
     /// Retrieve the audio URL of the specified `identifier`.
@@ -251,7 +253,7 @@ fn format(item: &Json) -> anyhow::Result<Song> {
             Album::builder()
                 .id(valstr(&item["albummid"], "/albummid")?)
                 .name(b64_opt_decode(item["info3"].as_str())?)
-                .build()
+                .build(),
         ))
         .artists(artists)
         .build())

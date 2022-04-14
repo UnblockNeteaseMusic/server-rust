@@ -38,11 +38,13 @@ impl Engine for KuwoEngine {
             unm_selector::SimilarSongSelector::new(info);
         let matched_song = song_iterator.find(|s| selector(&s));
 
-        Ok(matched_song.map(|song| SongSearchInformation::builder()
-            .source(ENGINE_ID.into())
-            .identifier(song.id.clone())
-            .song(Some(song))
-            .build()))
+        Ok(matched_song.map(|song| {
+            SongSearchInformation::builder()
+                .source(ENGINE_ID.into())
+                .identifier(song.id.clone())
+                .song(Some(song))
+                .build()
+        }))
     }
 
     async fn retrieve<'a>(
@@ -56,6 +58,9 @@ impl Engine for KuwoEngine {
         let response = api::get_music(mid, ctx).await?;
         let url = response.data.url;
 
-        Ok(RetrievedSongInfo::builder().source(ENGINE_ID.into()).url(url).build())
+        Ok(RetrievedSongInfo::builder()
+            .source(ENGINE_ID.into())
+            .url(url)
+            .build())
     }
 }
