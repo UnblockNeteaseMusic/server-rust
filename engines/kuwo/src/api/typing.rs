@@ -82,7 +82,7 @@ impl From<KuwoAudioInfo> for Song {
         Song::builder()
             .id(info.rid.to_string())
             .name(info.name)
-            .duration(Some(info.duration))
+            .duration(Some(info.duration * 1000))
             .artists(vec![artist])
             .album(Some(album))
             .build()
