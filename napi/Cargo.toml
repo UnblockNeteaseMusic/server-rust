@@ -1,7 +1,11 @@
 [package]
 edition = "2021"
 name = "unm_napi"
+description = "The N-API for UnblockNeteaseMusic (Rust)."
+license = "LGPL-3.0-or-later"
 version = "0.1.0"
+repository = "https://github.com/UnblockNeteaseMusic/server-rust"
+readme = "../README.md"
 publish = false
 
 [lib]
