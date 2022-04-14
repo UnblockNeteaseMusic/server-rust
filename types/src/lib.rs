@@ -4,6 +4,7 @@ use config::ConfigManager;
 use derive_builder::Builder;
 use reqwest::Proxy;
 use serde::{Deserialize, Serialize};
+use typed_builder::TypedBuilder;
 use std::{borrow::Cow, collections::HashMap};
 
 /// The serialized identifier for passing to `retrieve()`.
@@ -35,54 +36,54 @@ impl Default for SearchMode {
 }
 
 /// The metadata of the artist of a song.
-#[derive(Debug, Clone, Default, Serialize, Deserialize, Builder)]
-#[builder(setter(into), default)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, TypedBuilder)]
 #[non_exhaustive]
 pub struct Artist {
     /// The identifier of this artist.
-    #[builder(default = r#""".to_string()"#)]
+    #[builder(default = "".to_string())]
     pub id: String,
     /// The name of this artist.
     pub name: String,
 }
 
 /// The metadata of the album of a song.
-#[derive(Debug, Clone, Default, Serialize, Deserialize, Builder)]
-#[builder(setter(into), default)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, TypedBuilder)]
 #[non_exhaustive]
 pub struct Album {
     /// The identifier of this artist.
-    #[builder(default = r#""".to_string()"#)]
+    #[builder(default = "".to_string())]
     pub id: String,
     /// The name of this album.
     pub name: String,
 }
 
 /// The metadata of a song.
-#[derive(Debug, Clone, Default, Serialize, Deserialize, Builder)]
-#[builder(setter(into), default)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, TypedBuilder)]
 #[non_exhaustive]
 pub struct Song {
     /// The identifier of this song.
-    #[builder(default = r#""".to_string()"#)]
+    #[builder(default = "".to_string())]
     pub id: String,
     /// The name of this song.
     pub name: String,
     /// The duration of this song (ms).
+    #[builder(default)]
     pub duration: Option<i64>,
     /// The artist of this song.
+    #[builder(default)]
     pub artists: Vec<Artist>,
     /// The album of this song.
+    #[builder(default)]
     pub album: Option<Album>,
     /// The context of this song.
     ///
     /// For example, the URI identifier of this song.
+    #[builder(default)]
     pub context: Option<HashMap<String, String>>,
 }
 
 /// The song identifier with the engine information.
-#[derive(Clone, Serialize, Deserialize, Builder)]
-#[builder(setter(into))]
+#[derive(Clone, Serialize, Deserialize, TypedBuilder)]
 #[non_exhaustive]
 pub struct SongSearchInformation {
     /// The retrieve source of this song, for example: `bilibili`.
@@ -90,12 +91,12 @@ pub struct SongSearchInformation {
     /// The serialized identifier of this song.
     pub identifier: SerializedIdentifier,
     /// The details of this song.
+    #[builder(default)]
     pub song: Option<Song>,
 }
 
 /// The information of the song retrieved with `retrieve()`.
-#[derive(Clone, Serialize, Deserialize, Builder)]
-#[builder(setter(into))]
+#[derive(Clone, Serialize, Deserialize, TypedBuilder)]
 #[non_exhaustive]
 pub struct RetrievedSongInfo {
     /// The retrieve source of this song, for example: `bilibili`.
@@ -106,7 +107,7 @@ pub struct RetrievedSongInfo {
 
 /// The context.
 #[derive(Clone, Default, Serialize, Deserialize, Builder)]
-#[builder(default)]
+#[builder(setter(into, strip_option), default)]
 #[non_exhaustive]
 pub struct Context {
     /// The proxy URI
