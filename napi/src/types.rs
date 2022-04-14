@@ -1,4 +1,4 @@
-use std::{borrow::Cow, collections::HashMap};
+use std::collections::HashMap;
 
 use napi_derive::napi;
 use unm_types::{config::ConfigManager, ContextBuilder};
@@ -76,10 +76,10 @@ pub struct Context {
 
 impl From<Artist> for unm_types::Artist {
   fn from(artist: Artist) -> Self {
-    Self {
-      id: artist.id,
-      name: artist.name,
-    }
+    Self::builder()
+      .id(artist.id)
+      .name(artist.name)
+      .build()
   }
 }
 
@@ -94,10 +94,10 @@ impl From<unm_types::Artist> for Artist {
 
 impl From<Album> for unm_types::Album {
   fn from(album: Album) -> Self {
-    Self {
-      id: album.id,
-      name: album.name,
-    }
+    Self::builder()
+      .id(album.id)
+      .name(album.name)
+      .build()
   }
 }
 
@@ -112,14 +112,14 @@ impl From<unm_types::Album> for Album {
 
 impl From<Song> for unm_types::Song {
   fn from(song: Song) -> Self {
-    Self {
-      id: song.id,
-      name: song.name,
-      duration: song.duration,
-      artists: song.artists.into_iter().map(Into::into).collect(),
-      album: song.album.map(Into::into),
-      context: song.context,
-    }
+    Self::builder()
+      .id(song.id)
+      .name(song.name)
+      .duration(song.duration)
+      .artists(song.artists.into_iter().map(Into::into).collect())
+      .album(song.album.map(Into::into))
+      .context(song.context)
+      .build()
   }
 }
 
@@ -136,7 +136,7 @@ impl From<unm_types::Song> for Song {
   }
 }
 
-impl From<unm_types::SongSearchInformation<'_>> for SongSearchInformation {
+impl From<unm_types::SongSearchInformation> for SongSearchInformation {
   fn from(song_information: unm_types::SongSearchInformation) -> Self {
     Self {
       source: song_information.source.to_string(),
@@ -146,17 +146,17 @@ impl From<unm_types::SongSearchInformation<'_>> for SongSearchInformation {
   }
 }
 
-impl From<SongSearchInformation> for unm_types::SongSearchInformation<'_> {
+impl From<SongSearchInformation> for unm_types::SongSearchInformation {
   fn from(song_information: SongSearchInformation) -> Self {
-    Self {
-      source: Cow::Owned(song_information.source),
-      identifier: song_information.identifier,
-      song: song_information.song.map(Into::into),
-    }
+    Self::builder()
+      .source(song_information.source.into())
+      .identifier(song_information.identifier)
+      .song(song_information.song.map(Into::into))
+      .build()
   }
 }
 
-impl From<unm_types::RetrievedSongInfo<'_>> for RetrievedSongInfo {
+impl From<unm_types::RetrievedSongInfo> for RetrievedSongInfo {
   fn from(song_information: unm_types::RetrievedSongInfo) -> Self {
     Self {
       source: song_information.source.to_string(),

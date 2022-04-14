@@ -2,7 +2,7 @@
 //!
 //! It can fetch audio from Kugou Music.
 
-use std::{borrow::Cow, collections::HashMap, sync::Arc};
+use std::{collections::HashMap, sync::Arc};
 
 use async_trait::async_trait;
 use concat_string::concat_string;
@@ -88,16 +88,18 @@ impl Engine for KugouEngine {
         &self,
         info: &'a Song,
         ctx: &'a Context,
-    ) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
+    ) -> anyhow::Result<Option<SongSearchInformation>> {
         let response = search(info, ctx).await;
 
         match response {
             Ok(response) => match response {
-                Some(response) => Ok(Some(SongSearchInformation {
-                    source: Cow::Borrowed(ENGINE_ID),
-                    identifier: serde_json::to_string(&response)?,
-                    song: Some(response),
-                })),
+                Some(response) => Ok(Some(
+                    SongSearchInformation::builder()
+                        .source(ENGINE_ID.into())
+                        .identifier(serde_json::to_string(&response)?)
+                        .song(Some(response))
+                        .build()
+                    )),
                 None => Ok(None),
             },
             Err(err) => Err(err),
@@ -108,7 +110,7 @@ impl Engine for KugouEngine {
         &self,
         identifier: &'a SerializedIdentifier,
         ctx: &'a Context,
-    ) -> anyhow::Result<RetrievedSongInfo<'static>> {
+    ) -> anyhow::Result<RetrievedSongInfo> {
         info!("Retrieving the identifier with Kugou Engine…");
 
         let song: Arc<Song> = Arc::new(serde_json::from_str(identifier)?);
@@ -139,10 +141,7 @@ impl Engine for KugouEngine {
 
         let url = futures::future::select_ok(song_futures).await?.0;
 
-        Ok(RetrievedSongInfo {
-            url,
-            source: Cow::Borrowed(ENGINE_ID),
-        })
+        Ok(RetrievedSongInfo::builder().url(url).source(ENGINE_ID.into()).build())
     }
 }
 
@@ -159,24 +158,24 @@ fn format(entry: &Json) -> anyhow::Result<Song> {
             .map(|v| v.to_string())
     };
 
-    Ok(Song {
-        id: valstr("hash")?,
-        name: valstr("songname")?,
-        duration: entry["duration"].as_i64().map(|v| v * 1000),
-        artists: vec![],
-        album: Some(Album {
-            id: valstr("album_id")?,
-            name: valstr("album_name")?,
-        }),
-        context: Some(
+    Ok(Song::builder()
+        .id(valstr("hash")?)
+        .name(valstr("songname")?)
+        .duration(entry["duration"].as_i64().map(|v| v * 1000))
+        .artists(vec![])
+        .album(Some(Album::builder()
+            .id(valstr("album_id")?)
+            .name(valstr("album_name")?)
+            .build()))
+        .context(Some(
             KugouSongContext {
                 id: entry["hash"].as_str().map(|v| v.to_string()),
                 id_hq: entry["320hash"].as_str().map(|v| v.to_string()),
                 id_sq: entry["sqhash"].as_str().map(|v| v.to_string()),
             }
             .into(),
-        ),
-    })
+        ))
+        .build())
 }
 
 /// Search and get song (with metadata) from Kugou Music.

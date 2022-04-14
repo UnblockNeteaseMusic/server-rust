@@ -47,7 +47,7 @@ impl Engine for YtDlEngine {
         &self,
         info: &'a Song,
         ctx: &'a Context,
-    ) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
+    ) -> anyhow::Result<Option<SongSearchInformation>> {
         let exe = decide_ytdl_exe(&ctx.config);
 
         info!("Searching for {info} with {exe}…");
@@ -59,11 +59,11 @@ impl Engine for YtDlEngine {
         if let Some(response) = response {
             let url = response.url.to_string();
             let song = Song::from(response);
-            Ok(Some(SongSearchInformation {
-                source: Cow::Borrowed(ENGINE_ID),
-                identifier: url,
-                song: Some(song),
-            }))
+            Ok(Some(SongSearchInformation::builder()
+                .source(ENGINE_ID.into())
+                .identifier(url)
+                .song(Some(song))
+                .build()))
         } else {
             Ok(None)
         }
@@ -73,14 +73,14 @@ impl Engine for YtDlEngine {
         &self,
         identifier: &'a SerializedIdentifier,
         _: &'a Context,
-    ) -> anyhow::Result<RetrievedSongInfo<'static>> {
+    ) -> anyhow::Result<RetrievedSongInfo> {
         info!("Retrieving {identifier}…");
 
         // We just return the identifier as the URL of song.
-        Ok(RetrievedSongInfo {
-            source: Cow::Borrowed(ENGINE_ID),
-            url: identifier.to_string(),
-        })
+        Ok(RetrievedSongInfo::builder()
+            .source(ENGINE_ID.into())
+            .url(identifier.to_string())
+            .build())
     }
 }
 
@@ -156,17 +156,12 @@ impl From<YtDlResponse> for Song {
     fn from(res: YtDlResponse) -> Self {
         debug!("Formatting response…");
 
-        Song {
-            id: res.id,
-            name: res.title,
-            artists: vec![Artist {
-                id: res.uploader_id,
-                name: res.uploader,
-            }],
-            duration: Some(res.duration as i64 * 1000),
-            album: None,
-            context: None,
-        }
+        Song::builder()
+            .id(res.id)
+            .name(res.title)
+            .artists(vec![Artist::builder().id(res.uploader_id).name(res.uploader).build()])
+            .duration(Some(res.duration as i64 * 1000))
+            .build()
     }
 }
 

@@ -5,8 +5,6 @@
 //!
 //! FIXME: KuwoDES implementation for Lossless file.
 
-use std::borrow::Cow;
-
 use api::typing::MusicID;
 use async_trait::async_trait;
 use unm_engine::interface::Engine;
@@ -23,7 +21,7 @@ impl Engine for KuwoEngine {
         &self,
         info: &'a Song,
         ctx: &'a Context,
-    ) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
+    ) -> anyhow::Result<Option<SongSearchInformation>> {
         log::info!("Searching “{info}” in Kuwo Music…");
 
         let response = api::search_music_by_keyword(&info.keyword(), 1, 30, ctx).await?;
@@ -40,27 +38,24 @@ impl Engine for KuwoEngine {
             unm_selector::SimilarSongSelector::new(info);
         let matched_song = song_iterator.find(|s| selector(&s));
 
-        Ok(matched_song.map(|song| SongSearchInformation {
-            source: Cow::Borrowed(ENGINE_ID),
-            identifier: song.id.clone(),
-            song: Some(song),
-        }))
+        Ok(matched_song.map(|song| SongSearchInformation::builder()
+            .source(ENGINE_ID.into())
+            .identifier(song.id.clone())
+            .song(Some(song))
+            .build()))
     }
 
     async fn retrieve<'a>(
         &self,
         identifier: &'a SerializedIdentifier,
         ctx: &'a Context,
-    ) -> anyhow::Result<RetrievedSongInfo<'static>> {
+    ) -> anyhow::Result<RetrievedSongInfo> {
         log::info!("Retrieving MID “{identifier}” from Kuwo Music…");
 
         let mid = MusicID::from_str_radix(identifier, 10)?;
         let response = api::get_music(mid, ctx).await?;
         let url = response.data.url;
 
-        Ok(RetrievedSongInfo {
-            source: Cow::Borrowed(ENGINE_ID),
-            url,
-        })
+        Ok(RetrievedSongInfo::builder().source(ENGINE_ID.into()).url(url).build())
     }
 }

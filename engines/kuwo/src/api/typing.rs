@@ -69,23 +69,22 @@ impl From<KuwoAudioInfo> for Song {
     fn from(info: KuwoAudioInfo) -> Self {
         log::debug!("Converting KuwoAudioInfo to Song…");
 
-        let artist = Artist {
-            id: info.artistid.to_string(),
-            name: info.artist,
-        };
+        let artist = Artist::builder()
+            .id(info.artistid.to_string())
+            .name(info.artist)
+            .build();
 
-        let album = Album {
-            id: info.albumid.to_string(),
-            name: info.album.to_string(),
-        };
+        let album = Album::builder()
+            .id(info.albumid.to_string())
+            .name(info.album)
+            .build();
 
-        Song {
-            id: info.rid.to_string(),
-            name: info.name,
-            duration: Some(info.duration * 1000),
-            artists: vec![artist],
-            album: Some(album),
-            context: None,
-        }
+        Song::builder()
+            .id(info.rid.to_string())
+            .name(info.name)
+            .duration(Some(info.duration))
+            .artists(vec![artist])
+            .album(Some(album))
+            .build()
     }
 }

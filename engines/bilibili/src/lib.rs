@@ -8,8 +8,6 @@ use unm_engine::interface::Engine;
 use unm_selector::SimilarSongSelector;
 use unm_types::{Context, RetrievedSongInfo, SerializedIdentifier, Song, SongSearchInformation};
 
-use std::borrow::Cow;
-
 pub const ENGINE_ID: &str = "bilibili";
 
 /// The `bilibili` engine that can fetch audio from Bilibili Music.
@@ -21,7 +19,7 @@ impl Engine for BilibiliEngine {
         &self,
         info: &'a Song,
         ctx: &'a Context,
-    ) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
+    ) -> anyhow::Result<Option<SongSearchInformation>> {
         info!("Searching with Bilibili engine…");
 
         let response = api::search(&info.keyword(), ctx).await?;
@@ -31,18 +29,18 @@ impl Engine for BilibiliEngine {
         let SimilarSongSelector { selector, .. } = SimilarSongSelector::new(info);
         let matched = song_iterator.find(|s| selector(&s));
 
-        Ok(matched.map(|song| SongSearchInformation {
-            source: Cow::Borrowed(ENGINE_ID),
-            identifier: song.id.to_string(),
-            song: Some(song),
-        }))
+        Ok(matched.map(|song| SongSearchInformation::builder()
+            .source(ENGINE_ID.into())
+            .identifier(song.id.to_string())
+            .song(Some(song))
+            .build()))
     }
 
     async fn retrieve<'a>(
         &self,
         identifier: &'a SerializedIdentifier,
         ctx: &'a Context,
-    ) -> anyhow::Result<RetrievedSongInfo<'static>> {
+    ) -> anyhow::Result<RetrievedSongInfo> {
         info!("Retrieving the song by identifier…");
 
         let response = api::track(identifier, ctx).await?;
@@ -51,9 +49,6 @@ impl Engine for BilibiliEngine {
             .get_music_url()
             .ok_or_else(|| anyhow::anyhow!("unable to retrieve the identifier"))?;
 
-        Ok(RetrievedSongInfo {
-            source: Cow::Borrowed(ENGINE_ID),
-            url,
-        })
+        Ok(RetrievedSongInfo::builder().source(ENGINE_ID.into()).url(url).build())
     }
 }

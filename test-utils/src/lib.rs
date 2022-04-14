@@ -37,14 +37,15 @@ pub fn set_logger() {
 pub async fn engine_example_wrapper(engine: impl Engine) {
     set_logger();
 
-    let song = Song {
-        name: "青花瓷".to_string(),
-        artists: vec![Artist {
-            name: "周杰伦".to_string(),
-            ..Default::default()
-        }],
-        ..Default::default()
-    };
+    let song = Song::builder()
+        .name("青花瓷".into())
+        .artists(vec![
+            Artist::builder()
+                .name("周杰伦".into())
+                .build(),
+        ])
+        .build();
+
     let context = ContextBuilder::default()
         .enable_flac(true)
         .build().unwrap();

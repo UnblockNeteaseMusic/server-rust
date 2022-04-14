@@ -11,14 +11,13 @@ static GLOBAL: MiMalloc = MiMalloc;
 #[tokio::main]
 async fn main() {
     set_logger();
-    let song = Song {
-        name: "青花瓷".to_string(),
-        artists: vec![Artist {
-            name: "周杰伦".to_string(),
-            ..Default::default()
-        }],
-        ..Default::default()
-    };
+
+    let song = Song::builder()
+        .name("青花瓷".to_string())
+        .artists(vec![Artist::builder()
+            .name("周杰伦".to_string())
+            .build()])
+        .build();
 
     let context = ContextBuilder::default()
         .enable_flac(std::env::var("ENABLE_FLAC").unwrap_or_else(|_| "".into()) == "true")

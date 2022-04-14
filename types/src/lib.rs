@@ -107,7 +107,7 @@ pub struct RetrievedSongInfo {
 
 /// The context.
 #[derive(Clone, Default, Serialize, Deserialize, Builder)]
-#[builder(setter(into, strip_option), default)]
+#[builder(setter(into), default)]
 #[non_exhaustive]
 pub struct Context {
     /// The proxy URI

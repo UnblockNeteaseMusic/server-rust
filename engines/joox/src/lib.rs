@@ -51,7 +51,7 @@ impl Engine for JooxEngine {
         &self,
         song: &'a Song,
         ctx: &'a Context,
-    ) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
+    ) -> anyhow::Result<Option<SongSearchInformation>> {
         log::debug!("Searching “{song}” with Joox Engine…");
 
         let keyword = fit(song);
@@ -100,11 +100,11 @@ impl Engine for JooxEngine {
         let SimilarSongSelector { selector, .. } = SimilarSongSelector::new(song);
         let matched = song_iterator.find(|s| selector(&s));
 
-        Ok(matched.map(|matched| SongSearchInformation {
-            source: Cow::Borrowed(ENGINE_ID),
-            identifier: matched.id.clone(),
-            song: Some(matched),
-        }))
+        Ok(matched.map(|matched| SongSearchInformation::builder()
+            .source(ENGINE_ID.into())
+            .identifier(matched.id.clone())
+            .song(Some(matched))
+            .build()))
     }
 
     /// Retrieve the audio URL of the specified `identifier`.
@@ -112,7 +112,7 @@ impl Engine for JooxEngine {
         &self,
         identifier: &'a SerializedIdentifier,
         ctx: &'a Context,
-    ) -> anyhow::Result<RetrievedSongInfo<'static>> {
+    ) -> anyhow::Result<RetrievedSongInfo> {
         log::debug!("Retrieving with Joox Engine…");
 
         let replace_audio_url_regex = REPLACE_AUDIO_URL_REGEX
@@ -150,10 +150,10 @@ impl Engine for JooxEngine {
         let audio_url = raw_audio_url.map(|u| replace_audio_url_regex.replace(u, "M800$1.mp3"));
 
         if let Some(url) = audio_url {
-            Ok(RetrievedSongInfo {
-                source: Cow::Borrowed(ENGINE_ID),
-                url: url.to_string(),
-            })
+            Ok(RetrievedSongInfo::builder()
+                .source(ENGINE_ID.into())
+                .url(url.to_string())
+                .build())
         } else {
             Err(anyhow::anyhow!("No audio URL found."))
         }
@@ -229,10 +229,10 @@ fn format(item: &Json) -> anyhow::Result<Song> {
         .unwrap_or(&vec![])
         .iter()
         .map(|singer| -> anyhow::Result<Artist> {
-            Ok(Artist {
-                id: vali64(&singer["id"], "/singer_list/?/id")?.to_string(),
-                name: b64_opt_decode(singer["name"].as_str())?,
-            })
+            Ok(Artist::builder()
+                .id(vali64(&singer["id"], "/singer_list/?/id")?.to_string())
+                .name(b64_opt_decode(singer["name"].as_str())?)
+                .build())
         })
         .filter_map(|v| match v {
             Ok(v) => Some(v),
@@ -243,17 +243,18 @@ fn format(item: &Json) -> anyhow::Result<Song> {
         })
         .collect::<Vec<Artist>>();
 
-    Ok(Song {
-        id: valstr(&item["songid"], "/songid")?,
-        name: b64_opt_decode(item["info1"].as_str())?,
-        duration: Some(vali64(&item["playtime"], "/playtime")? * 1000),
-        album: Some(Album {
-            id: valstr(&item["albummid"], "/albummid")?,
-            name: b64_opt_decode(item["info3"].as_str())?,
-        }),
-        artists,
-        context: None,
-    })
+    Ok(Song::builder()
+        .id(valstr(&item["songid"], "/songid")?)
+        .name(b64_opt_decode(item["info1"].as_str())?)
+        .duration(Some(vali64(&item["playtime"], "/playtime")? * 1000))
+        .album(Some(
+            Album::builder()
+                .id(valstr(&item["albummid"], "/albummid")?)
+                .name(b64_opt_decode(item["info3"].as_str())?)
+                .build()
+        ))
+        .artists(artists)
+        .build())
 }
 
 fn get_timestamp() -> u128 {

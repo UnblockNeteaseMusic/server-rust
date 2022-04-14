@@ -7,7 +7,7 @@ mod types;
 use anyhow::Ok;
 use async_trait::async_trait;
 use http::Method;
-use std::{borrow::Cow, collections::HashMap};
+use std::collections::HashMap;
 use types::MiguResponse;
 use unm_engine::interface::Engine;
 use unm_request::{json::Json, request};
@@ -26,7 +26,7 @@ impl Engine for MiguEngine {
         &self,
         info: &'a Song,
         ctx: &'a Context,
-    ) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
+    ) -> anyhow::Result<Option<SongSearchInformation>> {
         log::info!("Searching “{info}” with Migu engine…");
 
         let api = construct_search_api(info.keyword().as_str())?;
@@ -66,11 +66,11 @@ impl Engine for MiguEngine {
                 serde_json::to_string(&audio_map)?
             };
 
-            Ok(Some(SongSearchInformation {
-                source: Cow::Borrowed(ENGINE_ID),
-                identifier: serialized_audio_map,
-                song: Some(song),
-            }))
+            Ok(Some(SongSearchInformation::builder()
+                .source(ENGINE_ID.into())
+                .identifier(serialized_audio_map)
+                .song(Some(song))
+                .build()))
         } else {
             Ok(None)
         }
@@ -80,7 +80,7 @@ impl Engine for MiguEngine {
         &self,
         identifier: &'a SerializedIdentifier,
         ctx: &'a Context,
-    ) -> anyhow::Result<RetrievedSongInfo<'static>> {
+    ) -> anyhow::Result<RetrievedSongInfo> {
         log::info!("Retrieving with Migu engine…");
 
         let availables_qualities = serde_json::from_str::<'_, HashMap<String, String>>(identifier)?;
@@ -96,10 +96,10 @@ impl Engine for MiguEngine {
             .next();
 
         if let Some(url) = matched_song_url {
-            Ok(RetrievedSongInfo {
-                source: Cow::Borrowed(ENGINE_ID),
-                url: url.clone(),
-            })
+            Ok(RetrievedSongInfo::builder()
+                .source(ENGINE_ID.into())
+                .url(url.clone())
+                .build())
         } else {
             Err(anyhow::anyhow!("Could not find any matched song"))
         }

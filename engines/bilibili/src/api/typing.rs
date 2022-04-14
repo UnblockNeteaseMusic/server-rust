@@ -42,17 +42,16 @@ impl From<BilibiliSearchResult> for Song {
     fn from(result: BilibiliSearchResult) -> Self {
         log::debug!("Converting BilibiliSearchResult to Song…");
 
-        Song {
-            id: result.id.to_string(),
-            name: result.title,
-            duration: None,
-            artists: vec![Artist {
-                id: result.mid.to_string(),
-                name: result.author,
-            }],
-            album: None,
-            context: None,
-        }
+        Song::builder()
+            .id(result.id.to_string())
+            .name(result.title)
+            .artists(vec![
+                Artist::builder()
+                    .id(result.mid.to_string())
+                    .name(result.author)
+                    .build()
+            ])
+            .build()
     }
 }
 

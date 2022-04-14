@@ -87,19 +87,19 @@ impl From<MiguRateFormat> for MiguAudioSource {
 
 impl From<MiguSinger> for Artist {
     fn from(singer: MiguSinger) -> Self {
-        Self {
-            id: singer.id,
-            name: singer.name,
-        }
+        Self::builder()
+            .id(singer.id)
+            .name(singer.name)
+            .build()
     }
 }
 
 impl From<MiguAlbum> for Album {
     fn from(singer: MiguAlbum) -> Self {
-        Self {
-            id: singer.id,
-            name: singer.name,
-        }
+        Self::builder()
+            .id(singer.id)
+            .name(singer.name)
+            .build()
     }
 }
 
@@ -126,14 +126,13 @@ impl From<MiguResponse> for Song {
         let new_rate_format = response.new_rate_formats.into_iter().map(Into::into);
         let context = MergedAudioFileMap::merge(rate_format, new_rate_format);
 
-        Self {
-            id,
-            name,
-            artists,
-            album,
-            context: Some(context.0),
-            duration: None,
-        }
+        Self::builder()
+            .id(id)
+            .name(name)
+            .artists(artists)
+            .album(album)
+            .context(Some(context.0))
+            .build()
     }
 }
 

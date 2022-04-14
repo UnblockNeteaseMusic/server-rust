@@ -430,11 +430,9 @@ mod tests {
 
     #[test]
     fn selector_without_duration_test() {
-        let to_compare = Song {
-            id: "1".to_string(),
-            name: "Now We Are Free".to_string(),
-            ..Default::default()
-        };
+        let to_compare = Song::builder()
+            .name("Now We Are Free".into())
+            .build();
 
         let SimilarSongSelector { selector, .. } = SimilarSongSelector::new(&to_compare);
 
@@ -446,12 +444,10 @@ mod tests {
 
     #[test]
     fn selector_with_duration_test() {
-        let to_compare = Song {
-            id: "1".to_string(),
-            name: "Now We Are Free".to_string(),
-            duration: Some(287529),
-            ..Default::default()
-        };
+        let to_compare = Song::builder()
+            .name("Now We Are Free".into())
+            .duration(Some(287529))
+            .build();
 
         let SimilarSongSelector { selector, .. } = SimilarSongSelector::new(&to_compare);
 
@@ -463,11 +459,7 @@ mod tests {
 
     #[test]
     fn optional_selector_without_duration_test() {
-        let to_compare = Song {
-            id: "1".to_string(),
-            name: "Now We Are Free".to_string(),
-            ..Default::default()
-        };
+        let to_compare = Song::builder().name("Now We Are Free".into()).build();
 
         let SimilarSongSelector {
             optional_selector, ..
@@ -490,12 +482,10 @@ mod tests {
 
     #[test]
     fn optional_selector_with_duration_test() {
-        let to_compare = Song {
-            id: "1".to_string(),
-            name: "Now We Are Free".to_string(),
-            duration: Some(287529),
-            ..Default::default()
-        };
+        let to_compare = Song::builder()
+            .name("Now We Are Free".into())
+            .duration(Some(287529))
+            .build();
 
         let SimilarSongSelector {
             optional_selector, ..

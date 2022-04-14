@@ -3,8 +3,6 @@
 //! It can fetch audio from the unofficial
 //! Netease Cloud Music API.
 
-use std::borrow::Cow;
-
 use http::Method;
 use log::{debug, info};
 use serde::Deserialize;
@@ -42,7 +40,7 @@ impl Engine for PyNCMEngine {
         &self,
         info: &'a Song,
         ctx: &'a Context,
-    ) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
+    ) -> anyhow::Result<Option<SongSearchInformation>> {
         info!("Searching with PyNCM engine…");
 
         let response = fetch_song_info(&info.id, ctx).await?;
@@ -51,11 +49,10 @@ impl Engine for PyNCMEngine {
             // We return the URL we got from PyNCM as the song identifier,
             // so we can return the URL in retrieve() easily.
             let match_result =
-                find_match(&response.data, &info.id)?.map(|url| SongSearchInformation {
-                    source: Cow::Borrowed(ENGINE_ID),
-                    identifier: url,
-                    song: None,
-                });
+                find_match(&response.data, &info.id)?.map(|url| SongSearchInformation::builder()
+                    .source(ENGINE_ID.into())
+                    .identifier(url)
+                    .build());
 
             Ok(match_result)
         } else {
@@ -70,14 +67,14 @@ impl Engine for PyNCMEngine {
         &self,
         identifier: &'a SerializedIdentifier,
         _: &'a Context,
-    ) -> anyhow::Result<RetrievedSongInfo<'static>> {
+    ) -> anyhow::Result<RetrievedSongInfo> {
         info!("Retrieving with PyNCM engine…");
 
         // We just return the identifier as the URL of song.
-        Ok(RetrievedSongInfo {
-            source: Cow::Borrowed(ENGINE_ID),
-            url: identifier.to_string(),
-        })
+        Ok(RetrievedSongInfo::builder()
+            .source(ENGINE_ID.into())
+            .url(identifier.to_string())
+            .build())
     }
 }
 
