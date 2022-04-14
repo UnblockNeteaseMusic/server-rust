@@ -1,15 +1,23 @@
 use std::{borrow::Cow, collections::HashMap};
 
 use async_trait::async_trait;
-use http::{Method, HeaderMap, HeaderValue, header::{ORIGIN, REFERER, COOKIE}};
+use http::{
+    header::{COOKIE, ORIGIN, REFERER},
+    HeaderMap, HeaderValue, Method,
+};
 use log::debug;
 use reqwest::Url;
 use unm_engine::interface::Engine;
+use unm_request::{
+    json::{Json, UnableToExtractJson},
+    request,
+};
 use unm_selector::SimilarSongSelector;
-use unm_types::{Context, RetrievedSongInfo, SerializedIdentifier, Song, SongSearchInformation, Album};
-use unm_request::{json::{Json, UnableToExtractJson}, request};
+use unm_types::{
+    Album, Context, RetrievedSongInfo, SerializedIdentifier, Song, SongSearchInformation,
+};
 
-pub const  ENGINE_ID: &str = "qq";
+pub const ENGINE_ID: &str = "qq";
 
 pub struct QQEngine;
 
@@ -19,7 +27,7 @@ impl Engine for QQEngine {
         &self,
         info: &'a Song,
         ctx: &'a Context,
-    ) -> anyhow::Result<Option<SongSearchInformation<'static>>> {
+    ) -> anyhow::Result<Option<SongSearchInformation>> {
         log::info!("Searching with QQ engine");
 
         let response = get_search_data(&info.keyword(), ctx).await?;
@@ -35,25 +43,25 @@ impl Engine for QQEngine {
         let matched = find_match(info, result).await?;
 
         if let Some(song) = matched {
-            Ok(Some(SongSearchInformation {
-                source: Cow::Borrowed(ENGINE_ID),
-                identifier: song.id.to_string(),
-                song: Some(song),
-            }))
+            Ok(Some(
+                SongSearchInformation::builder()
+                    .source(ENGINE_ID.into())
+                    .identifier(song.id.to_string())
+                    .song(Some(song))
+                    .build()
+            ))
         } else {
             Ok(None)
         }
     }
 
-
     async fn retrieve<'a>(
         &self,
-        identifier: &'a SerializedIdentifier,
-        ctx: &'a Context,
-    ) -> anyhow::Result<RetrievedSongInfo<'static>> {
+        _identifier: &'a SerializedIdentifier,
+        _ctx: &'a Context,
+    ) -> anyhow::Result<RetrievedSongInfo> {
         todo!()
     }
-
 }
 
 async fn get_search_data(keyword: &str, ctx: &Context) -> anyhow::Result<Json> {
@@ -66,7 +74,7 @@ async fn get_search_data(keyword: &str, ctx: &Context) -> anyhow::Result<Json> {
         &url,
         Some(construct_header(cookie)?),
         None,
-        ctx.try_get_proxy()?
+        ctx.try_get_proxy()?,
     )
     .await?;
     Ok(res.json().await?)
@@ -123,23 +131,28 @@ fn format(song: &Json) -> anyhow::Result<Song> {
         json_pointer: "/songmid",
         expected_type: "string",
     })?;
-    let mut context = HashMap::new();
-    context.insert("media_mid".to_string(), media_mid.to_string());
-    context.insert("songmid".to_string(), song_mid.to_string());
+    let context = {
+        let mut context = HashMap::new();
+        context.insert("media_mid".to_string(), media_mid.to_string());
+        context.insert("songmid".to_string(), song_mid.to_string());
 
-    let x = Song {
-        id: id.to_string(),
-        name: String::from(name),
-        duration: Some(duration * 1000),
-        artists: vec![],
-        album: Some(Album {
-            id: album_id.to_string(),
-            name: String::from(album_name),
-        }),
-        context: Some(context),
+        context
     };
 
-    Ok(x)
+    Ok(
+        Song::builder()
+            .id(id.to_string())
+            .name(name.to_string())
+            .duration(Some(duration * 1000))
+            .album(Some(
+                Album::builder()
+                    .id(album_id.to_string())
+                    .name(album_name.to_string())
+                    .build()
+            ))
+            .context(Some(context))
+            .build()
+    )
 }
 
 fn construct_header(cookie: Option<&str>) -> anyhow::Result<HeaderMap> {
@@ -159,7 +172,7 @@ fn construct_header(cookie: Option<&str>) -> anyhow::Result<HeaderMap> {
 
 fn construct_search_url(keyword: &str) -> anyhow::Result<Url> {
     Ok(Url::parse_with_params(
-        "https://c.y.qq.com/soso/fcgi-bin/client_search_cp?", 
+        "https://c.y.qq.com/soso/fcgi-bin/client_search_cp?",
         &[
             ("ct", "24"),
             ("qqmusic_ver", "1298"),
@@ -181,28 +194,28 @@ fn construct_search_url(keyword: &str) -> anyhow::Result<Url> {
             ("outCharset", "utf-8"),
             ("notice", "0"),
             ("platform", "yqq"),
-            ("needNewCode", "0")
-        ]
+            ("needNewCode", "0"),
+        ],
     )?)
 }
 
 #[cfg(test)]
 mod tests {
     use tokio::test;
-    use unm_types::{Context, Artist};
+    use unm_types::{Artist, Context};
 
     use super::*;
 
     fn get_info_1() -> Song {
         // https://music.163.com/api/song/detail?ids=[385552]
-        Song {
-            name: String::from("干杯"),
-            artists: vec![Artist {
-                name: String::from("五月天"),
-                ..Default::default()
-            }],
-            ..Default::default()
-        }
+        Song::builder()
+            .name("干杯".to_string())
+            .artists(vec![
+                Artist::builder()
+                    .name("五月天".to_string())
+                    .build()
+            ])
+            .build()
     }
 
     #[test]
