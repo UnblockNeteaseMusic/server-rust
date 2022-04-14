@@ -88,3 +88,35 @@ impl From<KuwoAudioInfo> for Song {
             .build()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use unm_types::Song;
+
+    use super::KuwoAudioInfo;
+
+    #[test]
+    fn kuwo_audio_info_into_song_test() {
+        let info = KuwoAudioInfo {
+            rid: 123456,
+            duration: 111,
+            name: "Song name".to_string(),
+            artistid: 222,
+            artist: "Artist name".to_string(),
+            albumid: "333".to_string(),
+            album: "Album name".to_string(),
+            has_lossless: false,
+            pay: "0".to_string(),
+        };
+
+        let song = Song::from(info);
+
+        assert_eq!(song.id, "123456");
+        assert_eq!(song.name, "Song name");
+        assert_eq!(song.duration, Some(111 * 1000));
+        assert_eq!(song.artists[0].id, "222");
+        assert_eq!(song.artists[0].name, "Artist name");
+        assert_eq!(song.album.as_ref().map(|v| v.id.as_ref()), Some("333"));
+        assert_eq!(song.album.as_ref().map(|v| v.name.as_ref()), Some("Album name"));
+    }
+}
