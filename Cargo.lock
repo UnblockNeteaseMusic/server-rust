@@ -1385,6 +1385,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "unm_engine_qq"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "futures",
+ "http",
+ "log",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "tokio",
+ "unm_engine",
+ "unm_request",
+ "unm_selector",
+ "unm_test_utils",
+ "unm_types",
+ "url",
+]
+
+[[package]]
 name = "unm_engine_ytdl"
 version = "0.1.0"
 dependencies = [
