@@ -42,7 +42,11 @@ pub async fn engine_example_wrapper(engine: impl Engine) {
         .artists(vec![Artist::builder().name("周杰伦".into()).build()])
         .build();
 
-    let context = ContextBuilder::default().enable_flac(true).build().unwrap();
+    let context = ContextBuilder::default().enable_flac(
+        std::env::var("ENABLE_FLAC")
+            .map(|v| v == "true")
+            .unwrap_or(false)
+    ).build().unwrap();
 
     let (search_time_taken, search_result) =
         measure_async_function_time(|| engine.search(&song, &context).boxed()).await;
