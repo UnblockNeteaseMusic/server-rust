@@ -117,6 +117,9 @@ mod tests {
         assert_eq!(song.artists[0].id, "222");
         assert_eq!(song.artists[0].name, "Artist name");
         assert_eq!(song.album.as_ref().map(|v| v.id.as_ref()), Some("333"));
-        assert_eq!(song.album.as_ref().map(|v| v.name.as_ref()), Some("Album name"));
+        assert_eq!(
+            song.album.as_ref().map(|v| v.name.as_ref()),
+            Some("Album name")
+        );
     }
 }
