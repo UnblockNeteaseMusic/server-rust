@@ -114,7 +114,7 @@ pub struct Context {
     ///
     /// For example: `https://secure.example` or
     /// `"socks5://192.168.1.1:9000"`
-    pub proxy_uri: Option<String>,
+    pub proxy_uri: Option<Cow<'static, str>>,
 
     /// Whether to enable FLAC support.
     pub enable_flac: bool,
@@ -128,7 +128,7 @@ pub struct Context {
 
 impl Context {
     pub fn try_get_proxy(&self) -> reqwest::Result<Option<Proxy>> {
-        self.proxy_uri.clone().map(Proxy::all).transpose()
+        self.proxy_uri.as_ref().map(|uri| Proxy::all(uri.to_string())).transpose()
     }
 }
 

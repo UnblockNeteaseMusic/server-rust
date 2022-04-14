@@ -172,7 +172,7 @@ impl From<Context> for unm_types::Context {
       .map(|c| c.into_iter().map(|(k, v)| (k.into(), v)).collect());
 
     ContextBuilder::default()
-      .proxy_uri(context.proxy_uri)
+      .proxy_uri(context.proxy_uri.map(Into::into))
       .enable_flac(context.enable_flac)
       .config(config.map(ConfigManager::new))
       .build().unwrap()
