@@ -1,6 +1,6 @@
 [package]
 name = "unm_engine_kuwo"
-version = "0.1.0"
+version = "0.2.0-pre.1"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -14,10 +14,10 @@ log = "0.4.16"
 random-string = "1.0.0"
 reqwest = { version = "0.11.10", features = ["native-tls-vendored"] }
 serde = { version = "1.0.136", features = ["derive"] }
-unm_engine = { version = "0.1.0", path = "../../engine-base" }
-unm_request = { version = "0.1.0", path = "../../request" }
-unm_selector = { version = "0.1.0", path = "../../selector" }
-unm_types = { version = "0.1.0", path = "../../types" }
+unm_engine = { version = "0.2.0-pre.1", path = "../../engine-base" }
+unm_request = { version = "0.2.0-pre.1", path = "../../request" }
+unm_selector = { version = "0.2.0-pre.1", path = "../../selector" }
+unm_types = { version = "0.2.0-pre.1", path = "../../types" }
 
 [dev-dependencies]
 tokio = { version = "1.17.0", features = ["macros", "rt-multi-thread"] }
