@@ -31,9 +31,14 @@ const ctx = {}; // 假如不需要任何設定
 
 ```js
 const searchResult = await executor.search(
-  // UNM.Engine 是一個 enumeration，
-  // 因此可以用 `Object.values(UNM.Engine)` 取用所有來源。
-  [UNM.Engine.Bilibili, UNM.Engine.Kuwo, UNM.Engine.YtDl]
+  // 使用所有可以使用的引擎。
+  //
+  // executor.list() 會列出所有可用的引擎。我們直接把這個引擎名單傳入 .search()。
+  // 您亦可自訂要使用的引擎，如 ["bilibili", "kugou"]。
+  //
+  // 所有可使用的引擎，現階段可以參考 executor.rs 檔案中
+  // construct_executor() 函式的定義。
+  executor.list(),
   {
     id: "12345",
     name: "青花瓷",
