@@ -4,10 +4,7 @@ use napi_derive::napi;
 use std::{borrow::Cow, sync::Arc};
 use unm_engine::executor::Executor;
 
-use crate::{
-  engines::Engine,
-  types::{Context, RetrievedSongInfo, Song, SongSearchInformation},
-};
+use crate::types::{Context, RetrievedSongInfo, Song, SongSearchInformation};
 
 #[napi(js_name = "Executor")]
 pub struct JsExecutor {
@@ -22,15 +19,20 @@ impl JsExecutor {
   }
 
   #[napi]
+  pub fn list(&self) -> Vec<&str> {
+    self.executor.list()
+  }
+
+  #[napi]
   pub async fn search(
     &self,
-    engines: Vec<Engine>,
+    engines: Vec<String>,
     song: Song,
     ctx: Context,
   ) -> Result<SongSearchInformation> {
     let engines = engines
       .into_iter()
-      .map(|engine| engine.as_str().into())
+      .map(|engine| engine.into())
       .collect::<Vec<Cow<'static, str>>>();
 
     self

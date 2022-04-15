@@ -236,9 +236,8 @@ if (!nativeBinding) {
   throw new Error(`Failed to load native binding`)
 }
 
-const { Engine, Executor, LoggingType, enableLogging } = nativeBinding
+const { Executor, LoggingType, enableLogging } = nativeBinding
 
-module.exports.Engine = Engine
 module.exports.Executor = Executor
 module.exports.LoggingType = LoggingType
 module.exports.enableLogging = enableLogging

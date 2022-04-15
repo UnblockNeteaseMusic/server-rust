@@ -6,8 +6,9 @@ async function main() {
   UNM.enableLogging(UNM.LoggingType.ConsoleEnv);
   const executor = new UNM.Executor();
   
+  console.log(`Enabled engines: ${executor.list().join(", ")}`);
   const searchResult = await executor.search(
-    Object.values(UNM.Engine),
+    executor.list(),
     {
       id: "12345",
       name: "青花瓷",
