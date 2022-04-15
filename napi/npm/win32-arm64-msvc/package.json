@@ -1,6 +1,6 @@
 {
   "name": "@unblockneteasemusic/rust-napi-win32-arm64-msvc",
-  "version": "0.0.0",
+  "version": "0.2.0-pre.3",
   "os": [
     "win32"
   ],

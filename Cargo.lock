@@ -1583,7 +1583,7 @@ dependencies = [
 
 [[package]]
 name = "unm_napi"
-version = "0.1.0"
+version = "0.0.0"
 dependencies = [
  "async-recursion",
  "concat-idents",
