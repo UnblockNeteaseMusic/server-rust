@@ -4,7 +4,7 @@
 //! the specified `youtube-dl`-like command.
 //!
 //! The default is `yt-dlp`. You can configure it by passing
-//! `ytdl:exe` in the ctx.config [`HashMap`] field.
+//! `ytdl:exe` in the ctx.config [`std::collections::HashMap`] field.
 
 use std::borrow::Cow;
 

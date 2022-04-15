@@ -5,19 +5,20 @@
 //! the `joox:cookie` config.
 //!
 //! You can configure the cookie in the
-//! `ctx.config` HashMap. For example:
+//! `ctx.config` [`unm_types::config::ConfigManager`].
+//! You can set up a [`unm_types::config::ConfigManager`] like this:
 //!
 //! ```
+//! # use unm_types::config::ConfigManager;
 //! # use std::collections::HashMap;
-//!
-//! let config = {
-//!     let mut hm = HashMap::<String, String>::new();
+//! let config = ConfigManager::new({
+//!     let mut hm = HashMap::new();
 //!     hm.insert(
-//!         "joox:cookie".to_string(),
+//!         "joox:cookie".into(),
 //!         r#"wmid=<your_wmid>; session_key=<your_session_key>;"#.to_string()
 //!     );
 //!     hm
-//! };
+//! });
 //! ```
 
 use std::borrow::Cow;
