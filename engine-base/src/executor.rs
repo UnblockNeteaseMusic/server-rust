@@ -75,6 +75,13 @@ impl Executor {
                         keyword: song.keyword(),
                     })?;
 
+                // Try to retrieve to check if the source available to retrieve.
+                // FIXME: cache it
+                engine
+                    .retrieve(&result.identifier, ctx)
+                    .await
+                    .map_err(ExecutorError::EngineRetrieveError)?;
+
                 // Specify the Error type explicitly.
                 Ok::<SongSearchInformation, ExecutorError>(result)
             }
