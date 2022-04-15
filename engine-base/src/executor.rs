@@ -41,6 +41,11 @@ impl Executor {
         self.engine_map.remove(&engine_id);
     }
 
+    /// Show all the registered engines.
+    pub fn list(&self) -> Vec<&str> {
+        self.engine_map.keys().map(|v| v.as_ref()).collect::<Vec<&str>>()
+    }
+
     /// Search with the specified engines.
     pub async fn search(
         &self,
