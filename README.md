@@ -71,49 +71,7 @@ let result = executor.retrieve(&search_result, &context).await?;
 
 ### TypeScript (JS) 函式庫
 
-您可以直接從 <https://www.npmjs.com> 引用 `@unblockneteasemusic/rust-napi` 函式庫。
-這個函式庫會協助您取回符合系統架構的套件。
-
-就如〈架構〉所說，`rust-napi` 函式庫的引擎和類型定義，現階段內建在函式庫，
-因此可以省去註冊引擎的步驟。但與舊版 JS 不同，UNM 輸往 console 的 logging 需手動開啟：
-
-```js
-const UNM = require("@unblockneteasemusic/rust-napi");
-
-// 啟用後，可以使用 `RUST_LOG` 環境變數調整 log 的詳細程度
-UNM.enableLogging(UNM.LoggingType.ConsoleEnv);
-```
-
-然後我們可以建立一個 `executor` 實體，並定義想要的 context：
-
-```js
-const executor = new UNM.Executor();
-const ctx = {}; // 假如不需要任何設定
-/* const ctx = { enableFlac: true }; // 每個欄位的說明資訊，現階段可參考函式庫中 `index.d.ts` 的定義。 */
-```
-
-接下來的使用方式與 Rust 函式庫相似：
-
-```js
-const searchResult = await executor.search(
-  // UNM.Engine 是一個 enumeration，
-  // 因此可以用 `Object.values(UNM.Engine)` 取用所有來源。
-  [UNM.Engine.Bilibili, UNM.Engine.Kuwo, UNM.Engine.YtDl]
-  {
-    id: "12345",
-    name: "青花瓷",
-    artists: [
-      {
-        id: "114514",
-        name: "周杰伦",
-      },
-    ],
-  },
-  ctx
-);
-
-const retrieveResult = await executor.retrieve(searchResult, ctx);
-```
+請參考 [napi 的 README.md](https://github.com/UnblockNeteaseMusic/server-rust/blob/main/napi/README.md)。
 
 ## 貢獻
 
