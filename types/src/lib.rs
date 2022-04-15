@@ -93,6 +93,9 @@ pub struct SongSearchInformation {
     /// The details of this song.
     #[builder(default)]
     pub song: Option<Song>,
+    /// The pre-retrieve result of this search.
+    #[builder(default)]
+    pub pre_retrieve_result: Option<RetrievedSongInfo>,
 }
 
 /// The information of the song retrieved with `retrieve()`.

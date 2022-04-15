@@ -67,7 +67,7 @@ impl Executor {
             let future = async move {
                 info!("Searching {song} with engine {engine_id}…");
 
-                let result = engine
+                let mut result = engine
                     .search(song, ctx)
                     .await
                     .map_err(ExecutorError::EngineSearchError)?
@@ -76,11 +76,12 @@ impl Executor {
                     })?;
 
                 // Try to retrieve to check if the source available to retrieve.
-                // FIXME: cache it
-                engine
-                    .retrieve(&result.identifier, ctx)
-                    .await
-                    .map_err(ExecutorError::EngineRetrieveError)?;
+                result.pre_retrieve_result = Some(
+                    engine
+                        .retrieve(&result.identifier, ctx)
+                        .await
+                        .map_err(ExecutorError::EngineRetrieveError)?,
+                );
 
                 // Specify the Error type explicitly.
                 Ok::<SongSearchInformation, ExecutorError>(result)
@@ -130,11 +131,15 @@ impl Executor {
     ) -> ExecutorResult<RetrievedSongInfo> {
         info!("Retrieving song from {}…", song.source);
 
-        let engine = self.resolve_engine(&song.source)?;
-        engine
-            .retrieve(&song.identifier, ctx)
-            .await
-            .map_err(ExecutorError::EngineRetrieveError)
+        if let Some(ref retrieved) = song.pre_retrieve_result {
+            Ok(retrieved.clone())
+        } else {
+            let engine = self.resolve_engine(&song.source)?;
+            engine
+                .retrieve(&song.identifier, ctx)
+                .await
+                .map_err(ExecutorError::EngineRetrieveError)
+        }
     }
 
     /// Validate engines to check if the engines specified are all registered.
