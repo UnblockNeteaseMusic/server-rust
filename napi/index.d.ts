@@ -49,7 +49,7 @@ export interface SongSearchInformation {
   /** The retrieve source of this song, for example: `bilibili`. */
   source: string
   /** The serialized identifier of this song. */
-  identifier: SerializedIdentifier
+  identifier: string
   /** The details of this song. */
   song?: Song | undefined | null
 }

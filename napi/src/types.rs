@@ -1,7 +1,6 @@
 use std::collections::HashMap;
 
 use napi_derive::napi;
-pub use unm_types::SerializedIdentifier;
 use unm_types::{config::ConfigManager, ContextBuilder};
 
 /// [napi-rs] The metadata of the artist of a song.
@@ -47,7 +46,7 @@ pub struct SongSearchInformation {
   /// The retrieve source of this song, for example: `bilibili`.
   pub source: String,
   /// The serialized identifier of this song.
-  pub identifier: SerializedIdentifier,
+  pub identifier: String,
   /// The details of this song.
   pub song: Option<Song>,
 }
