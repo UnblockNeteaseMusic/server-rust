@@ -1,6 +1,6 @@
 {
   "name": "@unblockneteasemusic/rust-napi-android-arm64",
-  "version": "0.2.0-pre.3",
+  "version": "0.2.0-pre.2",
   "os": [
     "android"
   ],

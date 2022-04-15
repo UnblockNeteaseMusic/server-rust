@@ -1,6 +1,6 @@
 {
   "name": "@unblockneteasemusic/rust-napi",
-  "version": "0.2.0-pre.3",
+  "version": "0.2.0-pre.2",
   "main": "index.js",
   "types": "index.d.ts",
   "napi": {
@@ -35,20 +35,5 @@
     "prepublishOnly": "napi prepublish -t npm",
     "test": "ava",
     "version": "napi version"
-  },
-  "optionalDependencies": {
-    "@unblockneteasemusic/rust-napi-win32-x64-msvc": "0.2.0-pre.3",
-    "@unblockneteasemusic/rust-napi-darwin-x64": "0.2.0-pre.3",
-    "@unblockneteasemusic/rust-napi-linux-x64-gnu": "0.2.0-pre.3",
-    "@unblockneteasemusic/rust-napi-darwin-arm64": "0.2.0-pre.3",
-    "@unblockneteasemusic/rust-napi-android-arm64": "0.2.0-pre.3",
-    "@unblockneteasemusic/rust-napi-linux-arm64-gnu": "0.2.0-pre.3",
-    "@unblockneteasemusic/rust-napi-linux-arm64-musl": "0.2.0-pre.3",
-    "@unblockneteasemusic/rust-napi-win32-arm64-msvc": "0.2.0-pre.3",
-    "@unblockneteasemusic/rust-napi-linux-arm-gnueabihf": "0.2.0-pre.3",
-    "@unblockneteasemusic/rust-napi-linux-x64-musl": "0.2.0-pre.3",
-    "@unblockneteasemusic/rust-napi-freebsd-x64": "0.2.0-pre.3",
-    "@unblockneteasemusic/rust-napi-win32-ia32-msvc": "0.2.0-pre.3",
-    "@unblockneteasemusic/rust-napi-android-arm-eabi": "0.2.0-pre.3"
   }
 }
