@@ -48,7 +48,7 @@ impl Engine for QQEngine {
                     .source(ENGINE_ID.into())
                     .identifier(song.id.to_string())
                     .song(Some(song))
-                    .build()
+                    .build(),
             ))
         } else {
             Ok(None)
@@ -139,20 +139,18 @@ fn format(song: &Json) -> anyhow::Result<Song> {
         context
     };
 
-    Ok(
-        Song::builder()
-            .id(id.to_string())
-            .name(name.to_string())
-            .duration(Some(duration * 1000))
-            .album(Some(
-                Album::builder()
-                    .id(album_id.to_string())
-                    .name(album_name.to_string())
-                    .build()
-            ))
-            .context(Some(context))
-            .build()
-    )
+    Ok(Song::builder()
+        .id(id.to_string())
+        .name(name.to_string())
+        .duration(Some(duration * 1000))
+        .album(Some(
+            Album::builder()
+                .id(album_id.to_string())
+                .name(album_name.to_string())
+                .build(),
+        ))
+        .context(Some(context))
+        .build())
 }
 
 fn construct_header(cookie: Option<&str>) -> anyhow::Result<HeaderMap> {
@@ -210,11 +208,7 @@ mod tests {
         // https://music.163.com/api/song/detail?ids=[385552]
         Song::builder()
             .name("干杯".to_string())
-            .artists(vec![
-                Artist::builder()
-                    .name("五月天".to_string())
-                    .build()
-            ])
+            .artists(vec![Artist::builder().name("五月天".to_string()).build()])
             .build()
     }
 
