@@ -44,6 +44,8 @@ export interface SongSearchInformation {
   identifier: string
   /** The details of this song. */
   song?: Song | undefined | null
+  /** The pre-retrieve result of this search. */
+  preRetrieveResult?: RetrievedSongInfo | undefined | null
 }
 /** [napi-rs] The information of the song retrieved with `retrieve()`. */
 export interface RetrievedSongInfo {

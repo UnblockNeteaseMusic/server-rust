@@ -49,6 +49,8 @@ pub struct SongSearchInformation {
   pub identifier: String,
   /// The details of this song.
   pub song: Option<Song>,
+  /// The pre-retrieve result of this search.
+  pub pre_retrieve_result: Option<RetrievedSongInfo>,
 }
 
 /// [napi-rs] The information of the song retrieved with `retrieve()`.
@@ -135,6 +137,7 @@ impl From<unm_types::SongSearchInformation> for SongSearchInformation {
       source: song_information.source.to_string(),
       identifier: song_information.identifier,
       song: song_information.song.map(Into::into),
+      pre_retrieve_result: song_information.pre_retrieve_result.map(Into::into),
     }
   }
 }
@@ -145,6 +148,7 @@ impl From<SongSearchInformation> for unm_types::SongSearchInformation {
       .source(song_information.source.into())
       .identifier(song_information.identifier)
       .song(song_information.song.map(Into::into))
+      .pre_retrieve_result(song_information.pre_retrieve_result.map(Into::into))
       .build()
   }
 }
@@ -155,6 +159,15 @@ impl From<unm_types::RetrievedSongInfo> for RetrievedSongInfo {
       source: song_information.source.to_string(),
       url: song_information.url,
     }
+  }
+}
+
+impl From<RetrievedSongInfo> for unm_types::RetrievedSongInfo {
+  fn from(song_information: RetrievedSongInfo) -> Self {
+    Self::builder()
+      .source(song_information.source.into())
+      .url(song_information.url)
+      .build()
   }
 }
 
