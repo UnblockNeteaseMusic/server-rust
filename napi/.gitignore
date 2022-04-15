@@ -1,4 +1,2 @@
-/index.js
-/index.d.ts
-/*.node
+*.node
 node_modules
