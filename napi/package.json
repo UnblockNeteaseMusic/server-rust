@@ -34,6 +34,7 @@
     "build:debug": "napi build --platform",
     "prepublishOnly": "napi prepublish -t npm",
     "test": "ava",
+    "demo": "node demo/demo.js",
     "version": "napi version"
   }
 }
