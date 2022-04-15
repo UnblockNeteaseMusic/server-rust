@@ -1398,7 +1398,7 @@ dependencies = [
 
 [[package]]
 name = "unm_engine"
-version = "0.2.0-pre.3"
+version = "0.2.0-pre.4"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1447,7 +1447,7 @@ dependencies = [
 
 [[package]]
 name = "unm_engine_joox"
-version = "0.2.0-pre.2"
+version = "0.2.0-pre.4"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1567,7 +1567,7 @@ dependencies = [
 
 [[package]]
 name = "unm_engine_ytdl"
-version = "0.2.0-pre.2"
+version = "0.2.0-pre.4"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1638,7 +1638,7 @@ dependencies = [
 
 [[package]]
 name = "unm_types"
-version = "0.2.0-pre.2"
+version = "0.2.0-pre.4"
 dependencies = [
  "derive_builder",
  "reqwest",
