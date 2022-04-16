@@ -1,6 +1,21 @@
 {
   "name": "@unblockneteasemusic/rust-napi",
+  "description": "Node.js binding for UNM Rust",
   "version": "0.2.0-pre.4",
+  "keywords": ["unm", "unblockneteasemusic", "rust", "node", "napi"],
+  "homepage": "https://github.com/UnblockNeteaseMusic/server-rust",
+  "bugs": {
+    "url": "https://github.com/UnblockNeteaseMusic/server-rust/issues"
+  },
+  "author": {
+    "name": "pan93412",
+    "url": "https://github.com/pan93412"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/UnblockNeteaseMusic/server-rust.git"
+  },
+  "license": "LGPL-3.0-or-later",
   "main": "index.js",
   "types": "index.d.ts",
   "napi": {
@@ -20,7 +35,6 @@
       ]
     }
   },
-  "license": "MIT",
   "devDependencies": {
     "@napi-rs/cli": "^2.6.2",
     "ava": "^4.0.1"

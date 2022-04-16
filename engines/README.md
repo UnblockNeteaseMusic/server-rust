@@ -22,7 +22,7 @@ JavaScript 的話只需要建構 object，讓 N-API 處理即可：
 
 ```js
 /** @type {Record<string, string>} */
-const config: UNM.Config = {
+const config = {
     "joox:cookie": "wmid=...; session_key=...",
 };
 ```
