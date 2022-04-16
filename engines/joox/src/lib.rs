@@ -4,21 +4,20 @@
 //! obtain its cookie and fill the cookie to
 //! the `joox:cookie` config.
 //!
-//! You can configure the cookie in the
-//! `ctx.config` [`unm_types::config::ConfigManager`].
-//! You can set up a [`unm_types::config::ConfigManager`] like this:
+//! You can configure the cookie in the `ctx.config` field.
+//! You can build a `ctx.config` with [`unm_types::config::ConfigManagerBuilder`],
+//! for example:
 //!
 //! ```
-//! # use unm_types::config::ConfigManager;
-//! # use std::collections::HashMap;
-//! let config = ConfigManager::new({
-//!     let mut hm = HashMap::new();
-//!     hm.insert(
-//!         "joox:cookie".into(),
-//!         r#"wmid=<your_wmid>; session_key=<your_session_key>;"#.to_string()
-//!     );
-//!     hm
-//! });
+//! use unm_types::{ContextBuilder, config::ConfigManagerBuilder};
+//!
+//! let config = ConfigManagerBuilder::new()
+//!     .set("joox:cookie", r#"wmid=<your_wmid>; session_key=<your_session_key>;"#)
+//!     .build();
+//!
+//! let context = ContextBuilder::default()
+//!     .config(config)
+//!     .build();
 //! ```
 
 use std::borrow::Cow;

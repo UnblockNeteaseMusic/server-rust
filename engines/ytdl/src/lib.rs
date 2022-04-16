@@ -3,8 +3,21 @@
 //! It can fetch audio from YouTube with
 //! the specified `youtube-dl`-like command.
 //!
-//! The default is `yt-dlp`. You can configure it by passing
-//! `ytdl:exe` in the ctx.config [`std::collections::HashMap`] field.
+//! The default is `yt-dlp`. You can configure it by configuring
+//! `ytdl:exe` in the ctx.config field. You can build `ctx.config` with
+//! [`unm_types::config::ConfigManagerBuilder`], for example:
+//!
+//! ```
+//! use unm_types::{ContextBuilder, config::ConfigManagerBuilder};
+//!
+//! let config = ConfigManagerBuilder::new()
+//!     .set("ytdl:exe", "youtube-dl")
+//!     .build();
+//!
+//! let context = ContextBuilder::default()
+//!     .config(config)
+//!     .build();
+//! ```
 
 use std::borrow::Cow;
 
@@ -172,7 +185,7 @@ impl From<YtDlResponse> for Song {
 
 #[cfg(test)]
 mod tests {
-    use std::collections::HashMap;
+    use unm_types::config::ConfigManagerBuilder;
 
     #[test]
     fn test_decide_ytdl_exe() {
@@ -180,13 +193,12 @@ mod tests {
 
         assert_eq!(decide_ytdl_exe(&None), DEFAULT_EXECUTABLE);
 
-        let config = HashMap::new();
-        let config = ConfigManager::new(config);
+        let config = ConfigManagerBuilder::new().build();
         assert_eq!(decide_ytdl_exe(&Some(config)), DEFAULT_EXECUTABLE);
 
-        let mut config = HashMap::with_capacity(1);
-        config.insert(Cow::Borrowed("ytdl:exe"), "youtube-dl".to_string());
-        let config = ConfigManager::new(config);
+        let config = ConfigManagerBuilder::new()
+            .set("ytdl:exe", "youtube-dl".to_string())
+            .build();
         assert_eq!(decide_ytdl_exe(&Some(config)), "youtube-dl");
     }
 }
