@@ -55,6 +55,10 @@ const searchResult = await executor.search(
 const retrieveResult = await executor.retrieve(searchResult, ctx);
 ```
 
+## 設定
+
+與 Rust 版通用的設定，請見 <https://github.com/UnblockNeteaseMusic/server-rust/blob/main/README.md>
+
 ## 授權條款
 
 This project is licensed under [LGPL-3.0-only](https://spdx.org/licenses/LGPL-3.0-only.html).

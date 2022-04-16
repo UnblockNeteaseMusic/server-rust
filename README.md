@@ -73,6 +73,62 @@ let result = executor.retrieve(&search_result, &context).await?;
 
 請參考 [napi 的 README.md](https://github.com/UnblockNeteaseMusic/server-rust/blob/main/napi/README.md)。
 
+## 設定
+
+### 支援的所有引擎
+
+N-API 支援的引擎與我們上架到 <https://crates.io> 的引擎略有差異。
+
+| 名稱             | 引擎 ID    | 注意事項                                                        | N-API 支援 |
+| ---------------- | ---------- | --------------------------------------------------------------- | ---------- |
+| Bilbili Music    | `bilibili` |                                                                 | ✅         |
+| 酷狗音乐         | `kugou`    |                                                                 | ✅         |
+| 酷我音乐         | `kuwo`     | 目前僅支援 320kbps MP3                                          | ✅         |
+| 咪咕音乐         | `migu`     |                                                                 | ✅         |
+| JOOX             | `joox`     | 需要設定 `joox:cookie`                                          | ✅         |
+| youtube-dl       | `ytdl`     | 預設使用的 `youtube-dl` 後端是 `yt-dlp`，可設定 `ytdl:exe` 調整 | ✅         |
+| 第三方網易雲 API | `pyncm`    |                                                                 | ✅         |
+
+### 設定全域通用設定（`Context`）
+
+全域通用設定（`Context`）包含以下這些設定：
+
+- `proxy_uri`：要在引擎使用的 Proxy 伺服器。選填。
+- `enable_flac`：是否抓取 FLAC 音訊？預設值是 `false`。
+- `search_mode`：搜尋模式
+  - 可以設定是以「速度為主」（FastFirst）或者是以「順序為主」（OrderFirst）進行搜尋
+  - 範例請見 <https://docs.rs/unm_types/0.2.0-pre.4/unm_types/enum.SearchMode.html>
+- `config`：各引擎設定，見下〈設定引擎特定設定（`Config`）〉
+
+假如您使用 Rust 版，您可以使用 [`ContextBuilder`](https://docs.rs/unm_types/latest/unm_types/struct.ContextBuilder.html) 建構 Context：
+
+```rs
+use unm_types::{ContextBuilder, SearchMode};
+
+let context = ContextBuilder::default()
+  .proxy_uri("https://www.google.com")
+  .search_mode(SearchMode::OrderFirst)
+  .build();
+```
+
+如果是使用 JavaScript 版，您可以根據 [UNM 的類型定義（VS Code 會提供補全建議）](https://github.com/UnblockNeteaseMusic/server-rust/blob/main/napi/index.d.ts) 建構 `Object` 即可：
+
+```js
+const UNM = require("@unblockneteasemusic/rust-napi");
+
+// TS 的語法是 `const context: UNM.Context = {}`
+/** @type {UNM.Context} */
+const context = {
+  proxyUri: "https://www.google.com",
+  searchMode: UNM.SearchMode.OrderFirst,
+}
+```
+
+#### 設定引擎特定設定（`Config`）
+
+「引擎特定設定」是每個引擎針對自己的需要，從 `Config` 取得需要的設定。
+設定方法請見 [`engines/README.md`](https://github.com/UnblockNeteaseMusic/server-rust/blob/main/engines/README.md)
+
 ## 貢獻
 
 ### 檢查程式碼的相關命令
