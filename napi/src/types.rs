@@ -1,7 +1,26 @@
 use std::collections::HashMap;
 
+use napi::bindgen_prelude::*;
 use napi_derive::napi;
 use unm_types::{config::ConfigManager, ContextBuilder};
+
+/// The search mode.
+#[napi]
+pub enum SearchMode {
+  /// Return the first response.
+  ///
+  /// For example, `["a", "b", "c"]` and `"c"` returns the fast,
+  /// we return `"c"`.
+  ///
+  /// This is the default mode.
+  FastFirst,
+  /// Return according to the order of the response.
+  ///
+  /// For example, even if `["a", "b", "c"]` and `"c"` returns the fast,
+  /// we still wait for `"a"` and return `"a"`. If `"a"` has no result,
+  /// we return `"b"`.
+  OrderFirst,
+}
 
 /// [napi-rs] The metadata of the artist of a song.
 #[napi(object)]
@@ -69,10 +88,22 @@ pub struct Context {
   pub proxy_uri: Option<String>,
 
   /// Whether to enable FLAC support.
-  pub enable_flac: bool,
+  pub enable_flac: Option<bool>,
+
+  /// The search mode for waiting the response.
+  pub search_mode: Option<SearchMode>,
 
   /// The config for engines.
   pub config: Option<HashMap<String, String>>,
+}
+
+impl From<SearchMode> for unm_types::SearchMode {
+  fn from(mode: SearchMode) -> Self {
+    match mode {
+      SearchMode::FastFirst => Self::FastFirst,
+      SearchMode::OrderFirst => Self::OrderFirst,
+    }
+  }
 }
 
 impl From<Artist> for unm_types::Artist {
@@ -179,7 +210,13 @@ impl From<Context> for unm_types::Context {
 
     ContextBuilder::default()
       .proxy_uri(context.proxy_uri.map(Into::into))
-      .enable_flac(context.enable_flac)
+      .enable_flac(context.enable_flac.unwrap_or(false))
+      .search_mode(
+        context
+          .search_mode
+          .map(Into::into)
+          .unwrap_or(unm_types::SearchMode::FastFirst),
+      )
       .config(config.map(ConfigManager::new))
       .build()
       .unwrap()
