@@ -5,8 +5,17 @@ use thiserror::Error;
 pub type ConfigKey = Cow<'static, str>;
 pub type ConfigValue = String;
 
+/// The config manager for UNM Engines.
+///
+/// It is a wrapper of [`HashMap`], including some useful methods.
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct ConfigManager(HashMap<ConfigKey, ConfigValue>);
+
+/// The [`ConfigManager`] builder.
+///
+/// You can build [`ConfigManager`] easily with this helper.
+#[derive(Clone, Default)]
+pub struct ConfigManagerBuilder(HashMap<ConfigKey, ConfigValue>);
 
 impl Deref for ConfigManager {
     type Target = HashMap<ConfigKey, ConfigValue>;
@@ -46,6 +55,21 @@ impl ConfigManager {
     }
 }
 
+impl ConfigManagerBuilder {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    pub fn set<K: Into<ConfigKey>, V: Into<ConfigValue>>(&mut self, key: K, value: V) -> &mut Self {
+        self.0.insert(key.into(), value.into());
+        self
+    }
+
+    pub fn build(&mut self) -> ConfigManager {
+        ConfigManager::new(self.0.clone())
+    }
+}
+
 #[derive(Debug, Error)]
 pub enum ConfigManagerError {
     #[error("{key} should be defined for {purpose}")]
@@ -56,3 +80,50 @@ pub enum ConfigManagerError {
 }
 
 pub type ConfigManagerResult<T> = Result<T, ConfigManagerError>;
+
+#[cfg(test)]
+mod tests {
+    use std::{borrow::Cow, collections::HashMap};
+
+    use super::ConfigManagerBuilder;
+
+    #[test]
+    fn test_config_manager_build_without_set() {
+        let cm = ConfigManagerBuilder::new().build();
+
+        assert_eq!(cm.0, HashMap::new());
+    }
+
+    #[test]
+    fn test_config_manager_build_with_key_borrowed() {
+        let cm = ConfigManagerBuilder::new()
+            .set("example", "Cow::Borrowed")
+            .build();
+
+        assert_eq!(cm.0, {
+            let mut hm = HashMap::new();
+
+            hm.insert(Cow::Borrowed("example"), "Cow::Borrowed".to_string());
+
+            hm
+        });
+    }
+
+    #[test]
+    fn test_config_manager_build_with_key_owned() {
+        let cm = ConfigManagerBuilder::new()
+            .set("example".to_string(), "Cow::Borrowed")
+            .build();
+
+        assert_eq!(cm.0, {
+            let mut hm = HashMap::new();
+
+            hm.insert(
+                Cow::Owned("example".to_string()),
+                "Cow::Borrowed".to_string(),
+            );
+
+            hm
+        });
+    }
+}
