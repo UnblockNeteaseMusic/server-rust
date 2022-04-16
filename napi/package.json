@@ -2,7 +2,13 @@
   "name": "@unblockneteasemusic/rust-napi",
   "description": "Node.js binding for UNM Rust",
   "version": "0.2.0-pre.5",
-  "keywords": ["unm", "unblockneteasemusic", "rust", "node", "napi"],
+  "keywords": [
+    "unm",
+    "unblockneteasemusic",
+    "rust",
+    "node",
+    "napi"
+  ],
   "homepage": "https://github.com/UnblockNeteaseMusic/server-rust",
   "bugs": {
     "url": "https://github.com/UnblockNeteaseMusic/server-rust/issues"
