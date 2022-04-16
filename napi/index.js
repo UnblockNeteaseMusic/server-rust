@@ -236,8 +236,9 @@ if (!nativeBinding) {
   throw new Error(`Failed to load native binding`)
 }
 
-const { Executor, LoggingType, enableLogging } = nativeBinding
+const { Executor, SearchMode, LoggingType, enableLogging } = nativeBinding
 
 module.exports.Executor = Executor
+module.exports.SearchMode = SearchMode
 module.exports.LoggingType = LoggingType
 module.exports.enableLogging = enableLogging
