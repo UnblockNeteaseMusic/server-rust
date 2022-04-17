@@ -2,6 +2,7 @@ pub(crate) mod config_reader;
 pub(crate) mod controllers;
 pub(crate) mod executor;
 pub(crate) mod retrieve;
+pub(crate) mod schema;
 
 use axum::{
     routing::{get, post},
@@ -40,6 +41,11 @@ async fn main() {
                 .route("/search", post(controllers::search::search_v1))
                 .route("/retrieve", post(controllers::retrieve::retrieve_v1))
                 .layer(Extension(default_context))
+        })
+        .nest("/schema/v1", {
+            Router::new()
+                .route("/search", get(schema::schema_v1_search))
+                .route("/error", get(schema::schema_v1_error))
         });
 
     let serve_address =
