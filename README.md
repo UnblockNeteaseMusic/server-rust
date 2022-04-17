@@ -16,12 +16,16 @@ Rust 版本的 [UnblockNeteaseMusic/server](https://github.com/UnblockNeteaseMus
   - 這目錄底下的是官方提供的引擎，所有引擎都是選擇性依賴、使用的。
   - 您可以自行實作其他平台，並發佈到 crates.io（當然也歡迎發 PR 讓引擎納入本 codebase 一併管理）。
   - 每個 Engine 都有 `examples` 方便測試單一引擎模組。如您是開發者，可仿造其它引擎，撰寫自己的 example。
+- `api-utils`：用來開發 UNM 的實用工具。
 - `request`：UNM 的 reqwest 封裝，自動帶上 `User-Agent` 等 headers。
 - `selector`：包含選擇最適音樂項目的演算法。
 - `types`：UNM 的各種基礎類型（如 `Song`、`Artist`⋯⋯）
 - `test-utils`：方便撰寫測試方法及 demo 的工具集。
 - `napi`：Node.js 的 UNM (Rust) 綁定。
   - 這個綁定因 napi 限制，目前不像 Rust 版一樣有方便的擴充系統。
+  - 原則上是啟用 `engines/` 底下的所有引擎。
+- `rest-api`：UNM 的 RESTful API
+  - 因安全性疑慮，目前不考慮為 RESTful API 提供不修改程式碼的擴充方案。
   - 原則上是啟用 `engines/` 底下的所有引擎。
 - `demo`：用來測試及展示 UNM (Rust) 的 demo 程式。
   - 啟動 Demo：`cargo run --release --bin unm_engine_demo`
@@ -46,6 +50,12 @@ use unm_engine_bilibili::{BilibiliEngine, ENGINE_ID as BILIBILI_ENGINE_ID};
 
 let mut executor = Executor::new();
 executor.register(BILIBILI_ENGINE_ID, BilibiliEngine::new());
+
+// 您也可以直接使用官方預設的引擎集，免去手動註冊的麻煩。
+// 首先得引入 `unm_api_utils`，然後就可以：
+
+use unm_api_utils::executor::build_full_executor;
+let executor = build_full_executor();
 ```
 
 接著就可以直接使用 executor 提供的方法搜尋及取回結果了：
@@ -73,13 +83,17 @@ let result = executor.retrieve(&search_result, &context).await?;
 
 請參考 [napi 的 README.md](https://github.com/UnblockNeteaseMusic/server-rust/blob/main/napi/README.md)。
 
+### RESTful API
+
+請參考 [UNM REST API 的 README.md](https://github.com/UnblockNeteaseMusic/server-rust/blob/main/rest-api/README.md)
+
 ## 設定
 
 ### 支援的所有引擎
 
-N-API 支援的引擎與我們上架到 <https://crates.io> 的引擎略有差異。
+N-API 和 RESTful API 支援的引擎（以下簡稱「預設引擎集」）與我們上架到 <https://crates.io> 的引擎略有差異。
 
-| 名稱             | 引擎 ID    | 注意事項                                                        | N-API 支援 |
+| 名稱             | 引擎 ID    | 注意事項                                                        | 預設引擎集 |
 | ---------------- | ---------- | --------------------------------------------------------------- | ---------- |
 | Bilbili Music    | `bilibili` |                                                                 | ✅         |
 | 酷狗音乐         | `kugou`    |                                                                 | ✅         |
@@ -121,7 +135,7 @@ const UNM = require("@unblockneteasemusic/rust-napi");
 const context = {
   proxyUri: "https://www.google.com",
   searchMode: UNM.SearchMode.OrderFirst,
-}
+};
 ```
 
 #### 設定引擎特定設定（`Config`）
