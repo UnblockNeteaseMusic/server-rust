@@ -1,6 +1,6 @@
 use serde::Deserialize;
 use tracing::debug;
-use unm_types::{SearchMode, Context};
+use unm_types::{Context, SearchMode};
 
 #[derive(Default, Deserialize)]
 pub struct ApiContext {
@@ -8,7 +8,7 @@ pub struct ApiContext {
     pub enable_flac: Option<bool>,
 
     /// What mode to search?
-    /// 
+    ///
     /// It can be `fast_first` or `order_first`.
     /// By default, it is `fast_first`.
     pub search_mode: Option<SearchMode>,
@@ -16,7 +16,7 @@ pub struct ApiContext {
 
 impl ApiContext {
     /// Construct an user-customized context based on the `default_context`.
-    /// 
+    ///
     /// You would need to clone your default context to here.
     pub fn construct_context(&self, mut default_context: Context) -> Context {
         debug!("Constructing the ApiContext…");
@@ -26,7 +26,7 @@ impl ApiContext {
                 if let Some(v) = self.$key {
                     default_context.$key = v;
                 }
-            }
+            };
         }
 
         move_value!(enable_flac);

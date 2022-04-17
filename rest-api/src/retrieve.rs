@@ -5,7 +5,7 @@ use std::time::Duration;
 use axum::{response::IntoResponse, Json};
 use http::{HeaderMap, StatusCode};
 use once_cell::sync::Lazy;
-use reqwest::{Url, Client};
+use reqwest::{Client, Url};
 use serde_json::json;
 use thiserror::Error;
 use tracing::{debug, instrument};
@@ -27,28 +27,37 @@ pub fn determine_header(engine: &str) -> HeaderMap {
     let mut hm = HeaderMap::new();
 
     if engine == unm_engine_bilibili::ENGINE_ID {
-        hm.insert(http::header::REFERER, http::HeaderValue::from_static("https://www.bilibili.com/"));
-        hm.insert(http::header::USER_AGENT, http::HeaderValue::from_static("okhttp/3.4.1"));
+        hm.insert(
+            http::header::REFERER,
+            http::HeaderValue::from_static("https://www.bilibili.com/"),
+        );
+        hm.insert(
+            http::header::USER_AGENT,
+            http::HeaderValue::from_static("okhttp/3.4.1"),
+        );
     }
 
     hm
 }
 
-pub async fn request_as_stream(retrieved: &RetrievedSongInfo) -> RetrievedResult<
-    impl futures::Stream<
-        Item = reqwest::Result<bytes::Bytes>
-    >
-> {
-    debug!("Request the song URL ({}) and return as stream…", retrieved.url);
+pub async fn request_as_stream(
+    retrieved: &RetrievedSongInfo,
+) -> RetrievedResult<impl futures::Stream<Item = reqwest::Result<bytes::Bytes>>> {
+    debug!(
+        "Request the song URL ({}) and return as stream…",
+        retrieved.url
+    );
 
     let url = Url::parse(&retrieved.url)?;
-    let request = CLIENT.get(url)
+    let request = CLIENT
+        .get(url)
         .headers(determine_header(&retrieved.source))
         .timeout(Duration::from_secs(10))
         .build()
         .map_err(RetrieveError::ConstructRequestFailed)?;
-    
-    let response = CLIENT.execute(request)
+
+    let response = CLIENT
+        .execute(request)
         .await
         .map_err(RetrieveError::RequestFailed)?;
 
@@ -75,6 +84,10 @@ impl IntoResponse for RetrieveError {
 
         let error_response = format!("{}", self);
 
-        (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({ "error": error_response }))).into_response()
+        (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(json!({ "error": error_response })),
+        )
+            .into_response()
     }
 }

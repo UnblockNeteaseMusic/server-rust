@@ -1,15 +1,15 @@
-pub(crate) mod executor;
-pub(crate) mod retrieve;
 pub(crate) mod config_reader;
 pub(crate) mod controllers;
+pub(crate) mod executor;
+pub(crate) mod retrieve;
 
 use axum::{
     routing::{get, post},
-    Router, Extension,
+    Extension, Router,
 };
-use unm_types::{Context, ContextBuilder};
 use std::{net::SocketAddr, sync::Arc};
-use tracing::{warn, info, debug};
+use tracing::{debug, info, warn};
+use unm_types::{Context, ContextBuilder};
 
 use crate::config_reader::ExternalConfigReader;
 
@@ -20,13 +20,14 @@ async fn main() {
 
     info!("Reading the default context…");
     let default_context = Arc::new({
-        Context::read_toml("./config.toml".into())
-            .unwrap_or_else(|e| {
-                warn!("Failed to read `config.toml` because of {e}");
-                warn!("Use default context built in this API.");
+        Context::read_toml("./config.toml".into()).unwrap_or_else(|e| {
+            warn!("Failed to read `config.toml` because of {e}");
+            warn!("Use default context built in this API.");
 
-                ContextBuilder::default().build().expect("Failed to build default context")
-            })
+            ContextBuilder::default()
+                .build()
+                .expect("Failed to build default context")
+        })
     });
 
     info!("Constructing app…");
@@ -40,9 +41,9 @@ async fn main() {
                 .route("/retrieve", post(controllers::retrieve::retrieve_v1))
                 .layer(Extension(default_context))
         });
-    
-    let serve_address = std::env::var("SERVE_ADDRESS")
-        .unwrap_or_else(|_| "0.0.0.0:3000".to_string());
+
+    let serve_address =
+        std::env::var("SERVE_ADDRESS").unwrap_or_else(|_| "0.0.0.0:3000".to_string());
     debug!("Will listen on: {serve_address}");
 
     // run our app with hyper

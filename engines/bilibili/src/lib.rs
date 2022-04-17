@@ -1,8 +1,8 @@
 //! UNM Engine: Bilibili
-//! 
+//!
 //! Note that you may need to include the following
 //! headers to fetch the song from the retrieved URL:
-//! 
+//!
 //! ```http
 //! Referer: https://www.bilibili.com/
 //! User-Agent: okhttp/3.4.1

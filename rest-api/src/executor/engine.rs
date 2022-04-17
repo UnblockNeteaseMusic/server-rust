@@ -6,9 +6,9 @@ use tracing::{instrument, log::trace};
 use super::get_unm_executor;
 
 /// The string with the engines to use.
-/// 
+///
 /// If the inner value is `None`, we use all the supported engines.
-/// 
+///
 /// # Example
 ///
 /// ```
@@ -20,7 +20,7 @@ use super::get_unm_executor;
 ///     "kugou",
 ///     "kuwo"
 /// ]))
-/// 
+///
 /// // Use the default engines set
 /// ApiEngineString(None)
 /// ```

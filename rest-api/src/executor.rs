@@ -2,20 +2,20 @@
 
 pub(crate) mod context;
 pub(crate) mod engine;
-pub(crate) mod search;
 pub(crate) mod retrieve;
+pub(crate) mod search;
 
 use axum::{http::StatusCode, response::IntoResponse, Json};
 use once_cell::sync::OnceCell;
 use serde_json::json;
 use thiserror::Error;
-use tracing::{debug, trace, instrument};
+use tracing::{debug, instrument, trace};
 use unm_engine::executor::{Executor, ExecutorError};
 
 static EXECUTOR: OnceCell<Executor> = OnceCell::new();
 
 /// Get the global UNM Executor.
-/// 
+///
 /// It should construct only once in the whole lifetime,
 /// so you can call it freely without worrying about the cost.
 #[instrument]

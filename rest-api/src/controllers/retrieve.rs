@@ -1,23 +1,27 @@
 //! API: `/api/v[n]/retrieve`
-//! 
+//!
 //! Supported version: `v1`.
 
 use std::sync::Arc;
 
-use axum::{Json, Extension, response::IntoResponse, body::StreamBody};
-use tracing::{info};
+use axum::{body::StreamBody, response::IntoResponse, Extension, Json};
+use tracing::info;
 use unm_types::Context;
 
 use crate::{executor::retrieve::RetrievePayload, retrieve::request_as_stream};
 
 pub async fn retrieve_v1(
     Json(payload): Json<RetrievePayload>,
-    Extension(default_context): Extension<Arc<Context>>
+    Extension(default_context): Extension<Arc<Context>>,
 ) -> impl IntoResponse {
-    info!("[v1][Retrieve] Retrieving the song with the engine “{}”",
-        payload.retrieved_song_info.source);
+    info!(
+        "[v1][Retrieve] Retrieving the song with the engine “{}”",
+        payload.retrieved_song_info.source
+    );
 
-    let context = payload.context.construct_context((*default_context).clone());
+    let context = payload
+        .context
+        .construct_context((*default_context).clone());
     let response = match payload.retrieve(&context).await {
         Ok(response) => response,
         Err(e) => {

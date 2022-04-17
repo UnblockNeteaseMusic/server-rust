@@ -1,6 +1,6 @@
 use serde::de::DeserializeOwned;
-use tracing::{instrument, info};
-use std::{fs, borrow::Cow};
+use std::{borrow::Cow, fs};
+use tracing::{info, instrument};
 use unm_types::Context;
 
 pub trait ExternalConfigReader: DeserializeOwned {
