@@ -12,6 +12,7 @@ pub struct RetrievePayload {
     pub retrieved_song_info: SongSearchInformation,
 
     /// The context for retrieving.
+    #[serde(default)]
     pub context: ApiContext,
 }
 
