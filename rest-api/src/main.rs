@@ -9,7 +9,7 @@ use axum::{
 };
 use unm_types::{Context, ContextBuilder};
 use std::{net::SocketAddr, sync::Arc};
-use tracing::warn;
+use tracing::{warn, info, debug};
 
 use crate::config_reader::ExternalConfigReader;
 
@@ -18,8 +18,9 @@ async fn main() {
     // initialize tracing
     tracing_subscriber::fmt::init();
 
+    info!("Reading the default context…");
     let default_context = Arc::new({
-        Context::read_context_toml("./config.toml".into())
+        Context::read_toml("./config.toml".into())
             .unwrap_or_else(|e| {
                 warn!("Failed to read `config.toml` because of {e}");
                 warn!("Use default context built in this API.");
@@ -28,7 +29,7 @@ async fn main() {
             })
     });
 
-    // build our application with a route
+    info!("Constructing app…");
     let app = Router::new()
         // `GET /` goes to `root`
         .route("/", get(root))
@@ -39,11 +40,15 @@ async fn main() {
                 .route("/retrieve", post(controllers::retrieve::retrieve_v1))
                 .layer(Extension(default_context))
         });
+    
+    let serve_address = std::env::var("SERVE_ADDRESS")
+        .unwrap_or_else(|_| "0.0.0.0:3000".to_string());
+    debug!("Will listen on: {serve_address}");
 
     // run our app with hyper
     // `axum::Server` is a re-export of `hyper::Server`
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
-    tracing::debug!("listening on {}", addr);
+    let addr: SocketAddr = serve_address.parse().expect("failed to parse address");
+    info!("listening on {}", addr);
     axum::Server::bind(&addr)
         .serve(app.into_make_service())
         .await
