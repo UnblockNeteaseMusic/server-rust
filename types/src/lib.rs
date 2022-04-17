@@ -20,12 +20,14 @@ pub enum SearchMode {
     /// we return `"c"`.
     ///
     /// This is the default mode.
+    #[serde(alias = "fast_first")]
     FastFirst,
     /// Return according to the order of the response.
     ///
     /// For example, even if `["a", "b", "c"]` and `"c"` returns the fast,
     /// we still wait for `"a"` and return `"a"`. If `"a"` has no result,
     /// we return `"b"`.
+    #[serde(alias = "order_first")]
     OrderFirst,
 }
 
