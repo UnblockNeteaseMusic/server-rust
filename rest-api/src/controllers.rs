@@ -2,5 +2,5 @@
 //! 
 //! It redirects the request to services.
 
-
-pub mod search;
+pub(crate) mod search;
+pub(crate) mod retrieve;

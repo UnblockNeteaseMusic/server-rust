@@ -3,6 +3,7 @@
 pub(crate) mod context;
 pub(crate) mod engine;
 pub(crate) mod search;
+pub(crate) mod retrieve;
 
 use axum::{http::StatusCode, response::IntoResponse, Json};
 use once_cell::sync::OnceCell;
@@ -24,6 +25,9 @@ pub fn get_unm_executor() -> &'static Executor {
 pub enum ApiExecutorError {
     #[error("Failed to search: {0}")]
     SearchFailed(ExecutorError),
+
+    #[error("Failed to retrieve: {0}")]
+    RetrieveFailed(ExecutorError),
 }
 
 pub type ApiExecutorResult<T> = Result<T, ApiExecutorError>;
@@ -37,7 +41,11 @@ impl IntoResponse for ApiExecutorError {
                 ExecutorError::EnginesMissing { .. } => StatusCode::UNPROCESSABLE_ENTITY,
                 ExecutorError::NoMatchedSong { .. } => StatusCode::NOT_FOUND,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
-            }
+            },
+            ApiExecutorError::RetrieveFailed(executor_error) => match executor_error {
+                ExecutorError::EngineResolveFailed { .. } => StatusCode::UNPROCESSABLE_ENTITY,
+                _ => StatusCode::INTERNAL_SERVER_ERROR,
+            },
         };
 
         (code, Json(json!({ "error": error_response }))).into_response()

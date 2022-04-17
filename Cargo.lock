@@ -1861,9 +1861,12 @@ dependencies = [
  "anyhow",
  "axum",
  "base64",
+ "bytes",
  "concat-idents",
+ "futures",
  "http",
  "once_cell",
+ "reqwest",
  "serde",
  "serde_json",
  "thiserror",
@@ -1883,6 +1886,7 @@ dependencies = [
  "unm_engine_pyncm",
  "unm_engine_ytdl",
  "unm_types",
+ "url",
 ]
 
 [[package]]

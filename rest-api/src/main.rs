@@ -1,4 +1,5 @@
 pub(crate) mod executor;
+pub(crate) mod retrieve;
 pub(crate) mod config_reader;
 pub(crate) mod controllers;
 
@@ -35,6 +36,7 @@ async fn main() {
         .nest("/api/v1", {
             Router::new()
                 .route("/search", post(controllers::search::search_v1))
+                .route("/retrieve", post(controllers::retrieve::retrieve_v1))
                 .layer(Extension(default_context))
         });
 
