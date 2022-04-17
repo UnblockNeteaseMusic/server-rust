@@ -18,6 +18,9 @@ members = [
 
     # N-API
     "napi",
+
+    # REST API
+    "rest-api",
 ]
 
 [profile.release]

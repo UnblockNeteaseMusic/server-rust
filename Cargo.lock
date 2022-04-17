@@ -1616,6 +1616,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "unm_rest_api"
+version = "0.1.0"
+
+[[package]]
 name = "unm_selector"
 version = "0.2.0-pre.2"
 dependencies = [
