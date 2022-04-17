@@ -122,9 +122,11 @@ pub struct Context {
     pub proxy_uri: Option<Cow<'static, str>>,
 
     /// Whether to enable FLAC support.
+    #[serde(default)]
     pub enable_flac: bool,
 
     /// The search mode for waiting the response.
+    #[serde(default)]
     pub search_mode: SearchMode,
 
     /// The config for engines.
