@@ -25,3 +25,4 @@ unm_engine_migu = { version = "0.2.0-pre.1", path = "../engines/migu" }
 unm_engine_kuwo = { version = "0.2.0-pre.1", path = "../engines/kuwo" }
 mimalloc = "0.1.28"
 concat-idents = "1.1.3"
+unm_api_utils = { version = "0.1.0", path = "../api-utils" }

@@ -1,7 +1,6 @@
-use concat_idents::concat_idents;
 use napi::bindgen_prelude::*;
 use napi_derive::napi;
-use std::{borrow::Cow, sync::Arc};
+use std::borrow::Cow;
 use unm_engine::executor::Executor;
 
 use crate::types::{Context, RetrievedSongInfo, Song, SongSearchInformation};
@@ -66,28 +65,7 @@ impl JsExecutor {
 impl Default for JsExecutor {
   fn default() -> Self {
     Self {
-      executor: construct_executor(),
+      executor: unm_api_utils::executor::build_full_executor(),
     }
   }
-}
-
-fn construct_executor() -> Executor {
-  let mut executor = Executor::new();
-
-  macro_rules! push_engine {
-        ($engine_name:ident: $engine_struct:ident) => {
-            concat_idents!(engine_crate = unm_engine_, $engine_name {
-                executor.register(engine_crate::ENGINE_ID.into(), Arc::new(engine_crate::$engine_struct));
-            })
-        };
-    }
-
-  push_engine!(bilibili: BilibiliEngine);
-  push_engine!(kugou: KugouEngine);
-  push_engine!(migu: MiguEngine);
-  push_engine!(pyncm: PyNCMEngine);
-  push_engine!(ytdl: YtDlEngine);
-  push_engine!(kuwo: KuwoEngine);
-
-  executor
 }

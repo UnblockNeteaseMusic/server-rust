@@ -1,4 +1,4 @@
-use std::{borrow::Cow, sync::Arc};
+use std::borrow::Cow;
 
 use futures::FutureExt;
 use mimalloc::MiMalloc;
@@ -27,26 +27,7 @@ async fn main() {
         .build()
         .unwrap();
 
-    let executor = {
-        let mut e = unm_engine::executor::Executor::new();
-
-        macro_rules! push_engine {
-            ($engine_name:ident: $engine_struct:ident) => {
-                concat_idents::concat_idents!(engine_crate = unm_engine_, $engine_name {
-                    e.register(engine_crate::ENGINE_ID.into(), Arc::new(engine_crate::$engine_struct));
-                })
-            };
-        }
-
-        push_engine!(bilibili: BilibiliEngine);
-        push_engine!(ytdl: YtDlEngine);
-        push_engine!(kugou: KugouEngine);
-        push_engine!(migu: MiguEngine);
-        push_engine!(kuwo: KuwoEngine);
-
-        e
-    };
-
+    let executor = unm_api_utils::executor::build_full_executor();
     let engines_to_use = std::env::var("ENGINES")
         .unwrap_or_else(|_| "bilibili ytdl kugou migu".to_string())
         .split_whitespace()
