@@ -5,6 +5,7 @@ members = [
     "types",
 
     # Utilities
+    "api-utils",
     "crypto",
     "selector",
     "request",
