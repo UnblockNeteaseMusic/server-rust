@@ -1,0 +1,23 @@
+[package]
+name = "unm_api_utils"
+description = "The utilities for developing UnblockNeteaseMusic API."
+license = "LGPL-3.0-or-later"
+version = "0.1.0"
+edition = "2021"
+repository = "https://github.com/UnblockNeteaseMusic/server-rust"
+readme = "./README.md"
+publish = false
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+concat-idents = "1.1.3"
+unm_engine = { version = "0.2.0-pre.4", path = "../engine-base" }
+unm_engine_bilibili = { version = "0.2.0-pre.2", path = "../engines/bilibili" }
+unm_engine_joox = { version = "0.2.0-pre.5", path = "../engines/joox" }
+unm_engine_kugou = { version = "0.2.0-pre.2", path = "../engines/kugou" }
+unm_engine_kuwo = { version = "0.2.0-pre.2", path = "../engines/kuwo" }
+unm_engine_migu = { version = "0.2.0-pre.2", path = "../engines/migu" }
+unm_engine_pyncm = { version = "0.2.0-pre.2", path = "../engines/pyncm" }
+unm_engine_ytdl = { version = "0.2.0-pre.5", path = "../engines/ytdl" }
+unm_types = { version = "0.2.0-pre.5", path = "../types" }
