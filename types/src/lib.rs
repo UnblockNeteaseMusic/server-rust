@@ -52,7 +52,7 @@ pub struct Artist {
 #[derive(Debug, Clone, Default, Serialize, Deserialize, TypedBuilder)]
 #[non_exhaustive]
 pub struct Album {
-    /// The identifier of this artist.
+    /// The identifier of this album.
     #[builder(default = "".to_string())]
     pub id: String,
     /// The name of this album.
