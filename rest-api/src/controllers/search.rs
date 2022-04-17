@@ -5,6 +5,7 @@
 use std::sync::Arc;
 
 use axum::{Json, Extension, response::IntoResponse};
+use tracing::info;
 use unm_types::Context;
 
 use crate::executor::search::SearchPayload;
@@ -13,6 +14,9 @@ pub async fn search_v1(
     Json(payload): Json<SearchPayload>,
     Extension(default_context): Extension<Arc<Context>>
 ) -> impl IntoResponse {
+    info!("[v1][Search] Searching the song “{}” with the engines “{:?}”",
+        payload.song, payload.engines.get_engines_list());
+
     let context = payload.context.construct_context((*default_context).clone());
     let response = payload.search(&context).await;
 

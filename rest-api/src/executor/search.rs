@@ -1,5 +1,6 @@
 use axum::Json;
 use serde::Deserialize;
+use tracing::debug;
 use unm_types::{Song, SongSearchInformation, Context};
 
 use super::context::ApiContext;
@@ -38,6 +39,8 @@ impl SearchPayload {
     /// The `SongSearchInformation` return value is important
     /// to retrieve audio.
     pub async fn search(&self, context: &Context) -> ApiExecutorResult<Json<SongSearchInformation>> {
+        debug!("Searching the specified song…");
+
         let engines_list = self.engines.get_engines_list();
         let result = get_unm_executor().search(&engines_list, &self.song, context)
             .await

@@ -8,16 +8,22 @@ use once_cell::sync::Lazy;
 use reqwest::{Url, Client};
 use serde_json::json;
 use thiserror::Error;
+use tracing::{debug, instrument};
 use unm_types::RetrievedSongInfo;
 
 static CLIENT: Lazy<Client> = Lazy::new(|| {
+    debug!("Constructing the client…");
+
     reqwest::Client::builder()
         .build()
         .expect("failed to construct reqwest client")
 });
 
 /// Determine the header for requesting by the specified engine.
+#[instrument]
 pub fn determine_header(engine: &str) -> HeaderMap {
+    debug!("Determining the header to use…");
+
     let mut hm = HeaderMap::new();
 
     if engine == unm_engine_bilibili::ENGINE_ID {
@@ -33,6 +39,8 @@ pub async fn request_as_stream(retrieved: &RetrievedSongInfo) -> RetrievedResult
         Item = reqwest::Result<bytes::Bytes>
     >
 > {
+    debug!("Request the song URL ({}) and return as stream…", retrieved.url);
+
     let url = Url::parse(&retrieved.url)?;
     let request = CLIENT.get(url)
         .headers(determine_header(&retrieved.source))
@@ -61,7 +69,10 @@ pub enum RetrieveError {
 pub type RetrievedResult<T> = Result<T, RetrieveError>;
 
 impl IntoResponse for RetrieveError {
+    #[instrument]
     fn into_response(self) -> axum::response::Response {
+        debug!("Convert RetrieveError to Response…");
+
         let error_response = format!("{}", self);
 
         (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({ "error": error_response }))).into_response()

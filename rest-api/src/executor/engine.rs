@@ -1,6 +1,7 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize, Serialize};
+use tracing::{instrument, log::trace};
 
 use super::get_unm_executor;
 
@@ -27,7 +28,10 @@ use super::get_unm_executor;
 pub struct ApiEngineString(Option<Vec<String>>);
 
 impl ApiEngineString {
+    #[instrument]
     pub fn get_engines_list(&self) -> Vec<Cow<'static, str>> {
+        trace!("Getting the engines list to request…");
+
         if let Some(ref engines) = self.0 {
             engines
                 .iter()

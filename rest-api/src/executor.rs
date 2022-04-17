@@ -9,6 +9,7 @@ use axum::{http::StatusCode, response::IntoResponse, Json};
 use once_cell::sync::OnceCell;
 use serde_json::json;
 use thiserror::Error;
+use tracing::{debug, trace, instrument};
 use unm_engine::executor::{Executor, ExecutorError};
 
 static EXECUTOR: OnceCell<Executor> = OnceCell::new();
@@ -17,7 +18,9 @@ static EXECUTOR: OnceCell<Executor> = OnceCell::new();
 /// 
 /// It should construct only once in the whole lifetime,
 /// so you can call it freely without worrying about the cost.
+#[instrument]
 pub fn get_unm_executor() -> &'static Executor {
+    trace!("Getting UNM Executor…");
     EXECUTOR.get_or_init(unm_api_utils::executor::build_full_executor)
 }
 
@@ -33,7 +36,10 @@ pub enum ApiExecutorError {
 pub type ApiExecutorResult<T> = Result<T, ApiExecutorError>;
 
 impl IntoResponse for ApiExecutorError {
+    #[instrument]
     fn into_response(self) -> axum::response::Response {
+        debug!("Converting ApiExecutorError to Response…");
+
         let error_response = format!("{}", self);
 
         let code = match self {

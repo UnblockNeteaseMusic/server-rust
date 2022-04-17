@@ -1,4 +1,5 @@
 use serde::Deserialize;
+use tracing::debug;
 use unm_types::{SearchMode, Context};
 
 #[derive(Default, Deserialize)]
@@ -18,6 +19,8 @@ impl ApiContext {
     /// 
     /// You would need to clone your default context to here.
     pub fn construct_context(&self, mut default_context: Context) -> Context {
+        debug!("Constructing the ApiContext…");
+
         macro_rules! move_value {
             ($key:ident) => {
                 if let Some(v) = self.$key {

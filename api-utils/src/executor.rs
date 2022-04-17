@@ -22,6 +22,8 @@ use unm_engine::executor::Executor;
 /// println!("{:?}", executor.list());
 /// ```
 pub fn build_full_executor() -> Executor {
+    log::debug!("Building the executor with all the official engines registered…");
+
     let mut executor = Executor::new();
 
     macro_rules! push_engine {

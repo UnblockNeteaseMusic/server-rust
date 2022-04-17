@@ -1,3 +1,4 @@
+use tracing::debug;
 use unm_types::{RetrievedSongInfo, Context};
 pub use unm_types::SongSearchInformation;
 use serde::Deserialize;
@@ -18,6 +19,8 @@ pub struct RetrievePayload {
 
 impl RetrievePayload {
     pub async fn retrieve(&self, context: &Context) -> ApiExecutorResult<RetrievedSongInfo> {
+        debug!("Retrieving the specified song info…");
+
         let result = get_unm_executor().retrieve(
             &self.retrieved_song_info, context)
             .await
