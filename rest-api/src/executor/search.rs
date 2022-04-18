@@ -10,7 +10,7 @@ use super::{engine::ApiEnginesList, get_unm_executor, ApiExecutorError, ApiExecu
 #[derive(Deserialize)]
 pub struct SearchPayload {
     /// The list with the engines to use.
-    /// 
+    ///
     /// If not specified, we use all the supported engines.
     /// For more information, see [`ApiEnginesList`].
     #[serde(default)]
