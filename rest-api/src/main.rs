@@ -42,8 +42,12 @@ async fn main() {
         .nest(
             "/docs",
             Router::new()
-                .route("/readme", get(readme))
-                .route("/api", get(docs_api)),
+                .route("/readme", get(|| async { include_str!("../README.md") }))
+                .route("/api", get(|| async { include_str!("../docs/api.md") }))
+                .route(
+                    "/configure",
+                    get(|| async { include_str!("../docs/configure.md") }),
+                ),
         )
         // API [v1]
         .nest("/api/v1", {
@@ -79,14 +83,4 @@ async fn root() -> Json<Value> {
         "success": true,
         "version": env!("CARGO_PKG_VERSION"),
     }))
-}
-
-async fn readme() -> &'static str {
-    // The README.md file including the usage information of this API.
-    include_str!("../README.md")
-}
-
-async fn docs_api() -> &'static str {
-    // The API usage documentation of this API.
-    include_str!("../docs/api.md")
 }
