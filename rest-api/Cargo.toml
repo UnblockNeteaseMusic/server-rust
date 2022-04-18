@@ -1,6 +1,6 @@
 [package]
 name = "unm_rest_api"
-description = "The engine base for UnblockNeteaseMusic, including the executor and the Engine trait."
+description = "The RESTful API for dealing with UnblockNeteaseMusic API."
 version = "0.1.0"
 edition = "2021"
 license = "LGPL-3.0-or-later"
