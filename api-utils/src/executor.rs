@@ -15,7 +15,6 @@ use unm_engine::executor::Executor;
 /// # Example
 ///
 /// ```
-/// use unm_types::Context;
 /// use unm_api_utils::executor::build_full_executor;
 ///
 /// let executor = build_full_executor();
