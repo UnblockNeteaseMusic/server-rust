@@ -12,22 +12,22 @@ use super::get_unm_executor;
 /// # Example
 ///
 /// ```
-/// use unm_rest_api::executor::engine::ApiEngineString;
+/// use unm_rest_api::executor::engine::ApiEngineList;
 ///
 /// // Specify engines explicitly
-/// ApiEngineString(Some(vec![
+/// ApiEngineList(Some(vec![
 ///     "bilibili",
 ///     "kugou",
 ///     "kuwo"
 /// ]))
 ///
 /// // Use the default engines set
-/// ApiEngineString(None)
+/// ApiEngineList(None)
 /// ```
 #[derive(Default, Debug, Deserialize, Serialize)]
-pub struct ApiEngineString(Option<Vec<String>>);
+pub struct ApiEnginesList(Option<Vec<String>>);
 
-impl ApiEngineString {
+impl ApiEnginesList {
     #[instrument]
     pub fn get_engines_list(&self) -> Vec<Cow<'static, str>> {
         trace!("Getting the engines list to request…");

@@ -5,22 +5,16 @@ use unm_types::{Context, Song, SongSearchInformation};
 
 use super::context::ApiContext;
 
-use super::{engine::ApiEngineString, get_unm_executor, ApiExecutorError, ApiExecutorResult};
+use super::{engine::ApiEnginesList, get_unm_executor, ApiExecutorError, ApiExecutorResult};
 
 #[derive(Deserialize)]
 pub struct SearchPayload {
-    /// The string with the engines to use.
-    ///
-    /// Specify multiple engines with ',' as separator,
-    /// for example:
-    ///
-    /// ```plain
-    /// bilibili,kugou,ytdl
-    /// ```
-    ///
+    /// The list with the engines to use.
+    /// 
     /// If not specified, we use all the supported engines.
+    /// For more information, see [`ApiEnginesList`].
     #[serde(default)]
-    pub engines: ApiEngineString,
+    pub engines: ApiEnginesList,
 
     /// The song to search.
     pub song: Song,
