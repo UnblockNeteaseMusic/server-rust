@@ -36,13 +36,19 @@ async fn main() {
     let app = Router::new()
         // `GET /` goes to `root`
         .route("/", get(root))
-        .route("/docs/readme", get(readme))
+        // Docs
+        .nest("/docs", Router::new()
+            .route("/readme", get(readme))
+            .route("/api",get(docs_api))
+        )
+        // API [v1]
         .nest("/api/v1", {
             Router::new()
                 .route("/search", post(controllers::search::search_v1))
                 .route("/retrieve", post(controllers::retrieve::retrieve_v1))
                 .layer(Extension(default_context))
         })
+        // Schema [v1]
         .nest("/schema/v1", {
             Router::new()
                 .route("/index", get(schema::schema_v1_index))
@@ -74,4 +80,9 @@ async fn root() -> Json<Value> {
 async fn readme() -> &'static str {
     // The README.md file including the usage information of this API.
     include_str!("../README.md")
+}
+
+async fn docs_api() -> &'static str {
+    // The API usage documentation of this API.
+    include_str!("../docs/api.md")
 }
