@@ -5,11 +5,17 @@ pub(crate) mod retrieve;
 pub(crate) mod schema;
 
 use axum::{
+    error_handling::HandleErrorLayer,
     routing::{get, post},
     Extension, Json, Router,
 };
+use http::{Method, StatusCode, HeaderMap};
 use serde_json::{json, Value};
-use std::{net::SocketAddr, sync::Arc};
+use std::{net::SocketAddr, sync::Arc, time::Duration};
+use tower::ServiceBuilder;
+use tower_http::{
+    cors::{Any, CorsLayer},
+};
 use tracing::{debug, info, warn};
 use unm_types::ContextBuilder;
 
@@ -35,6 +41,37 @@ async fn main() {
     });
 
     info!("Constructing app…");
+
+    let cors_layer = CorsLayer::new()
+        .allow_methods(vec![Method::GET, Method::POST])
+        .allow_headers(vec![http::header::CONTENT_TYPE])
+        .allow_origin(Any);
+
+    let rate_limit_layer = ServiceBuilder::new()
+        .layer(HandleErrorLayer::new(|_| async {
+            (
+                StatusCode::TOO_MANY_REQUESTS,
+                {
+                    let mut hm = HeaderMap::new();
+                    hm.insert(
+                        http::header::CONTENT_TYPE,
+                        http::HeaderValue::from_static("application/json"),
+                    );
+                    hm
+                },
+                r#"{"error": "You request too fast. Please wait 5 minutes."}"#.to_string()
+            )
+        }))
+        .buffer(1024) // Let RateLimit clone-able
+        .load_shed()
+        .rate_limit(30, Duration::from_secs(300)) // Allow only 30 requests per 5 minutes
+        .into_inner();
+
+    let limit_layer = ServiceBuilder::new()
+        .layer(cors_layer)
+        .layer(rate_limit_layer)
+        .into_inner();
+
     let app = Router::new()
         // `GET /` goes to `root`
         .route("/", get(root))
@@ -62,7 +99,8 @@ async fn main() {
                 .route("/index", get(schema::schema_v1_index))
                 .route("/search", get(schema::schema_v1_search))
                 .route("/error", get(schema::schema_v1_error))
-        });
+        })
+        .layer(limit_layer);
 
     let serve_address =
         std::env::var("SERVE_ADDRESS").unwrap_or_else(|_| "0.0.0.0:3000".to_string());
