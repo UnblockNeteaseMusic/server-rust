@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 use openssl::error::ErrorStack;
 use thiserror::Error;
 
@@ -13,6 +15,8 @@ pub enum CryptoError {
     UriParseError(#[from] url::ParseError),
     #[error("Failed to decode from base64: {0}")]
     Base64DecodeError(#[from] base64::DecodeError),
+    #[error("Failed to read the specified char in the index ({0}) of string ({1})")]
+    UnexpectedIndex(usize, Cow<'static, str>),
 }
 
 pub type CryptoResult<T> = Result<T, CryptoError>;
