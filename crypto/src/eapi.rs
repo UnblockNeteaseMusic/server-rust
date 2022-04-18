@@ -10,11 +10,11 @@ use crate::error::CryptoResult;
 const EAPI_KEY: &[u8; 16] = b"e82ckenh8dichen8";
 
 pub fn decrypt(data: &[u8]) -> AesResult {
-    aes_128::decrypt(data, EAPI_KEY)
+    aes_128::decrypt_ecb(data, EAPI_KEY)
 }
 
 pub fn encrypt(data: &[u8]) -> AesResult {
-    aes_128::encrypt(data, EAPI_KEY)
+    aes_128::encrypt_ecb(data, EAPI_KEY)
 }
 
 pub struct EncryptRequestResponse {

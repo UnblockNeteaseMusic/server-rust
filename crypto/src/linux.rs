@@ -17,11 +17,11 @@ struct LinuxApiResponse<'a, T: Serialize> {
 }
 
 pub fn decrypt(data: &[u8]) -> CryptoResult<Vec<u8>> {
-    aes_128::decrypt(data, LINUX_API_KEY)
+    aes_128::decrypt_ecb(data, LINUX_API_KEY)
 }
 
 pub fn encrypt(data: &[u8]) -> CryptoResult<Vec<u8>> {
-    aes_128::encrypt(data, LINUX_API_KEY)
+    aes_128::encrypt_ecb(data, LINUX_API_KEY)
 }
 
 pub struct EncryptRequestResponse {
