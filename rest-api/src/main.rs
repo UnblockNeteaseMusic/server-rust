@@ -9,13 +9,11 @@ use axum::{
     routing::{get, post},
     Extension, Json, Router,
 };
-use http::{Method, StatusCode, HeaderMap};
+use http::{HeaderMap, Method, StatusCode};
 use serde_json::{json, Value};
 use std::{net::SocketAddr, sync::Arc, time::Duration};
 use tower::ServiceBuilder;
-use tower_http::{
-    cors::{Any, CorsLayer},
-};
+use tower_http::cors::{Any, CorsLayer};
 use tracing::{debug, info, warn};
 use unm_types::ContextBuilder;
 
@@ -59,7 +57,7 @@ async fn main() {
                     );
                     hm
                 },
-                r#"{"error": "You request too fast. Please wait 5 minutes."}"#.to_string()
+                r#"{"error": "You request too fast. Please wait 5 minutes."}"#.to_string(),
             )
         }))
         .buffer(1024) // Let RateLimit clone-able
