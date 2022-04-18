@@ -4,7 +4,11 @@
 //! Thanks to Binaryify!
 
 use once_cell::sync::OnceCell;
-use openssl::{rand::rand_bytes, rsa::{Rsa, Padding}, pkey::Public};
+use openssl::{
+    pkey::Public,
+    rand::rand_bytes,
+    rsa::{Padding, Rsa},
+};
 use serde::Serialize;
 use serde_json::Value;
 use smallvec::SmallVec;
@@ -41,20 +45,17 @@ fn gen_weapi_secret_key() -> CryptoResult<SmallVec<[u8; 16]>> {
 
     Ok(bytes
         .into_iter()
-        .map(|n| u8::try_from(b62_char_at(n as usize)).unwrap_or_else(|e| {
-            log::error!("[char2u8] Out of range: {e}. Return 0 instead.");
-            0
-        }))
+        .map(|n| {
+            u8::try_from(b62_char_at(n as usize)).unwrap_or_else(|e| {
+                log::error!("[char2u8] Out of range: {e}. Return 0 instead.");
+                0
+            })
+        })
         .collect::<SmallVec<[u8; 16]>>())
 }
 
 fn get_weapi_rsa_instance() -> CryptoResult<&'static Rsa<Public>> {
-    Ok(
-        WEAPI_RSA_INSTANCE
-            .get_or_try_init(|| {
-                Rsa::public_key_from_pem(WEAPI_PUBKEY)
-            })?
-    )
+    Ok(WEAPI_RSA_INSTANCE.get_or_try_init(|| Rsa::public_key_from_pem(WEAPI_PUBKEY))?)
 }
 
 /// Encrypts data using WEAPI's key, returning the number of encrypted bytes.
@@ -72,12 +73,11 @@ pub fn construct_weapi_payload<S: Serialize>(object: &S) -> CryptoResult<Value> 
     let mut buf = Vec::with_capacity(1024);
 
     let aes_128_b64 = |data| -> CryptoResult<String> {
-        Ok(base64::encode(
-            crate::aes_128::encrypt_cbc(
-                data,
-                WEAPI_PRESET_KEY, WEAPI_IV
-            )?
-        ))
+        Ok(base64::encode(crate::aes_128::encrypt_cbc(
+            data,
+            WEAPI_PRESET_KEY,
+            WEAPI_IV,
+        )?))
     };
 
     // Reverse the secret key since it is the requirement of `enc_sec_key` (?)
