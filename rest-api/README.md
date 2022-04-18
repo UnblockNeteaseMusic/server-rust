@@ -6,7 +6,12 @@
 
 ### 使用預編譯版本
 
-> WIP
+您可以從 `Build RESTful API binaries` 的 CI 取得以下幾個平台的預編譯版本：
+
+- `x86_64-pc-windows-msvc`
+- `x86_64-apple-darwin`
+- `aarch64-apple-darwin`
+- `x86_64-unknown-linux-gnu`
 
 ### 從 crates.io 編譯安裝
 

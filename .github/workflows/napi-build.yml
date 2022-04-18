@@ -1,4 +1,4 @@
-name: CI
+name: Build N-API
 env:
   DEBUG: napi:*
   APP_NAME: rust-napi
