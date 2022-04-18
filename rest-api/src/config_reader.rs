@@ -8,11 +8,45 @@ pub trait ExternalConfigReader: DeserializeOwned {
 }
 
 #[derive(Deserialize)]
-pub struct ContextTomlStructure {
+#[non_exhaustive]
+pub struct ApiConfigTomlStructure {
     pub context: Context,
+    #[serde(default)]
+    pub rate_limit: RateLimitConfig,
 }
 
-impl ExternalConfigReader for ContextTomlStructure {
+#[derive(Default, Debug, Deserialize)]
+pub struct RateLimitConfig {
+    /// The max requests allowed per duration.
+    ///
+    /// By default, it is `30` requests.
+    #[serde(default)]
+    pub max_requests: RateLimitMaxRequests,
+    /// The applied duration of the rate limit.
+    ///
+    /// By default, it is `300` seconds.
+    #[serde(default)]
+    pub limit_duration_seconds: RateLimitDurationSeconds,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct RateLimitMaxRequests(pub u64);
+#[derive(Debug, Deserialize)]
+pub struct RateLimitDurationSeconds(pub u64);
+
+impl Default for RateLimitMaxRequests {
+    fn default() -> Self {
+        Self(30)
+    }
+}
+
+impl Default for RateLimitDurationSeconds {
+    fn default() -> Self {
+        Self(300)
+    }
+}
+
+impl ExternalConfigReader for ApiConfigTomlStructure {
     #[instrument]
     fn read_toml(file_path: Cow<'static, str>) -> anyhow::Result<Self> {
         info!("Reading configuration from TOML file: {}", file_path);

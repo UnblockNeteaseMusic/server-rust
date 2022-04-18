@@ -18,7 +18,7 @@ use tower_http::cors::{Any, CorsLayer};
 use tracing::{debug, info, warn};
 use unm_types::ContextBuilder;
 
-use crate::config_reader::{ContextTomlStructure, ExternalConfigReader};
+use crate::config_reader::{ApiConfigTomlStructure, ExternalConfigReader};
 
 #[global_allocator]
 static GLOBAL: MiMalloc = MiMalloc;
@@ -28,10 +28,14 @@ async fn main() {
     // initialize tracing
     tracing_subscriber::fmt::init();
 
-    info!("Reading the default context…");
+    info!("Reading configuration…");
+    let config = ApiConfigTomlStructure::read_toml("./config.toml".into());
+
+    debug!("Extracting the default context from configuration…");
     let default_context = Arc::new({
-        ContextTomlStructure::read_toml("./config.toml".into())
-            .map(|v| v.context)
+        config
+            .as_ref()
+            .map(|v| v.context.clone())
             .unwrap_or_else(|e| {
                 warn!("Failed to read `config.toml` because of {e}");
                 warn!("Use default context built in this API.");
@@ -41,6 +45,14 @@ async fn main() {
                     .expect("Failed to build default context")
             })
     });
+
+    debug!("Extracting the rate limit configuration…");
+    let rate_limit_config = config
+        .map(|v| {
+            debug!("RateLimitConfig: {:#?}", v.rate_limit);
+            v.rate_limit
+        })
+        .unwrap_or_default();
 
     info!("Constructing app…");
 
@@ -66,7 +78,10 @@ async fn main() {
         }))
         .buffer(1024) // Let RateLimit clone-able
         .load_shed()
-        .rate_limit(30, Duration::from_secs(300)) // Allow only 30 requests per 5 minutes
+        .rate_limit(
+            rate_limit_config.max_requests.0,
+            Duration::from_secs(rate_limit_config.limit_duration_seconds.0),
+        ) // Allow only 30 requests per 5 minutes
         .into_inner();
 
     let limit_layer = ServiceBuilder::new()

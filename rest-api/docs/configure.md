@@ -5,7 +5,10 @@
 ## 欄位說明
 
 - `[context]`：即 [unm_types::Context](https://docs.rs/unm_types/latest/unm_types/struct.Context.html)。
-- `[context.config]`：`unm_types::Context` 底下的 `config` 欄位。
+  - `[context.config]`：`unm_types::Context` 底下的 `config` 欄位。
+- `[rate_limit]`：與 Rate Limit 相關的設定。
+  - `max_requests` (`u64`)：時間內允許的最多請求數。預設是 `30` 個請求數。
+  - `limit_duration_seconds` (`u64`)：Rate Limit 的時限。預設是 `300` 秒。
 
 ## 範例設定
 
@@ -30,4 +33,14 @@
 # Note that we don't allow users changing this value
 # for the security concerns.
 # "ytdl:exe" = "..."
+
+# The rate limit configuration
+[rate_limit]
+# The max requests allowed per duration.
+# By default, it is `30` requests.
+# max_requests = 30
+
+# The applied duration of the rate limit.
+# By default, it is `300` seconds.
+# limit_duration_seconds = 300
 ```

@@ -18,3 +18,13 @@
 # Note that we don't allow users changing this value
 # for the security concerns.
 # "ytdl:exe" = "..."
+
+# The rate limit configuration
+[rate_limit]
+# The max requests allowed per duration.
+# By default, it is `30` requests.
+# max_requests = 30
+
+# The applied duration of the rate limit.
+# By default, it is `300` seconds.
+# limit_duration_seconds = 300
