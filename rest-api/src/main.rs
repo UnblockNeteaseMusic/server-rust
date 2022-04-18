@@ -6,8 +6,9 @@ pub(crate) mod schema;
 
 use axum::{
     routing::{get, post},
-    Extension, Router,
+    Extension, Router, Json,
 };
+use serde_json::{Value, json};
 use std::{net::SocketAddr, sync::Arc};
 use tracing::{debug, info, warn};
 use unm_types::{Context, ContextBuilder};
@@ -35,7 +36,7 @@ async fn main() {
     let app = Router::new()
         // `GET /` goes to `root`
         .route("/", get(root))
-        .route("/readme", get(readme))
+        .route("/docs/readme", get(readme))
         .nest("/api/v1", {
             Router::new()
                 .route("/search", post(controllers::search::search_v1))
@@ -44,6 +45,7 @@ async fn main() {
         })
         .nest("/schema/v1", {
             Router::new()
+                .route("/index", get(schema::schema_v1_index))
                 .route("/search", get(schema::schema_v1_search))
                 .route("/error", get(schema::schema_v1_error))
         });
@@ -62,8 +64,11 @@ async fn main() {
         .unwrap();
 }
 
-async fn root() -> &'static str {
-    "Welcome to UNM REST API!  Navigate to /readme to see the usage of this API."
+async fn root() -> Json<Value> {
+    Json(json!({
+        "success": true,
+        "version": env!("CARGO_PKG_VERSION"),
+    }))
 }
 
 async fn readme() -> &'static str {

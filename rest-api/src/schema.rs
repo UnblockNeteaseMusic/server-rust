@@ -1,6 +1,14 @@
 use axum::response::IntoResponse;
 use http::{header::CONTENT_TYPE, StatusCode};
 
+pub async fn schema_v1_index() -> impl IntoResponse {
+    (
+        StatusCode::OK,
+        [(CONTENT_TYPE, "application/json")],
+        include_str!("./schema/v1/index.json"),
+    )
+}
+
 pub async fn schema_v1_search() -> impl IntoResponse {
     (
         StatusCode::OK,
