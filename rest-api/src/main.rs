@@ -6,14 +6,14 @@ pub(crate) mod schema;
 
 use axum::{
     routing::{get, post},
-    Extension, Router, Json,
+    Extension, Json, Router,
 };
-use serde_json::{Value, json};
+use serde_json::{json, Value};
 use std::{net::SocketAddr, sync::Arc};
 use tracing::{debug, info, warn};
-use unm_types::{Context, ContextBuilder};
+use unm_types::ContextBuilder;
 
-use crate::config_reader::ExternalConfigReader;
+use crate::config_reader::{ContextTomlStructure, ExternalConfigReader};
 
 #[tokio::main]
 async fn main() {
@@ -22,14 +22,16 @@ async fn main() {
 
     info!("Reading the default context…");
     let default_context = Arc::new({
-        Context::read_toml("./config.toml".into()).unwrap_or_else(|e| {
-            warn!("Failed to read `config.toml` because of {e}");
-            warn!("Use default context built in this API.");
+        ContextTomlStructure::read_toml("./config.toml".into())
+            .map(|v| v.context)
+            .unwrap_or_else(|e| {
+                warn!("Failed to read `config.toml` because of {e}");
+                warn!("Use default context built in this API.");
 
-            ContextBuilder::default()
-                .build()
-                .expect("Failed to build default context")
-        })
+                ContextBuilder::default()
+                    .build()
+                    .expect("Failed to build default context")
+            })
     });
 
     info!("Constructing app…");
@@ -37,9 +39,11 @@ async fn main() {
         // `GET /` goes to `root`
         .route("/", get(root))
         // Docs
-        .nest("/docs", Router::new()
-            .route("/readme", get(readme))
-            .route("/api",get(docs_api))
+        .nest(
+            "/docs",
+            Router::new()
+                .route("/readme", get(readme))
+                .route("/api", get(docs_api)),
         )
         // API [v1]
         .nest("/api/v1", {

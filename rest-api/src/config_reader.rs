@@ -1,4 +1,4 @@
-use serde::de::DeserializeOwned;
+use serde::{de::DeserializeOwned, Deserialize};
 use std::{borrow::Cow, fs};
 use tracing::{info, instrument};
 use unm_types::Context;
@@ -7,7 +7,12 @@ pub trait ExternalConfigReader: DeserializeOwned {
     fn read_toml(file_path: Cow<'static, str>) -> anyhow::Result<Self>;
 }
 
-impl ExternalConfigReader for Context {
+#[derive(Deserialize)]
+pub struct ContextTomlStructure {
+    pub context: Context,
+}
+
+impl ExternalConfigReader for ContextTomlStructure {
     #[instrument]
     fn read_toml(file_path: Cow<'static, str>) -> anyhow::Result<Self> {
         info!("Reading configuration from TOML file: {}", file_path);
