@@ -22,7 +22,7 @@
             ]
         },
         "song": {
-            "$ref": "#/definitions/song"
+            "$ref": "#/definitions/Song"
         },
         "pre_retrieve_result": {
             "$ref": "#/definitions/RetrievedSongInfo"
