@@ -18,14 +18,6 @@ unm_engine = { version = "0.2.0-pre.1", path = "../engine-base" }
 unm_types = { version = "0.2.0-pre.1", path = "../types" }
 simple_logger = "2.1.0"
 mimalloc = "0.1.28"
-
-# Engines
-unm_engine_bilibili = { version = "0.2.0-pre.1", path = "../engines/bilibili" }
-unm_engine_kugou = { version = "0.2.0-pre.1", path = "../engines/kugou" }
-unm_engine_migu = { version = "0.2.0-pre.1", path = "../engines/migu" }
-unm_engine_pyncm = { version = "0.2.0-pre.1", path = "../engines/pyncm" }
-unm_engine_ytdl = { version = "0.2.0-pre.1", path = "../engines/ytdl" }
-unm_engine_kuwo = { version = "0.2.0-pre.1", path = "../engines/kuwo" }
 unm_api_utils = { version = "0.1.0", path = "../api-utils" }
 
 [build-dependencies]

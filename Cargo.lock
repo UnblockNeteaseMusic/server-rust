@@ -1617,7 +1617,6 @@ dependencies = [
  "unm_engine_migu",
  "unm_engine_pyncm",
  "unm_engine_ytdl",
- "unm_types",
 ]
 
 [[package]]
@@ -1657,7 +1656,6 @@ dependencies = [
  "http",
  "log",
  "serde",
- "serde_json",
  "tokio",
  "unm_engine",
  "unm_request",
@@ -1671,17 +1669,10 @@ dependencies = [
 name = "unm_engine_demo"
 version = "0.1.0"
 dependencies = [
- "concat-idents",
  "futures",
  "mimalloc",
  "tokio",
  "unm_api_utils",
- "unm_engine",
- "unm_engine_bilibili",
- "unm_engine_kugou",
- "unm_engine_kuwo",
- "unm_engine_migu",
- "unm_engine_ytdl",
  "unm_test_utils",
  "unm_types",
 ]
@@ -1754,7 +1745,6 @@ version = "0.2.0-pre.2"
 dependencies = [
  "anyhow",
  "async-trait",
- "futures",
  "http",
  "log",
  "reqwest",
@@ -1778,7 +1768,6 @@ dependencies = [
  "http",
  "log",
  "serde",
- "serde_json",
  "unm_engine",
  "unm_request",
  "unm_types",
@@ -1833,12 +1822,6 @@ dependencies = [
  "simple_logger",
  "unm_api_utils",
  "unm_engine",
- "unm_engine_bilibili",
- "unm_engine_kugou",
- "unm_engine_kuwo",
- "unm_engine_migu",
- "unm_engine_pyncm",
- "unm_engine_ytdl",
  "unm_types",
 ]
 
@@ -1861,9 +1844,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "axum",
- "base64",
  "bytes",
- "concat-idents",
  "futures",
  "http",
  "once_cell",
@@ -1876,18 +1857,10 @@ dependencies = [
  "tower",
  "tower-http",
  "tracing",
- "tracing-log",
  "tracing-subscriber",
- "typed-builder",
  "unm_api_utils",
  "unm_engine",
  "unm_engine_bilibili",
- "unm_engine_joox",
- "unm_engine_kugou",
- "unm_engine_kuwo",
- "unm_engine_migu",
- "unm_engine_pyncm",
- "unm_engine_ytdl",
  "unm_types",
  "url",
 ]

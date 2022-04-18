@@ -13,9 +13,7 @@ publish = false
 [dependencies]
 anyhow = "1.0.56"
 axum = "0.5.1"
-base64 = "0.13.0"
 bytes = "1.1.0"
-concat-idents = "1.1.3"
 futures = "0.3.21"
 http = "0.2.6"
 once_cell = "1.10.0"
@@ -28,17 +26,9 @@ toml = "0.5.9"
 tower = { version = "0.4.12", features = ["buffer", "limit", "load-shed"] }
 tower-http = { version = "0.2.5", features = ["cors"] }
 tracing = "0.1.34"
-tracing-log = "0.1.2"
 tracing-subscriber = "0.3.11"
-typed-builder = "0.10.0"
 unm_api_utils = { version = "0.1.0", path = "../api-utils" }
 unm_engine = { version = "0.2.0-pre.4", path = "../engine-base" }
 unm_engine_bilibili = { version = "0.2.0-pre.2", path = "../engines/bilibili" }
-unm_engine_joox = { version = "0.2.0-pre.5", path = "../engines/joox" }
-unm_engine_kugou = { version = "0.2.0-pre.2", path = "../engines/kugou" }
-unm_engine_kuwo = { version = "0.2.0-pre.2", path = "../engines/kuwo" }
-unm_engine_migu = { version = "0.2.0-pre.2", path = "../engines/migu" }
-unm_engine_pyncm = { version = "0.2.0-pre.2", path = "../engines/pyncm" }
-unm_engine_ytdl = { version = "0.2.0-pre.5", path = "../engines/ytdl" }
 unm_types = { version = "0.2.0-pre.5", path = "../types" }
 url = "2.2.2"
