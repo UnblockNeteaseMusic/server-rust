@@ -44,6 +44,6 @@ jobs:
           args: --target ${{ matrix.target }} --release --bin unm_rest_api
       - uses: actions/upload-artifact@v2
         with:
-          name: unm-server-${{ matrix.os }}-${{ matrix.target }}
+          name: unm-rest-api-${{ matrix.os }}-${{ matrix.target }}
           path: |
             ./target/${{ matrix.target }}/release/unm_rest_api*
