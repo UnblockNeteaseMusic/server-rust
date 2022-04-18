@@ -10,6 +10,7 @@ use axum::{
     Extension, Json, Router,
 };
 use http::{HeaderMap, Method, StatusCode};
+use mimalloc::MiMalloc;
 use serde_json::{json, Value};
 use std::{net::SocketAddr, sync::Arc, time::Duration};
 use tower::ServiceBuilder;
@@ -18,6 +19,9 @@ use tracing::{debug, info, warn};
 use unm_types::ContextBuilder;
 
 use crate::config_reader::{ContextTomlStructure, ExternalConfigReader};
+
+#[global_allocator]
+static GLOBAL: MiMalloc = MiMalloc;
 
 #[tokio::main]
 async fn main() {

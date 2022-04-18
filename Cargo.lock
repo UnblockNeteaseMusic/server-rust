@@ -1847,6 +1847,7 @@ dependencies = [
  "bytes",
  "futures",
  "http",
+ "mimalloc",
  "once_cell",
  "reqwest",
  "serde",
