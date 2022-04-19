@@ -6,11 +6,10 @@ mod types;
 
 use anyhow::Ok;
 use async_trait::async_trait;
-use http::Method;
 use std::collections::HashMap;
 use types::MiguResponse;
 use unm_engine::interface::Engine;
-use unm_request::{json::Json, request};
+use unm_request::{json::Json, build_client};
 use unm_selector::SimilarSongSelector;
 use unm_types::{Context, RetrievedSongInfo, SerializedIdentifier, Song, SongSearchInformation};
 use url::Url;
@@ -30,7 +29,9 @@ impl Engine for MiguEngine {
         log::info!("Searching “{info}” with Migu engine…");
 
         let api = construct_search_api(info.keyword().as_str())?;
-        let response = request(Method::GET, &api, None, None, ctx.try_get_proxy()?).await?;
+        let client = build_client(ctx.proxy_uri.as_deref())?;
+
+        let response = client.get(api).send().await?;
         let result = response.json::<Json>().await?;
         let migu_songs = {
             let raw = result

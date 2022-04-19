@@ -12,6 +12,7 @@ edition = "2021"
 [dependencies]
 anyhow = "1.0.56"
 async-trait = "0.1.53"
+cached = "0.34.0"
 concat-string = "1.0.1"
 http = "0.2.6"
 log = "0.4.16"

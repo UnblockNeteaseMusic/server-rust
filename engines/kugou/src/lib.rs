@@ -7,14 +7,13 @@ use std::{collections::HashMap, sync::Arc};
 use async_trait::async_trait;
 use concat_string::concat_string;
 use futures::FutureExt;
-use http::Method;
 use log::{debug, info};
 use reqwest::Url;
 use serde::{Deserialize, Serialize};
 use unm_engine::interface::Engine;
 use unm_request::{
     json::{Json, UnableToExtractJson},
-    request,
+    build_client,
 };
 use unm_selector::SimilarSongSelector;
 use unm_types::{
@@ -187,13 +186,14 @@ fn format(entry: &Json) -> anyhow::Result<Song> {
 pub async fn search(info: &Song, ctx: &Context) -> anyhow::Result<Option<Song>> {
     info!("Searching with Kugou Engine…");
 
+    let client = build_client(ctx.proxy_uri.as_deref())?;
     let url = Url::parse_with_params(
         "http://mobilecdn.kugou.com/api/v3/search/song?page=1&pagesize=10",
         &[("keyword", &info.keyword())],
     )?;
 
-    let resp = request(Method::GET, &url, None, None, ctx.try_get_proxy()?).await?;
-    let data = resp.json::<Json>().await?;
+    let response = client.get(url).send().await?;
+    let data = response.json::<Json>().await?;
 
     debug!("Extracting data…");
     let lists = data
@@ -231,12 +231,13 @@ pub async fn single(
         .map(|v| v.id.to_string())
         .unwrap_or_else(|| String::from(""));
 
+    let client = build_client(ctx.proxy_uri.as_deref())?;
     let url = Url::parse_with_params(
         "http://trackercdn.kugou.com/i/v2/?appid=1005&pid=2&cmd=25&behavior=play",
         &[("key", &key), ("hash", &hash), ("album_id", &album_id)],
     )?;
 
-    let response = request(Method::GET, &url, None, None, ctx.try_get_proxy()?).await?;
+    let response = client.get(url).send().await?;
     let data = response.json::<Json>().await?;
 
     Ok(data

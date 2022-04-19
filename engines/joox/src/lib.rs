@@ -24,7 +24,7 @@ use std::borrow::Cow;
 
 use http::{
     header::{COOKIE, ORIGIN, REFERER},
-    HeaderValue, Method,
+    HeaderValue
 };
 use once_cell::sync::OnceCell;
 use regex::Regex;
@@ -33,7 +33,7 @@ use unm_engine::interface::Engine;
 use unm_request::{
     extract_jsonp,
     json::{Json, UnableToExtractJson},
-    request,
+    build_client,
 };
 use unm_selector::SimilarSongSelector;
 use unm_types::{
@@ -57,6 +57,7 @@ impl Engine for JooxEngine {
         let keyword = fit(song);
         let joox_cookie = get_cookie(ctx);
 
+        let client = build_client(ctx.proxy_uri.as_deref())?;
         let url = Url::parse_with_params(
             "http://api-jooxtt.sanook.com/web-fcgi-bin/web_search",
             &[
@@ -68,14 +69,10 @@ impl Engine for JooxEngine {
             ],
         )?;
 
-        let response = request(
-            Method::GET,
-            &url,
-            Some(construct_header(joox_cookie)?),
-            None,
-            ctx.try_get_proxy()?,
-        )
-        .await?;
+        let response = client
+            .get(url)
+            .headers(construct_header(joox_cookie)?)
+            .send().await?;
 
         log::debug!("Deserializing the response of “{song}”…");
         let json_string = response.text().await?.replace('\'', "\"");
@@ -121,6 +118,7 @@ impl Engine for JooxEngine {
             .get_or_init(|| Regex::new(r#"M\d00([\w]+).mp3"#).expect("should be constructable"));
         let joox_cookie = get_cookie(ctx);
 
+        let client = build_client(ctx.proxy_uri.as_deref())?;
         let url = Url::parse_with_params(
             "http://api.joox.com/web-fcgi-bin/web_get_songinfo",
             &[
@@ -133,14 +131,7 @@ impl Engine for JooxEngine {
             ],
         )?;
 
-        let response = request(
-            Method::GET,
-            &url,
-            Some(construct_header(joox_cookie)?),
-            None,
-            ctx.try_get_proxy()?,
-        )
-        .await?;
+        let response = client.get(url).headers(construct_header(joox_cookie)?).send().await?;
         let jsonp_string = response.text().await?;
         let json_string = extract_jsonp(jsonp_string.as_str());
         let json = serde_json::from_str::<Json>(&json_string)?;

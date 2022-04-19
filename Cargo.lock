@@ -1811,6 +1811,7 @@ version = "0.2.0-pre.2"
 dependencies = [
  "anyhow",
  "async-trait",
+ "cached",
  "concat-string",
  "http",
  "log",

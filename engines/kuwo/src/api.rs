@@ -1,12 +1,13 @@
 pub mod typing;
 
+use cached::proc_macro::once;
 use concat_string::concat_string;
 use http::{
     header::{COOKIE, REFERER},
-    HeaderValue, Method,
+    HeaderValue
 };
 use reqwest::{header::HeaderMap, Url};
-use unm_request::request;
+use unm_request::build_client;
 use unm_types::Context;
 
 use self::typing::{GetPlayUrlResponse, MusicID, SearchResponse};
@@ -18,6 +19,7 @@ pub fn genenate_kw_token() -> String {
     random_string::generate(11, charset)
 }
 
+#[once(time = "3600" /* 1hr */, result = true)]
 pub fn construct_header() -> anyhow::Result<HeaderMap> {
     log::debug!("Constructing header to pass to Kuwo Music…");
     let token = genenate_kw_token();
@@ -41,6 +43,7 @@ pub async fn search_music_by_keyword(
 ) -> anyhow::Result<SearchResponse> {
     log::debug!("Searching music in Kuwo by keyword “{keyword}”… [Page {page_number}, {entries_per_page} entries]");
 
+    let client = build_client(ctx.proxy_uri.as_deref())?;
     let url = Url::parse_with_params(
         "http://www.kuwo.cn/api/www/search/searchMusicBykeyWord",
         &[
@@ -51,14 +54,10 @@ pub async fn search_music_by_keyword(
         ],
     )?;
 
-    let response = request(
-        Method::GET,
-        &url,
-        Some(construct_header()?),
-        None,
-        ctx.try_get_proxy()?,
-    )
-    .await?;
+    let response = client
+        .get(url)
+        .headers(construct_header()?)
+        .send().await?;
     let json = response.json::<SearchResponse>().await?;
 
     Ok(json)
@@ -67,6 +66,7 @@ pub async fn search_music_by_keyword(
 pub async fn get_music(mid: MusicID, ctx: &Context) -> anyhow::Result<GetPlayUrlResponse> {
     log::debug!("Fetch the music with MID “{mid}” from Kuwo Music…");
 
+    let client = build_client(ctx.proxy_uri.as_deref())?;
     let url = Url::parse_with_params(
         "http://www.kuwo.cn/api/v1/www/music/playUrl",
         &[
@@ -76,14 +76,10 @@ pub async fn get_music(mid: MusicID, ctx: &Context) -> anyhow::Result<GetPlayUrl
         ],
     )?;
 
-    let response = request(
-        Method::GET,
-        &url,
-        Some(construct_header()?),
-        None,
-        ctx.try_get_proxy()?,
-    )
-    .await?;
+    let response = client
+        .get(url)
+        .headers(construct_header()?)
+        .send().await?;
     let json = response.json::<GetPlayUrlResponse>().await?;
 
     Ok(json)
