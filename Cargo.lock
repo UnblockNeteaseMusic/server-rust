@@ -1832,6 +1832,7 @@ dependencies = [
 name = "unm_request"
 version = "0.2.0-pre.2"
 dependencies = [
+ "async-trait",
  "http",
  "once_cell",
  "reqwest",

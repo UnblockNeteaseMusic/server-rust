@@ -3,20 +3,60 @@ pub mod ext;
 // FIXME: separate to a crate.
 pub mod json;
 
-use std::{collections::HashMap, time::Duration};
+use std::{collections::HashMap, time::Duration, borrow::Cow};
 
 use http::{
     header::{HeaderMap, HeaderValue},
     Method,
 };
-use reqwest::{Body, Proxy, Response};
+use reqwest::{Body, Proxy, Response, Client, ClientBuilder};
 use thiserror::Error;
 use url::Url;
+
+/// Build the base of [`ClientBuilder`] for UNM to reuse.
+fn build_client_builder() -> ClientBuilder {
+    Client::builder()
+        .timeout(Duration::from_secs(10))
+        .default_headers({
+            let mut header_map = HeaderMap::with_capacity(4);
+
+            header_map.insert(
+                http::header::ACCEPT,
+                HeaderValue::from_static("application/json, text/plain, */*"),
+            );
+            header_map.insert(
+                http::header::ACCEPT_ENCODING,
+                HeaderValue::from_static("gzip, deflate"),
+            );
+            header_map.insert(
+                http::header::ACCEPT_LANGUAGE,
+                HeaderValue::from_static("zh-CN,zh;q=0.9"),
+            );
+            header_map.insert(http::header::USER_AGENT, HeaderValue::from_static("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36"));
+
+            header_map
+        })
+}
+
+/// Build a client with the specified proxy.
+pub fn build_client(proxy: Option<Cow<'static, str>>) -> RequestModuleResult<Client> {
+    let mut builder = build_client_builder();
+
+    // Set the proxy if the user specified it.
+    if let Some(proxy) = proxy {
+        builder = builder.proxy(Proxy::all(&*proxy).map_err(RequestModuleError::ProxyConstructFailed)?);
+    }
+
+    builder
+        .build()
+        .map_err(RequestModuleError::ConstructClientFailed)
+}
 
 /// Construct the request header.
 ///
 /// `url` is the URL to request;
 /// `additional` is the additional header to send to.
+#[deprecated = "build_client_builder has included the default header, and you can override it with your own HeaderMap when constructing the request."]
 pub fn construct_header(
     url: &Url,
     additional: Option<HeaderMap>,
@@ -56,7 +96,7 @@ pub fn translate_host<'a>(map: &'a HashMap<&str, &str>, host: &'a str) -> &'a st
     map.get(&host).unwrap_or(&host)
 }
 
-/// The `translate_host()` wrapper for [`Url`].
+/// The [`translate_host`] wrapper for [`Url`].
 pub fn translate_url<'a>(map: &'a HashMap<&str, &str>, url: &mut Url) -> RequestModuleResult<()> {
     let host = url.host_str();
 
@@ -69,19 +109,9 @@ pub fn translate_url<'a>(map: &'a HashMap<&str, &str>, url: &mut Url) -> Request
     Ok(())
 }
 
-/// Extract the JSON string from a JSONP response.
-pub fn extract_jsonp(data: &str) -> String {
-    // jsonp({"data": {"id": "1", "name": "test"}});
-    //       ~ START HERE                        ~ END HERE
 
-    let left_bracket_index = data.find('(').map(|idx| idx + 1);
-    let right_bracket_index = data.rfind(')');
-
-    data.chars()
-        .skip(left_bracket_index.unwrap_or(0))
-        .take(right_bracket_index.unwrap_or(data.len()) - left_bracket_index.unwrap_or(0))
-        .collect()
-}
+#[deprecated = "use json module instead"]
+pub use json::extract_jsonp;
 
 /// Request the specified URL.
 ///
@@ -98,6 +128,7 @@ pub fn extract_jsonp(data: &str) -> String {
 /// `body` is the body to send to the server.
 ///
 /// `proxy` is the proxy to use.
+#[deprecated]
 pub async fn request(
     method: Method,
     url: &Url,
@@ -144,21 +175,23 @@ pub async fn request(
 /// Error in this module.
 #[derive(Error, Debug)]
 pub enum RequestModuleError {
-    /// No host in the specified URL.
     #[error("no host in the specified URL.")]
     UrlWithoutHost,
-    /// Invalid header value.
+
     #[error("invalid header value: {0}")]
     InvalidHeaderValue(#[from] http::header::InvalidHeaderValue),
-    /// Invalid host.
+
     #[error("invalid host: {0}")]
     InvalidHost(url::ParseError),
-    /// Construct client failed.
+
     #[error("failed to construct client: {0}")]
     ConstructClientFailed(reqwest::Error),
-    /// Request failed.
+
     #[error("failed to request: {0}")]
     RequestFailed(reqwest::Error),
+
+    #[error("failed to construct proxy: {0}")]
+    ProxyConstructFailed(reqwest::Error),
 }
 
 /// The [`Result`] of this module.
@@ -176,77 +209,6 @@ mod tests {
 
         map
     });
-
-    mod construct_header {
-        use super::super::construct_header;
-
-        use http::{HeaderMap, HeaderValue};
-        use once_cell::sync::Lazy;
-        use url::Url;
-
-        static TEST_URL: Lazy<Url> = Lazy::new(|| Url::parse("https://www.baidu.com").unwrap());
-
-        #[test]
-        fn can_construct_the_correct_header_without_header_specified() {
-            let constructed_header = construct_header(&TEST_URL, None).unwrap();
-
-            assert_eq!(
-                constructed_header.get(http::header::HOST).unwrap(),
-                &HeaderValue::from_static("www.baidu.com")
-            );
-            assert_eq!(
-                constructed_header.get(http::header::ACCEPT),
-                Some(&HeaderValue::from_static(
-                    "application/json, text/plain, */*"
-                ))
-            );
-            assert_eq!(
-                constructed_header.get(http::header::ACCEPT_ENCODING),
-                Some(&HeaderValue::from_static("gzip, deflate"))
-            );
-            assert_eq!(
-                constructed_header.get(http::header::ACCEPT_LANGUAGE),
-                Some(&HeaderValue::from_static("zh-CN,zh;q=0.9"))
-            );
-            assert_eq!(constructed_header.get(http::header::USER_AGENT), Some(&HeaderValue::from_static("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36")));
-        }
-
-        #[test]
-        fn can_construct_the_correct_header_with_header_specified() {
-            let mut additional_header = HeaderMap::new();
-            additional_header.insert(
-                http::header::COOKIE,
-                HeaderValue::from_static("cookie=value"),
-            );
-
-            let additional_header = additional_header;
-            let constructed_header = construct_header(&TEST_URL, Some(additional_header)).unwrap();
-
-            assert_eq!(
-                constructed_header.get(http::header::HOST).unwrap(),
-                &HeaderValue::from_static("www.baidu.com")
-            );
-            assert_eq!(
-                constructed_header.get(http::header::ACCEPT),
-                Some(&HeaderValue::from_static(
-                    "application/json, text/plain, */*"
-                ))
-            );
-            assert_eq!(
-                constructed_header.get(http::header::ACCEPT_ENCODING),
-                Some(&HeaderValue::from_static("gzip, deflate"))
-            );
-            assert_eq!(
-                constructed_header.get(http::header::ACCEPT_LANGUAGE),
-                Some(&HeaderValue::from_static("zh-CN,zh;q=0.9"))
-            );
-            assert_eq!(constructed_header.get(http::header::USER_AGENT), Some(&HeaderValue::from_static("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36")));
-            assert_eq!(
-                constructed_header.get(http::header::COOKIE),
-                Some(&HeaderValue::from_static("cookie=value"))
-            );
-        }
-    }
 
     mod translate_host {
         use super::super::translate_host;
@@ -284,47 +246,6 @@ mod tests {
                 testdata_2.to_string(),
                 "https://www.bing.com/?search=Rickroll"
             );
-        }
-    }
-
-    mod extract_jsonp {
-        use once_cell::sync::Lazy;
-
-        use super::super::extract_jsonp;
-
-        struct Testdata {
-            pub src: &'static str,
-            pub testdata: Vec<String>,
-        }
-
-        static TEST_DATA_SETS: Lazy<Vec<Testdata>> = Lazy::new(|| {
-            vec![
-                "[100,500,300,200,400]",
-                r##"[{"color":"red","value":"#f00"},{"color":"green","value":"#0f0"},{"color":"blue","value":"#00f"},{"color":"cyan","value":"#0ff"},{"color":"magenta","value":"#f0f"},{"color":"yellow","value":"#ff0"},{"color":"black","value":"#000"}]"##,
-                r##"{
-                    "color":"red",
-                    "value":"#f00"
-                }"##]
-                .into_iter()
-                .map(|json| Testdata {
-                    src: json,
-                    testdata: vec![
-                        format!("qq({json})"),
-                        format!("qq({json});"),
-                        format!("fg_1odla({json})"),
-                        format!("$fkaolv({json});;;"),
-                    ],
-                })
-                .collect::<Vec<_>>()
-        });
-
-        #[test]
-        fn test_extract_jsonp() {
-            for test_data_set in TEST_DATA_SETS.iter() {
-                for test_data in test_data_set.testdata.iter() {
-                    assert_eq!(extract_jsonp(test_data.as_str()), test_data_set.src);
-                }
-            }
         }
     }
 }

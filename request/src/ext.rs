@@ -1,12 +1,34 @@
 use std::borrow::Cow;
 
-use reqwest::Body;
+use reqwest::{Body, Response};
 use serde::de::DeserializeOwned;
 use thiserror::Error;
 
 use super::extract_jsonp;
 
+#[async_trait::async_trait]
+pub trait ResponseExt {
+    async fn jsonp<T: DeserializeOwned>(self) -> RequestExtModuleResult<T>;
+}
+
+#[async_trait::async_trait]
+impl ResponseExt for Response {
+    async fn jsonp<T: DeserializeOwned>(self) -> RequestExtModuleResult<T> {
+        let json_str = {
+            let jsonp_str = self
+                .text()
+                .await
+                .map_err(RequestExtModuleError::GetTextFailed)?;
+            extract_jsonp(&jsonp_str)
+        };
+
+        serde_json::from_str::<T>(&json_str)
+            .map_err(RequestExtModuleError::DeserializeFailed)
+    }
+}
+
 /// The extension method of [`Body`].
+#[deprecated = "I implemented it in a wrong structure…"]
 pub trait BodyExt<'a> {
     /// Transform the body to a String.
     fn to_text(&'a self) -> RequestExtModuleResult<Cow<'a, str>>;
@@ -49,9 +71,13 @@ impl<'a> BodyExt<'a> for Body {
 pub enum RequestExtModuleError {
     /// No bytes available.
     #[error("no bytes available")]
+    #[deprecated]
     NoBytesAvailable,
-    /// Failed to deserialize to a struct.
-    #[error("failed to deserialize to a struct.")]
+
+    #[error("failed to call .text() on the response: {0}")]
+    GetTextFailed(reqwest::Error),
+
+    #[error("failed to deserialize to a struct: {0}")]
     DeserializeFailed(serde_json::Error),
 }
 
