@@ -5,6 +5,7 @@ pub mod json;
 
 use std::{collections::HashMap, time::Duration, borrow::Cow};
 
+use cached::proc_macro::cached;
 use http::{
     header::{HeaderMap, HeaderValue},
     Method,
@@ -39,6 +40,12 @@ fn build_client_builder() -> ClientBuilder {
 }
 
 /// Build a client with the specified proxy.
+#[cached(
+    size = "10", // allow 10 entries
+    time = "600", // store for 10 minutes
+    time_refresh = true,
+    result = true
+)]
 pub fn build_client(proxy: Option<Cow<'static, str>>) -> RequestModuleResult<Client> {
     let mut builder = build_client_builder();
 
