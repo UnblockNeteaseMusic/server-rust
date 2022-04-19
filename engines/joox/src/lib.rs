@@ -24,16 +24,16 @@ use std::borrow::Cow;
 
 use http::{
     header::{COOKIE, ORIGIN, REFERER},
-    HeaderValue
+    HeaderValue,
 };
 use once_cell::sync::OnceCell;
 use regex::Regex;
 use reqwest::{header::HeaderMap, Url};
 use unm_engine::interface::Engine;
 use unm_request::{
-    extract_jsonp,
-    json::{Json, UnableToExtractJson},
     build_client,
+    ext::ResponseExt,
+    json::{Json, UnableToExtractJson},
 };
 use unm_selector::SimilarSongSelector;
 use unm_types::{
@@ -72,7 +72,8 @@ impl Engine for JooxEngine {
         let response = client
             .get(url)
             .headers(construct_header(joox_cookie)?)
-            .send().await?;
+            .send()
+            .await?;
 
         log::debug!("Deserializing the response of “{song}”…");
         let json_string = response.text().await?.replace('\'', "\"");
@@ -131,10 +132,12 @@ impl Engine for JooxEngine {
             ],
         )?;
 
-        let response = client.get(url).headers(construct_header(joox_cookie)?).send().await?;
-        let jsonp_string = response.text().await?;
-        let json_string = extract_jsonp(jsonp_string.as_str());
-        let json = serde_json::from_str::<Json>(&json_string)?;
+        let response = client
+            .get(url)
+            .headers(construct_header(joox_cookie)?)
+            .send()
+            .await?;
+        let json = response.jsonp::<Json>().await?;
 
         let raw_audio_url = ["r320Url", "r192Url", "mp3Url", "m4aUrl"]
             .into_iter()
