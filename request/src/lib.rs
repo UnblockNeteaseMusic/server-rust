@@ -44,14 +44,20 @@ fn build_client_builder() -> ClientBuilder {
     size = "10", // allow 10 entries
     time = "600", // store for 10 minutes
     time_refresh = true,
-    result = true
+    result = true,
+
+    // Allow using reference as parameter
+    key = "String",
+    convert = r#"{ proxy.map(ToString::to_string).unwrap_or_else(|| "".to_string()) }"#,
 )]
-pub fn build_client(proxy: Option<Cow<'static, str>>) -> RequestModuleResult<Client> {
+pub fn build_client(proxy: Option<&str>) -> RequestModuleResult<Client> {
     let mut builder = build_client_builder();
 
     // Set the proxy if the user specified it.
     if let Some(proxy) = proxy {
-        builder = builder.proxy(Proxy::all(&*proxy).map_err(RequestModuleError::ProxyConstructFailed)?);
+        if !proxy.is_empty() {
+            builder = builder.proxy(Proxy::all(&*proxy).map_err(RequestModuleError::ProxyConstructFailed)?);
+        }
     }
 
     builder
