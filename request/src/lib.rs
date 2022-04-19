@@ -6,9 +6,7 @@ pub mod json;
 use std::{collections::HashMap, time::Duration};
 
 use cached::proc_macro::cached;
-use http::{
-    header::{HeaderMap, HeaderValue}
-};
+use http::header::{HeaderMap, HeaderValue};
 use reqwest::{Client, ClientBuilder, Proxy};
 use thiserror::Error;
 use url::Url;

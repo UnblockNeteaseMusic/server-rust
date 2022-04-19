@@ -4,7 +4,7 @@ use cached::proc_macro::once;
 use concat_string::concat_string;
 use http::{
     header::{COOKIE, REFERER},
-    HeaderValue
+    HeaderValue,
 };
 use reqwest::{header::HeaderMap, Url};
 use unm_request::build_client;
@@ -54,10 +54,7 @@ pub async fn search_music_by_keyword(
         ],
     )?;
 
-    let response = client
-        .get(url)
-        .headers(construct_header()?)
-        .send().await?;
+    let response = client.get(url).headers(construct_header()?).send().await?;
     let json = response.json::<SearchResponse>().await?;
 
     Ok(json)
@@ -76,10 +73,7 @@ pub async fn get_music(mid: MusicID, ctx: &Context) -> anyhow::Result<GetPlayUrl
         ],
     )?;
 
-    let response = client
-        .get(url)
-        .headers(construct_header()?)
-        .send().await?;
+    let response = client.get(url).headers(construct_header()?).send().await?;
     let json = response.json::<GetPlayUrlResponse>().await?;
 
     Ok(json)

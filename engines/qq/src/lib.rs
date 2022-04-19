@@ -3,14 +3,14 @@ use std::{borrow::Cow, collections::HashMap};
 use async_trait::async_trait;
 use http::{
     header::{COOKIE, ORIGIN, REFERER},
-    HeaderMap, HeaderValue
+    HeaderMap, HeaderValue,
 };
 use log::debug;
 use reqwest::Url;
 use unm_engine::interface::Engine;
 use unm_request::{
-    json::{Json, UnableToExtractJson},
     build_client,
+    json::{Json, UnableToExtractJson},
 };
 use unm_selector::SimilarSongSelector;
 use unm_types::{
@@ -71,7 +71,11 @@ async fn get_search_data(keyword: &str, ctx: &Context) -> anyhow::Result<Json> {
     let cookie = get_cookie(ctx);
 
     let client = build_client(ctx.proxy_uri.as_deref())?;
-    let res = client.get(url).headers(construct_header(cookie)?).send().await?;
+    let res = client
+        .get(url)
+        .headers(construct_header(cookie)?)
+        .send()
+        .await?;
 
     Ok(res.json().await?)
 }

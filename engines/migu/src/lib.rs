@@ -9,7 +9,7 @@ use async_trait::async_trait;
 use std::collections::HashMap;
 use types::MiguResponse;
 use unm_engine::interface::Engine;
-use unm_request::{json::Json, build_client};
+use unm_request::{build_client, json::Json};
 use unm_selector::SimilarSongSelector;
 use unm_types::{Context, RetrievedSongInfo, SerializedIdentifier, Song, SongSearchInformation};
 use url::Url;

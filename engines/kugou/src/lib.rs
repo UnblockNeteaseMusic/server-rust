@@ -12,8 +12,8 @@ use reqwest::Url;
 use serde::{Deserialize, Serialize};
 use unm_engine::interface::Engine;
 use unm_request::{
-    json::{Json, UnableToExtractJson},
     build_client,
+    json::{Json, UnableToExtractJson},
 };
 use unm_selector::SimilarSongSelector;
 use unm_types::{
