@@ -25,7 +25,7 @@ static WEAPI_RSA_INSTANCE: OnceCell<Rsa<Public>> = OnceCell::new();
 /// Generate random bytes with [`rand_bytes`], and store them in a [`SmallVec`].
 ///
 /// # Example
-/// 
+///
 /// ```
 /// use unm_crypto::weapi::gen_random_bytes;
 ///
@@ -44,12 +44,12 @@ pub fn gen_random_bytes<const LEN: usize>() -> CryptoResult<[u8; LEN]> {
 }
 
 /// Generate the WEAPI secret key.
-/// 
+///
 /// # Example
-/// 
+///
 /// ```
 /// use unm_crypto::weapi::gen_weapi_secret_key;
-/// 
+///
 /// let secret_key = gen_weapi_secret_key().unwrap();
 /// assert_eq!(secret_key.len(), 16);
 /// ```
@@ -86,7 +86,7 @@ fn get_weapi_rsa_instance() -> CryptoResult<&'static Rsa<Public>> {
 /// Encrypts data using WEAPI's key, returning the number of encrypted bytes.
 pub fn encrypt_with_weapi_rsa(data: &[u8], to: &mut [u8; 128]) -> CryptoResult<usize> {
     let mut padded_data = SmallVec::<[u8; 128]>::new_const();
-    
+
     padded_data.resize(128 - data.len(), 0);
     padded_data.extend_from_slice(data);
 
@@ -100,9 +100,7 @@ pub fn construct_weapi_payload<S: Serialize>(object: &S) -> CryptoResult<Value> 
 
     let aes_128_b64 = |data, key| -> CryptoResult<String> {
         Ok(base64::encode(crate::aes_128::encrypt_cbc(
-            data,
-            key,
-            WEAPI_IV,
+            data, key, WEAPI_IV,
         )?))
     };
 
@@ -135,11 +133,13 @@ mod tests {
         //   ).toString("base64")
         let mut buf = [0; 128];
 
-        let encrypted_bytes = encrypt_with_weapi_rsa(b"a1b2c3d4", &mut buf)
-            .unwrap();
+        let encrypted_bytes = encrypt_with_weapi_rsa(b"a1b2c3d4", &mut buf).unwrap();
         assert_eq!(encrypted_bytes, 128);
 
         let encrypted_base64 = base64::encode(&buf);
-        assert_eq!(encrypted_base64, r#"nknIprgQgDE2Ana3dka2qYhwE4ch/My68kTk0pGZmtkeWCTslpn9Co32as7sd5fyitf5lyXwMff/g/kDzaz6IVA/tMAtbbzkgWPDMivRy5b8z1Ypd7UV7r6aM6OgNT1bFjPo4jEAkmUl6UxCBAsrsMaaYqmW6rZl0BdJdb0/Tq0="#);
+        assert_eq!(
+            encrypted_base64,
+            r#"nknIprgQgDE2Ana3dka2qYhwE4ch/My68kTk0pGZmtkeWCTslpn9Co32as7sd5fyitf5lyXwMff/g/kDzaz6IVA/tMAtbbzkgWPDMivRy5b8z1Ypd7UV7r6aM6OgNT1bFjPo4jEAkmUl6UxCBAsrsMaaYqmW6rZl0BdJdb0/Tq0="#
+        );
     }
 }
