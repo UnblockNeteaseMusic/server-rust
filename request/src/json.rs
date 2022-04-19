@@ -38,7 +38,7 @@ impl<'a> std::fmt::Display for UnableToExtractJson<'a> {
 mod extract_jsonp_test {
     use once_cell::sync::Lazy;
 
-    use super::super::extract_jsonp;
+    use super::extract_jsonp;
 
     struct Testdata {
         pub src: &'static str,
