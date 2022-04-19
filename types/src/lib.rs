@@ -134,6 +134,7 @@ pub struct Context {
 }
 
 impl Context {
+    #[deprecated = "use unm_request::build_client instead"]
     pub fn try_get_proxy(&self) -> reqwest::Result<Option<Proxy>> {
         self.proxy_uri
             .as_ref()
