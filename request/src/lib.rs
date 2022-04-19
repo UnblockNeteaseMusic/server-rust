@@ -48,7 +48,7 @@ fn build_client_builder() -> ClientBuilder {
 
     // Allow using reference as parameter
     key = "String",
-    convert = r#"{ proxy.map(ToString::to_string).unwrap_or_else(|| "".to_string()) }"#,
+    convert = r#"{ proxy.unwrap_or("").to_string() }"#,
 )]
 pub fn build_client(proxy: Option<&str>) -> RequestModuleResult<Client> {
     let mut builder = build_client_builder();
