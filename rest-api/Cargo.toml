@@ -12,7 +12,7 @@ publish = false
 
 [dependencies]
 anyhow = "1.0.56"
-axum = "0.5.1"
+axum = "0.5.3"
 bytes = "1.1.0"
 futures = "0.3.21"
 http = "0.2.6"
