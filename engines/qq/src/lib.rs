@@ -1,21 +1,13 @@
-use std::{borrow::Cow, collections::HashMap};
+//! UNM Engine: QQ
 
+pub mod api;
+
+use api::{search_by_keyword, retrieve_single};
 use async_trait::async_trait;
-use http::{
-    header::{COOKIE, ORIGIN, REFERER},
-    HeaderMap, HeaderValue,
-};
-use log::debug;
-use reqwest::Url;
+use log::{debug, info};
 use unm_engine::interface::Engine;
-use unm_request::{
-    build_client,
-    json::{Json, UnableToExtractJson},
-};
 use unm_selector::SimilarSongSelector;
-use unm_types::{
-    Album, Context, RetrievedSongInfo, SerializedIdentifier, Song, SongSearchInformation,
-};
+use unm_types::{Context, RetrievedSongInfo, SerializedIdentifier, Song, SongSearchInformation};
 
 pub const ENGINE_ID: &str = "qq";
 
@@ -28,173 +20,53 @@ impl Engine for QQEngine {
         info: &'a Song,
         ctx: &'a Context,
     ) -> anyhow::Result<Option<SongSearchInformation>> {
-        log::info!("Searching with QQ engine");
+        info!("Searching {info} with QQ Engine…");
 
-        let response = get_search_data(&info.keyword(), ctx).await?;
-        let result = response
-            .pointer("/data/song/list")
-            .ok_or_else(|| anyhow::anyhow!("/data/song/list not found"))?
-            .as_array()
-            .ok_or(UnableToExtractJson {
-                json_pointer: "/data/song/list",
-                expected_type: "array",
-            })?;
+        let response = search_by_keyword(&info.keyword(), ctx).await?;
+        let mut song_iterator = response
+            .list
+            .into_iter()
+            .filter(|song| !song.media_mid.is_empty())
+            .map(Song::from);
 
-        let matched = find_match(info, result).await?;
+        debug!("Matching the song…");
+        let SimilarSongSelector { selector, .. } = SimilarSongSelector::new(info);
+        let matched = song_iterator.find(|s| selector(&s));
 
-        if let Some(song) = matched {
-            Ok(Some(
-                SongSearchInformation::builder()
-                    .source(ENGINE_ID.into())
-                    .identifier(song.id.to_string())
-                    .song(Some(song))
-                    .build(),
-            ))
-        } else {
-            Ok(None)
-        }
+        Ok(matched.map::<anyhow::Result<_>, _>(|song| Ok({
+            SongSearchInformation::builder()
+                .source(ENGINE_ID.into())
+                .identifier(
+                    song.context
+                        .as_ref()
+                        .and_then(|ctx| ctx.get("identifier"))
+                        .ok_or_else(|| anyhow::anyhow!("failed to extract 'identifier' from song context – it should not be happened!"))?
+                        .clone()
+                )
+                .song(Some(song))
+                .build()
+        })).transpose()?)
     }
 
     async fn retrieve<'a>(
         &self,
-        _identifier: &'a SerializedIdentifier,
-        _ctx: &'a Context,
+        identifier: &'a SerializedIdentifier,
+        ctx: &'a Context,
     ) -> anyhow::Result<RetrievedSongInfo> {
-        todo!()
+        info!("Retrieving {identifier} with QQ Engine…");
+
+        let response = retrieve_single(identifier, ctx).await?;
+
+        let url = response
+            .data
+            .map(|v| v.get_url())
+            .ok_or_else(|| anyhow::anyhow!("no data found"))??;
+
+        Ok(RetrievedSongInfo::builder()
+            .source(ENGINE_ID.into())
+            .url(url)
+            .build())
     }
-}
-
-async fn get_search_data(keyword: &str, ctx: &Context) -> anyhow::Result<Json> {
-    debug!("Getting the search data from QQ Music…");
-
-    let url = construct_search_url(keyword)?;
-    let cookie = get_cookie(ctx);
-
-    let client = build_client(ctx.proxy_uri.as_deref())?;
-    let res = client
-        .get(url)
-        .headers(construct_header(cookie)?)
-        .send()
-        .await?;
-
-    Ok(res.json().await?)
-}
-
-fn get_cookie(context: &Context) -> Option<&str> {
-    if let Some(ref config) = context.config {
-        config.get_deref(Cow::Borrowed("qq:cookie"))
-    } else {
-        None
-    }
-}
-
-async fn find_match(info: &Song, data: &[Json]) -> anyhow::Result<Option<Song>> {
-    let selector = SimilarSongSelector::new(info).optional_selector;
-    let similar_song = data
-        .iter()
-        .map(|entry| format(entry).ok())
-        .find(|s| selector(&s))
-        .expect("shoule be Some");
-
-    Ok(similar_song)
-}
-
-fn format(song: &Json) -> anyhow::Result<Song> {
-    debug!("Formatting the response to Song…");
-
-    let id = song["songid"].as_i64().ok_or(UnableToExtractJson {
-        json_pointer: "/songid",
-        expected_type: "i64",
-    })?;
-    let name = song["songname"].as_str().ok_or(UnableToExtractJson {
-        json_pointer: "/songname",
-        expected_type: "string",
-    })?;
-    let duration = song["interval"].as_i64().ok_or(UnableToExtractJson {
-        json_pointer: "/interval",
-        expected_type: "i64",
-    })?;
-    let album_id = song["albumid"].as_i64().ok_or(UnableToExtractJson {
-        json_pointer: "/albumid",
-        expected_type: "i64",
-    })?;
-    let album_name = song["albumname"].as_str().ok_or(UnableToExtractJson {
-        json_pointer: "/albumname",
-        expected_type: "string",
-    })?;
-
-    let media_mid = song["media_mid"].as_str().ok_or(UnableToExtractJson {
-        json_pointer: "/media_mid",
-        expected_type: "string",
-    })?;
-    let song_mid = song["songmid"].as_str().ok_or(UnableToExtractJson {
-        json_pointer: "/songmid",
-        expected_type: "string",
-    })?;
-    let context = {
-        let mut context = HashMap::new();
-        context.insert("media_mid".to_string(), media_mid.to_string());
-        context.insert("songmid".to_string(), song_mid.to_string());
-
-        context
-    };
-
-    Ok(Song::builder()
-        .id(id.to_string())
-        .name(name.to_string())
-        .duration(Some(duration * 1000))
-        .album(Some(
-            Album::builder()
-                .id(album_id.to_string())
-                .name(album_name.to_string())
-                .build(),
-        ))
-        .context(Some(context))
-        .build())
-}
-
-fn construct_header(cookie: Option<&str>) -> anyhow::Result<HeaderMap> {
-    log::debug!("Constructing the header for QQ Music…");
-
-    let mut hm = HeaderMap::new();
-
-    hm.insert(ORIGIN, HeaderValue::from_static("http://y.qq.com"));
-    hm.insert(REFERER, HeaderValue::from_static("http://y.qq.com"));
-
-    if let Some(cookie) = cookie {
-        hm.insert(COOKIE, HeaderValue::from_str(cookie)?);
-    }
-
-    Ok(hm)
-}
-
-fn construct_search_url(keyword: &str) -> anyhow::Result<Url> {
-    Ok(Url::parse_with_params(
-        "https://c.y.qq.com/soso/fcgi-bin/client_search_cp?",
-        &[
-            ("ct", "24"),
-            ("qqmusic_ver", "1298"),
-            ("remoteplace", "txt.yqq.center"),
-            ("t", "0"),
-            ("aggr", "1"),
-            ("cr", "1"),
-            ("catZhida", "1"),
-            ("lossless", "1"),
-            ("flag_qc", "0"),
-            ("p", "1"),
-            ("n", "20"),
-            ("w", keyword),
-            ("g_tk", "5381"),
-            ("loginUin", "0"),
-            ("hostUin", "0"),
-            ("format", "json"),
-            ("inCharset", "utf8"),
-            ("outCharset", "utf-8"),
-            ("notice", "0"),
-            ("platform", "yqq"),
-            ("needNewCode", "0"),
-        ],
-    )?)
 }
 
 #[cfg(test)]
@@ -221,7 +93,7 @@ mod tests {
             .unwrap()
             .unwrap();
 
-        assert_eq!(info.identifier, "1056382");
+        assert!(info.identifier.contains(":::"));
         assert_eq!(info.source, ENGINE_ID);
     }
 }
