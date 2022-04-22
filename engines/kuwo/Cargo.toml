@@ -10,7 +10,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0.56"
+anyhow = "1.0.57"
 async-trait = "0.1.53"
 cached = "0.34.0"
 concat-string = "1.0.1"
