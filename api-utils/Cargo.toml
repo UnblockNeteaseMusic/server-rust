@@ -20,4 +20,5 @@ unm_engine_kugou = { version = "0.2.0-pre.2", path = "../engines/kugou" }
 unm_engine_kuwo = { version = "0.2.0-pre.2", path = "../engines/kuwo" }
 unm_engine_migu = { version = "0.2.0-pre.2", path = "../engines/migu" }
 unm_engine_pyncm = { version = "0.2.0-pre.2", path = "../engines/pyncm" }
+unm_engine_qq = { version = "0.1.0", path = "../engines/qq" }
 unm_engine_ytdl = { version = "0.2.0-pre.5", path = "../engines/ytdl" }

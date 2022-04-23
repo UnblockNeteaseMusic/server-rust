@@ -40,6 +40,7 @@ pub fn build_full_executor() -> Executor {
     push_engine!(ytdl: YtDlEngine);
     push_engine!(kuwo: KuwoEngine);
     push_engine!(joox: JooxEngine);
+    push_engine!(qq: QQEngine);
 
     executor
 }
