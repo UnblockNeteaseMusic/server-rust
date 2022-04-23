@@ -1,4 +1,23 @@
 //! UNM Engine: QQ
+//!
+//! You may need to login your QQ Music account in your browser,
+//! obtain its cookie and fill the cookie to the `qq:cookie` config.
+//!
+//! You can configure the cookie in the `ctx.config` field.
+//! You can build a `ctx.config` with [`unm_types::config::ConfigManagerBuilder`],
+//! for example:
+//!
+//! ```
+//! use unm_types::{ContextBuilder, config::ConfigManagerBuilder};
+//!
+//! let config = ConfigManagerBuilder::new()
+//!     .set("qq:cookie", r#"uin=<your_uin>; qm_keyst=<your_qm_keyst>;"#)
+//!     .build();
+//!
+//! let context = ContextBuilder::default()
+//!     .config(config)
+//!     .build();
+//! ```
 
 pub mod api;
 

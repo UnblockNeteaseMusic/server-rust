@@ -99,9 +99,16 @@ N-API 和 RESTful API 支援的引擎（以下簡稱「預設引擎集」）與�
 | 酷狗音乐         | `kugou`    |                                                                 | ✅         |
 | 酷我音乐         | `kuwo`     | 目前僅支援 320kbps MP3                                          | ✅         |
 | 咪咕音乐         | `migu`     |                                                                 | ✅         |
-| JOOX             | `joox`     | 需要設定 `joox:cookie`                                          | ✅         |
-| youtube-dl       | `ytdl`     | 預設使用的 `youtube-dl` 後端是 `yt-dlp`，可設定 `ytdl:exe` 調整 | ✅         |
+| JOOX             | `joox`     | 需要設定 `joox:cookie`，見引擎文件。                            | ✅         |
+| YtDl             | `ytdl`     | 預設使用的 `youtube-dl` 後端是 `yt-dlp`，可設定 `ytdl:exe` 調整 | ✅         |
 | 第三方網易雲 API | `pyncm`    |                                                                 | ✅         |
+| QQ音乐          | `qq`       | 需要設定 `qq:cookie`，見引擎文件。                              | ✅         |
+
+#### 引擎文件
+
+- JOOX 引擎：<https://docs.rs/unm_engine_joox>
+- YtDl 引擎：<https://docs.rs/unm_engine_ytdl>
+- QQ 引擎：<https://docs.rs/unm_engine_qq>
 
 ### 設定全域通用設定（`Context`）
 
