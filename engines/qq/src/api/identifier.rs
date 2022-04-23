@@ -1,4 +1,4 @@
-use std::{fmt::Display, error::Error};
+use std::{error::Error, fmt::Display};
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct QQResourceIdentifier<'a> {
@@ -29,7 +29,11 @@ pub type DeserializationResult<T> = Result<T, DeserializationFailed>;
 
 impl Display for DeserializationFailed {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "the attempt to extract “{}” from 'serialized' parameter failed", self.0)
+        write!(
+            f,
+            "the attempt to extract “{}” from 'serialized' parameter failed",
+            self.0
+        )
     }
 }
 
@@ -53,10 +57,13 @@ mod tests {
     fn test_identifier_deserialization() {
         let identifier = "mid113:::file113";
 
-        assert_eq!(QQResourceIdentifier::deserialize(identifier).unwrap(), QQResourceIdentifier {
-            mid: "mid113",
-            file: "file113",
-        });
+        assert_eq!(
+            QQResourceIdentifier::deserialize(identifier).unwrap(),
+            QQResourceIdentifier {
+                mid: "mid113",
+                file: "file113",
+            }
+        );
     }
 
     #[test]

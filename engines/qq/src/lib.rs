@@ -21,7 +21,7 @@
 
 pub mod api;
 
-use api::{search_by_keyword, retrieve_single};
+use api::{retrieve_single, search_by_keyword};
 use async_trait::async_trait;
 use log::{debug, info};
 use unm_engine::interface::Engine;

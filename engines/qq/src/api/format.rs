@@ -35,11 +35,11 @@ impl QQFormat {
     pub fn to_filename(&self, filename: &str) -> String {
         concat_string!(self.as_format_id(), filename, self.as_extension())
     }
-    
+
     /// Determine the mode according to the context
     pub fn from_context(ctx: &Context) -> QQFormat {
         let cookie = extract_cookie(ctx);
-        
+
         if cookie.is_some() {
             if ctx.enable_flac {
                 QQFormat::MemberFlac
@@ -62,16 +62,25 @@ mod tests {
 
     #[test]
     fn test_format_guest_mp3() {
-        assert_eq!(QQFormat::GuestMp3.to_filename(FILE), concat_string!("M500", FILE, ".mp3"));
+        assert_eq!(
+            QQFormat::GuestMp3.to_filename(FILE),
+            concat_string!("M500", FILE, ".mp3")
+        );
     }
 
     #[test]
     fn test_format_member_mp3() {
-        assert_eq!(QQFormat::MemberMp3.to_filename(FILE), concat_string!("M800", FILE, ".mp3"));
+        assert_eq!(
+            QQFormat::MemberMp3.to_filename(FILE),
+            concat_string!("M800", FILE, ".mp3")
+        );
     }
 
     #[test]
     fn test_format_member_flac() {
-        assert_eq!(QQFormat::MemberFlac.to_filename(FILE), concat_string!("F000", FILE, ".flac"));
+        assert_eq!(
+            QQFormat::MemberFlac.to_filename(FILE),
+            concat_string!("F000", FILE, ".flac")
+        );
     }
 }

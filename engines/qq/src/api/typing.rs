@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use concat_string::concat_string;
 use serde::Deserialize;
-use unm_types::{Song, Album, Artist};
+use unm_types::{Album, Artist, Song};
 
 use super::identifier::QQResourceIdentifier;
 
@@ -33,7 +33,7 @@ pub struct QQSongEntry {
     pub singer: Vec<QQSongSinger>,
 
     /// The media ID of this song entry.
-    /// 
+    ///
     /// If no `media_mid` is provided, we return an empty string.
     /// You may want to filter it with [`Iterator::filter`].
     #[serde(default)]
@@ -64,7 +64,7 @@ pub struct QQSingleResponse {
     pub sip: Vec<String>,
 
     /// The segment of audio URLs to receive.
-    pub midurlinfo: Vec<QQSingleUrlInfo>
+    pub midurlinfo: Vec<QQSingleUrlInfo>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -74,7 +74,7 @@ pub struct QQSingleUrlInfo {
     pub filename: String,
 
     /// The URL segment of this audio.
-    /// 
+    ///
     /// You can combine this segment with the server
     /// in the `sip` field of [`QQSingleResponse`].
     pub purl: String,
@@ -90,7 +90,7 @@ impl From<QQSongEntry> for Song {
                 Album::builder()
                     .id(entry.albumid.to_string())
                     .name(entry.albumname)
-                    .build()
+                    .build(),
             ))
             .artists(entry.singer.into_iter().map(Into::into).collect())
             .context({
@@ -98,10 +98,14 @@ impl From<QQSongEntry> for Song {
                 let songmid = entry.songmid;
                 let media_mid = entry.media_mid;
 
-                ctx.insert("identifier".into(), QQResourceIdentifier {
-                    mid: &songmid,
-                    file: &media_mid,
-                }.serialize());
+                ctx.insert(
+                    "identifier".into(),
+                    QQResourceIdentifier {
+                        mid: &songmid,
+                        file: &media_mid,
+                    }
+                    .serialize(),
+                );
                 ctx.insert("songmid".into(), songmid);
                 ctx.insert("media_mid".into(), media_mid);
 
@@ -124,13 +128,15 @@ impl QQSingleResponse {
     pub fn get_url(&self) -> Result<String, FieldNotPickable> {
         log::info!("Extracting the URL from the single response…");
 
-        let server = self.sip
+        let server = self
+            .sip
             .get(fastrand::usize(0..self.sip.len()))
             .ok_or(FieldNotPickable("sip"))?;
-        let url_info = self.midurlinfo
+        let url_info = self
+            .midurlinfo
             .get(0)
             .ok_or(FieldNotPickable("midurlinfo"))?;
-        
+
         Ok(concat_string!(server, url_info.purl))
     }
 }
@@ -155,29 +161,36 @@ mod tests {
         let single_response = QQSingleResponse {
             sip: vec!["http://helloworld.com/".into()],
             midurlinfo: vec![QQSingleUrlInfo {
-                filename: "filename".into(), purl: "purl?114514".into()
+                filename: "filename".into(),
+                purl: "purl?114514".into(),
             }],
         };
 
-        assert_eq!(single_response.get_url().unwrap(), "http://helloworld.com/purl?114514");
+        assert_eq!(
+            single_response.get_url().unwrap(),
+            "http://helloworld.com/purl?114514"
+        );
     }
 
     #[test]
     fn test_single_response_get_url_with_multiple_sip() {
         let single_response = QQSingleResponse {
-            sip: vec!["http://helloworld.com/".into(), "http://helloworld.org/".into()],
-            midurlinfo: vec![
-                QQSingleUrlInfo {
-                    filename: "filename".into(), purl: "purl?114514".into()
-                },
+            sip: vec![
+                "http://helloworld.com/".into(),
+                "http://helloworld.org/".into(),
             ],
+            midurlinfo: vec![QQSingleUrlInfo {
+                filename: "filename".into(),
+                purl: "purl?114514".into(),
+            }],
         };
 
         let data = single_response.get_url().unwrap();
         assert!(vec![
             "http://helloworld.com/purl?114514",
             "http://helloworld.org/purl?114514"
-        ].contains(&data.as_str()));
+        ]
+        .contains(&data.as_str()));
     }
 
     #[test]
@@ -186,14 +199,19 @@ mod tests {
             sip: vec!["http://helloworld.com/".into()],
             midurlinfo: vec![
                 QQSingleUrlInfo {
-                    filename: "filename".into(), purl: "purl?114514".into()
+                    filename: "filename".into(),
+                    purl: "purl?114514".into(),
                 },
                 QQSingleUrlInfo {
-                    filename: "DO_NOT_PICK_THIS".into(), purl: "!!!DONTPICKTHIS!!!".into()
+                    filename: "DO_NOT_PICK_THIS".into(),
+                    purl: "!!!DONTPICKTHIS!!!".into(),
                 },
             ],
         };
 
-        assert_eq!(single_response.get_url().unwrap(), "http://helloworld.com/purl?114514");
+        assert_eq!(
+            single_response.get_url().unwrap(),
+            "http://helloworld.com/purl?114514"
+        );
     }
 }
