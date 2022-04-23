@@ -14,9 +14,7 @@
 # The default config for engines.
 [context.config]
 # "joox:cookie" = "..."
-
-# Note that we don't allow users changing this value
-# for the security concerns.
+# "qq:cookie" = "..."
 # "ytdl:exe" = "..."
 
 # The rate limit configuration
