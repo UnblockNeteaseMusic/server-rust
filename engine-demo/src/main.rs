@@ -29,7 +29,7 @@ async fn main() {
 
     let executor = unm_api_utils::executor::build_full_executor();
     let engines_to_use = std::env::var("ENGINES")
-        .unwrap_or_else(|_| "bilibili ytdl kugou migu".to_string())
+        .unwrap_or_else(|_| executor.list().join(" "))
         .split_whitespace()
         .map(|v| Cow::Owned(v.to_string()))
         .collect::<Vec<Cow<'static, str>>>();
