@@ -40,7 +40,7 @@ pub struct BilibiliSearchResult {
 
 impl From<BilibiliSearchResult> for Song {
     fn from(result: BilibiliSearchResult) -> Self {
-        log::debug!("Converting BilibiliSearchResult to Song…");
+        log::trace!("Converting BilibiliSearchResult to Song…");
 
         Song::builder()
             .id(result.id.to_string())

@@ -99,7 +99,7 @@ impl From<MiguAlbum> for Album {
 
 impl From<MiguResponse> for Song {
     fn from(response: MiguResponse) -> Self {
-        log::debug!("Converting response to Song…");
+        log::trace!("Converting MiguResponse to Song…");
 
         let id = response.id;
         let name = response.name;
@@ -135,7 +135,7 @@ impl MergedAudioFileMap {
         rate_format: impl Iterator<Item = MiguAudioSource>,
         new_rate_format: impl Iterator<Item = MiguAudioSource>,
     ) -> Self {
-        log::debug!("Merging rate formats…");
+        log::trace!("Merging rate formats…");
 
         let mut map = HashMap::new();
 
