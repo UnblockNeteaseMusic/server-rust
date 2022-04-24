@@ -27,8 +27,13 @@ impl SimilarSongSelector {
                     // 第一个时长相差5s (5000ms) 之内的结果
                     i64::abs(song_duration - expected_duration) < 5000
                 } else {
-                    // 歌曲沒有長度，而期待有長度，則回傳 false。
-                    false
+                    // 歌曲沒有長度，而期待有長度，則回傳 true。
+                    //
+                    // 最初我們是回傳 false，但一方面，不少音源都是沒有長度的，
+                    // 這樣會導致這些音源不可用；另一方面，如果不是期待的音源，
+                    // 使用者完全可以自行切換。有鑒於設成 false 弊大於利，我們
+                    // 回傳 true。
+                    true
                 }
             } else {
                 // 沒有期待長度，則回傳 true 直接取出任一選擇。
