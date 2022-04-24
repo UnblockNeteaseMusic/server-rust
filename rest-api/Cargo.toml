@@ -1,7 +1,7 @@
 [package]
 name = "unm_rest_api"
 description = "The RESTful API that can deal with UnblockNeteaseMusic API."
-version = "0.1.0"
+version = "0.3.0-pre.0"
 edition = "2021"
 license = "LGPL-3.0-or-later"
 repository = "https://github.com/UnblockNeteaseMusic/server-rust"
@@ -28,7 +28,7 @@ tower-http = { version = "0.2.5", features = ["cors"] }
 tracing = "0.1.34"
 tracing-subscriber = "0.3.11"
 unm_api_utils = { version = "0.1.0", path = "../api-utils" }
-unm_engine = { version = "0.2.0-pre.4", path = "../engine-base" }
-unm_engine_bilibili = { version = "0.2.0-pre.2", path = "../engines/bilibili" }
-unm_types = { version = "0.2.0-pre.5", path = "../types" }
+unm_engine = { version = "0.3.0-pre.0", path = "../engine-base" }
+unm_engine_bilibili = { version = "0.3.0-pre.0", path = "../engines/bilibili" }
+unm_types = { version = "0.3.0-pre.0", path = "../types" }
 url = "2.2.2"
