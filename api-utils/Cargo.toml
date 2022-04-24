@@ -2,7 +2,7 @@
 name = "unm_api_utils"
 description = "The utilities for developing UnblockNeteaseMusic API."
 license = "LGPL-3.0-or-later"
-version = "0.3.0-pre.0"
+version = "0.3.0-pre.1"
 edition = "2021"
 repository = "https://github.com/UnblockNeteaseMusic/server-rust"
 readme = "./README.md"

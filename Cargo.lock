@@ -1688,7 +1688,7 @@ checksum = "8ccb82d61f80a663efe1f787a51b16b5a51e3314d6ac365b08639f52387b33f3"
 
 [[package]]
 name = "unm_api_utils"
-version = "0.3.0-pre.0"
+version = "0.3.0-pre.1"
 dependencies = [
  "concat-idents",
  "log",
@@ -1736,7 +1736,7 @@ dependencies = [
 
 [[package]]
 name = "unm_engine_bilibili"
-version = "0.3.0-pre.0"
+version = "0.3.0-pre.1"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1766,7 +1766,7 @@ dependencies = [
 
 [[package]]
 name = "unm_engine_joox"
-version = "0.3.0-pre.0"
+version = "0.3.0-pre.1"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1787,7 +1787,7 @@ dependencies = [
 
 [[package]]
 name = "unm_engine_kugou"
-version = "0.3.0-pre.0"
+version = "0.3.0-pre.1"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1808,7 +1808,7 @@ dependencies = [
 
 [[package]]
 name = "unm_engine_kuwo"
-version = "0.3.0-pre.0"
+version = "0.3.0-pre.1"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1829,7 +1829,7 @@ dependencies = [
 
 [[package]]
 name = "unm_engine_migu"
-version = "0.3.0-pre.0"
+version = "0.3.0-pre.1"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1849,7 +1849,7 @@ dependencies = [
 
 [[package]]
 name = "unm_engine_pyncm"
-version = "0.3.0-pre.0"
+version = "0.3.0-pre.1"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1864,7 +1864,7 @@ dependencies = [
 
 [[package]]
 name = "unm_engine_qq"
-version = "0.3.0-pre.0"
+version = "0.3.0-pre.1"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1891,7 +1891,7 @@ dependencies = [
 
 [[package]]
 name = "unm_engine_ytdl"
-version = "0.3.0-pre.0"
+version = "0.3.0-pre.1"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1936,7 +1936,7 @@ dependencies = [
 
 [[package]]
 name = "unm_rest_api"
-version = "0.3.0-pre.0"
+version = "0.3.0-pre.1"
 dependencies = [
  "anyhow",
  "axum",
@@ -1964,7 +1964,7 @@ dependencies = [
 
 [[package]]
 name = "unm_selector"
-version = "0.3.0-pre.0"
+version = "0.3.0-pre.1"
 dependencies = [
  "once_cell",
  "serde",

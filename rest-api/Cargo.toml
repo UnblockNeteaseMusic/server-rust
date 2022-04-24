@@ -1,7 +1,7 @@
 [package]
 name = "unm_rest_api"
 description = "The RESTful API that can deal with UnblockNeteaseMusic API."
-version = "0.3.0-pre.0"
+version = "0.3.0-pre.1"
 edition = "2021"
 license = "LGPL-3.0-or-later"
 repository = "https://github.com/UnblockNeteaseMusic/server-rust"
