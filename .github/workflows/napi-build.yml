@@ -4,6 +4,9 @@ env:
   APP_NAME: rust-napi
   MACOSX_DEPLOYMENT_TARGET: '10.13'
   APP_DIR: napi
+permissions:
+  actions: write
+  contents: write
 'on':
   workflow_dispatch:
   push:

@@ -4,6 +4,10 @@ on:
   push:
   workflow_dispatch:
 
+permissions:
+  actions: write
+  contents: read
+
 jobs:
   cargo-build:
     runs-on: ${{ matrix.os }}
