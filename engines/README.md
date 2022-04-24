@@ -31,15 +31,20 @@ const config = {
 
 > **設定請以各 engines 的說明文件為主**。本文件是這些說明文件統整出可以設定的項目。
 
-| 設定鍵        | 設定值範例                                          | 說明                            |
-| ------------- | --------------------------------------------------- | ------------------------------- |
-| `joox:cookie` | `wmid=<your_wmid>; session_key=<your_session_key>;` | 請參見〈JOOX Cookie 設定說明〉  |
-| `qq:cookie`   | WIP                                                 | （未完成）傳入 QQ 平台的 Cookie |
-| `ytdl:exe`    | `youtube-dl`                                        | 請參見〈`ytdl:exe` 設定說明〉   |
+| 設定鍵        | 設定值範例                                          | 說明                           |
+| ------------- | --------------------------------------------------- | ------------------------------ |
+| `joox:cookie` | `wmid=<your_wmid>; session_key=<your_session_key>;` | 請參見〈JOOX Cookie 設定說明〉 |
+| `qq:cookie`   | `uin=<your_uin>; qm_keyst=<your_qm_keyst>;`         | 請參見〈QQ Cookie 設定說明〉   |
+| `ytdl:exe`    | `youtube-dl`                                        | 請參見〈`ytdl:exe` 設定說明〉  |
 
 ### JOOX Cookie 設定說明
 
 `joox:cookie` 是登入 JOOX 平台後，透過在 F12 → Console 輸入 `document.cookie` 取得的 Cookie。
+
+### QQ Cookie 設定說明
+
+`qq:cookie` 是登入 QQ 音樂後，透過在 F12 → Console 輸入 `document.cookie` 取得的 Cookie。
+可能需要啟用「QQ音乐豪华绿钻」方案，才能享受到比較好的使用體驗。
 
 ### `ytdl:exe` 設定說明
 
