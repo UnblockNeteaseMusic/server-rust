@@ -22,7 +22,7 @@ struct PyNCMResponse {
 #[non_exhaustive]
 struct PyNCMResponseEntry {
     /// The NCM ID of this song.
-    pub id: String,
+    pub id: i64,
     /// The URL of this song.
     pub url: Option<String>,
 }
@@ -101,7 +101,7 @@ fn find_match(data: &[PyNCMResponseEntry], song_id: &str) -> anyhow::Result<Opti
         .find(|entry| {
             // Test if the ID of this entry matched what we want to fetch,
             // and there is content in its URL.
-            entry.id == song_id && entry.url.is_some()
+            entry.id.to_string() == song_id && entry.url.is_some()
         })
         .map(|v| v.url.clone())
         .ok_or_else(|| anyhow::anyhow!("no matched song"))
