@@ -46,6 +46,8 @@ const config = {
 `qq:cookie` 是登入 QQ 音樂後，透過在 F12 → Console 輸入 `document.cookie` 取得的 Cookie。
 可能需要啟用「QQ音乐豪华绿钻」方案，才能享受到比較好的使用體驗。
 
+> **註**：如果找不到 `qm_keyst` 這個 cookie，請試試看進入瀏覽器的 **無痕模式**，然後重新登入 QQ 音樂。
+
 ### `ytdl:exe` 設定說明
 
 `ytdl:exe` 是要使用的 youtube-dl 執行檔。預設值是 `yt-dlp`
