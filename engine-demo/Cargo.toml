@@ -12,7 +12,7 @@ publish = false
 
 [dependencies]
 unm_test_utils = { version = "0.1.0", path = "../test-utils" }
-tokio = { version = "1.17.0", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "1.18.0", features = ["macros", "rt-multi-thread"] }
 futures = "0.3.21"
 unm_types = { version = "0.3.0-pre.0", path = "../types" }
 mimalloc = "0.1.28"
