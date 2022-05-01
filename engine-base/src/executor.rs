@@ -1,7 +1,7 @@
 use std::{borrow::Cow, collections::HashMap, sync::Arc};
 
 use futures::{FutureExt, StreamExt};
-use log::{debug, error, info, trace};
+use log::{debug, error, info, trace, warn};
 use unm_types::{Context, RetrievedSongInfo, SearchMode, Song, SongSearchInformation};
 
 use crate::interface::Engine;
@@ -112,7 +112,7 @@ impl Executor {
                     return Ok(result);
                 }
                 Err(e) => {
-                    error!("Failed to run: {:?}, waiting for next candidate…", e);
+                    warn!("Failed to run: {:?}, waiting for next candidate…", e);
                     continue;
                 }
             }
