@@ -44,17 +44,17 @@ export interface Song {
   /** The name of this song. */
   name: string
   /** The duration of this song. */
-  duration?: number | undefined | null
+  duration?: number
   /** The artist of this song. */
   artists: Array<Artist>
   /** The album of this song. */
-  album?: Album | undefined | null
+  album?: Album
   /**
    * The context of this song.
    *
    * For example, the URI identifier of this song.
    */
-  context?: Record<string, string> | undefined | null
+  context?: Record<string, string>
 }
 /** [napi-rs] The song identifier with the engine information. */
 export interface SongSearchInformation {
@@ -63,9 +63,9 @@ export interface SongSearchInformation {
   /** The serialized identifier of this song. */
   identifier: string
   /** The details of this song. */
-  song?: Song | undefined | null
+  song?: Song
   /** The pre-retrieve result of this search. */
-  preRetrieveResult?: RetrievedSongInfo | undefined | null
+  preRetrieveResult?: RetrievedSongInfo
 }
 /** [napi-rs] The information of the song retrieved with `retrieve()`. */
 export interface RetrievedSongInfo {
@@ -77,13 +77,13 @@ export interface RetrievedSongInfo {
 /** [napi-rs] The context. */
 export interface Context {
   /** The proxy URI */
-  proxyUri?: string | undefined | null
+  proxyUri?: string
   /** Whether to enable FLAC support. */
-  enableFlac?: boolean | undefined | null
+  enableFlac?: boolean
   /** The search mode for waiting the response. */
-  searchMode?: SearchMode | undefined | null
+  searchMode?: SearchMode
   /** The config for engines. */
-  config?: Record<string, string> | undefined | null
+  config?: Record<string, string>
 }
 /** The available logging output. */
 export const enum LoggingType {
