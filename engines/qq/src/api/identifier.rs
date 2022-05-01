@@ -13,7 +13,7 @@ impl<'a> QQResourceIdentifier<'a> {
     }
 
     pub fn deserialize(serialized: &'a str) -> DeserializationResult<Self> {
-        log::debug!("Desrializing “{serialized}” to QQResourceIdentifier…");
+        log::debug!("Deserializing “{serialized}” to QQResourceIdentifier…");
 
         let mut parts = serialized.splitn(2, ":::");
         let mid = parts.next().ok_or(DeserializationFailed("song"))?;
