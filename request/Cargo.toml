@@ -12,7 +12,7 @@ edition = "2021"
 [dependencies]
 async-trait = "0.1.53"
 cached = "0.34.0"
-http = "0.2.6"
+http = "0.2.7"
 reqwest = { version = "0.11.10", features = [
     "json",
     "brotli",
@@ -21,9 +21,9 @@ reqwest = { version = "0.11.10", features = [
     "native-tls-vendored",
     "socks",
 ] }
-serde = { version = "1.0.136", features = ["derive"] }
-serde_json = "1.0.79"
-thiserror = "1.0.30"
+serde = { version = "1.0.137", features = ["derive"] }
+serde_json = "1.0.80"
+thiserror = "1.0.31"
 url = "2.2.2"
 
 [dev-dependencies]

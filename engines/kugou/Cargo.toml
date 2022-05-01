@@ -12,9 +12,9 @@ edition = "2021"
 [dependencies]
 anyhow = "1.0.57"
 async-trait = "0.1.53"
-http = "0.2.6"
-serde_json = "1.0.79"
-serde = { version = "1.0.136", features = ["derive"] }
+http = "0.2.7"
+serde_json = "1.0.80"
+serde = { version = "1.0.137", features = ["derive"] }
 reqwest = { version = "0.11.10", features = ["native-tls-vendored"] }
 futures = "0.3.21"
 unm_engine = { version = "0.3.0-pre.0", path = "../../engine-base" }
@@ -25,5 +25,5 @@ log = "0.4.16"
 concat-string = "1.0.1"
 
 [dev-dependencies]
-tokio = { version = "1.17.0", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "1.18.0", features = ["macros", "rt-multi-thread"] }
 unm_test_utils = { path = "../../test-utils" }

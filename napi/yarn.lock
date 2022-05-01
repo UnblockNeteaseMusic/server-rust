@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@napi-rs/cli@^2.6.2":
-  version "2.6.2"
-  resolved "https://registry.yarnpkg.com/@napi-rs/cli/-/cli-2.6.2.tgz#9b6e3e8649c93d138cd8df8072cea8ddcf2ac6e6"
-  integrity sha512-EmH+DQDEBUIoqMim0cc+X96ImtcIZLFjgW5WWORpzYnA9Ug7zNPO7jCLMhIQRd/p5AdWaXrT4SVXc/aip09rKQ==
+"@napi-rs/cli@^2.7.0":
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/@napi-rs/cli/-/cli-2.7.0.tgz#afcfc6f8476f1c2c259c626270841bd24fc52588"
+  integrity sha512-bQb+r9/xW8LFRbpEN7A/4fX8LnEWbI0JzyOzXGDpO+cI8dXRxX7OPySOpzT2nBgP1brA2Ydkw/t9lyxLN9TlxQ==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -34,9 +34,9 @@ acorn-walk@^8.2.0:
   integrity sha512-k+iyHEuPgSw6SbuDpGQM+06HQUa04DZ3o+F6CSzXMvvI5KMvnaEqXe+YVe555R9nn6GPt404fos4wcgpw12SDA==
 
 acorn@^8.7.0:
-  version "8.7.0"
-  resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.7.0.tgz#90951fde0f8f09df93549481e5fc141445b791cf"
-  integrity sha512-V/LGr1APy+PXIwKebEWrkZPwoeoF+w1jiOBUmuxuiUIaOHtob8Qc9BTrYo7VuI5fR8tqsy+buA2WFooR5olqvQ==
+  version "8.7.1"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.7.1.tgz#0197122c843d1bf6d0a5e83220a788f278f63c30"
+  integrity sha512-Xx54uLJQZ19lKygFXOWsscKUbsBZW0CPykPhVQdhIeIwrbPmJzqeASDInc8nKBnp/JT6igTs82qPXz069H8I/A==
 
 aggregate-error@^3.0.0:
   version "3.1.0"
@@ -245,9 +245,9 @@ clean-stack@^2.0.0:
   integrity sha512-4diC9HaTE+KRAMWhDhrGOECgWZxoevMc5TlkObMqNSsVU62PYzXZ/SMTjzyGAFF1YusgxGcSWTEXBhp0CPwQ1A==
 
 clean-stack@^4.0.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/clean-stack/-/clean-stack-4.1.0.tgz#5ce5a2fd19a12aecdce8570daefddb7ac94b6b4e"
-  integrity sha512-dxXQYI7mfQVcaF12s6sjNFoZ6ZPDQuBBLp3QJ5156k9EvUFClUoZ11fo8HnLQO241DDVntHEug8MOuFO5PSfRg==
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/clean-stack/-/clean-stack-4.2.0.tgz#c464e4cde4ac789f4e0735c5d75beb49d7b30b31"
+  integrity sha512-LYv6XPxoyODi36Dp976riBtSY27VmFo+MKqEU9QCCWyTrdEPDog+RWA7xQWHi6Vbp61j5c4cdzzX1NidnwtUWg==
   dependencies:
     escape-string-regexp "5.0.0"
 
