@@ -114,7 +114,7 @@ fn decide_ytdl_exe(config: &Option<ConfigManager>) -> &str {
 /// such as `yt-dlp` or `youtube-dl`.
 ///
 /// ```plain
-/// <exe> -f bestaudio --dump-json [--proxy <proxy>] ytsearch1:<keyword>
+/// <exe> -f bestaudio --dump-json [--proxy <proxy>] "ytsearch1:<keyword> official lyric audio music"
 ///     -f bestaudio    choose the best quality of the audio
 ///     --dump-json     dump the information as JSON without downloading it
 ///     --proxy URL     Use the specified HTTP/HTTPS/SOCKS proxy.
@@ -144,7 +144,7 @@ async fn fetch_from_youtube(
     }
 
     // search query
-    cmd.arg(concat_string!("ytsearch1:", keyword));
+    cmd.arg(concat_string!("ytsearch1:", keyword, " official lyric audio music"));
 
     let child = cmd.kill_on_drop(true).output().await?;
 
