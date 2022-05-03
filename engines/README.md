@@ -51,3 +51,15 @@ const config = {
 ### `ytdl:exe` 設定說明
 
 `ytdl:exe` 是要使用的 youtube-dl 執行檔。預設值是 `yt-dlp`
+
+#### 設定 `ytdl:exe` 的通常方式
+
+雖然 UNM 通常會透過您設定的 PATH 路徑，自動取出指定執行檔的路徑。
+但假如您的環境缺少 PATH 路徑，或想要指定為其他執行檔，您可以遵循以下步驟：
+
+> 以下皆以 `yt-dlp` 為例。
+
+1. 首先，用 `pip` 或你熟悉的方式安裝 `yt-dlp`
+2. 輸入 `yt-dlp --version` 確認有沒有正確安裝
+3. 輸入 `which yt-dlp` 抓出 `yt-dlp` 所在的路徑
+4. 最後將這個位置貼到 UNM 的 `context.config` 當中即可。
