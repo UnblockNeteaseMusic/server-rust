@@ -13,6 +13,6 @@ readme = "../README.md"
 anyhow = "1.0.57"
 async-trait = "0.1.53"
 futures = "0.3.21"
-log = "0.4.16"
+log = "0.4.17"
 thiserror = "1.0.31"
 unm_types = { version = "0.3.0-pre.0", path = "../types" }
