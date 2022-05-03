@@ -146,6 +146,12 @@ async fn fetch_from_youtube(
     // search query
     cmd.arg(concat_string!("ytsearch1:", keyword, " official lyric audio music"));
 
+    // (Windows only) Don't show the `yt-dlp` window
+    #[cfg(target_os = "windows")] {
+        // Hide the window. See https://docs.microsoft.com/en-us/windows/win32/procthread/process-creation-flags#CREATE_NO_WINDOW
+        cmd.creation_flags(winapi::um::winbase::CREATE_NO_WINDOW);
+    }
+
     let child = cmd.kill_on_drop(true).output().await?;
 
     if child.status.success() {
