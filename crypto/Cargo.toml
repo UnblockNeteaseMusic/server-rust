@@ -11,7 +11,7 @@ publish = false
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-openssl = { version = "0.10.38", features = ["vendored"] }
+openssl = { version = "0.10.39", features = ["vendored"] }
 
 thiserror = "1.0.31"
 
