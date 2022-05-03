@@ -17,7 +17,7 @@ async-trait = "0.1.53"
 anyhow = "1.0.57"
 tokio = { version = "1.18.0", features = ["process"] }
 serde_json = "1.0.80"
-log = "0.4.16"
+log = "0.4.17"
 concat-string = "1.0.1"
 winapi = "0.3.9"
 

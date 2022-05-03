@@ -18,7 +18,7 @@ unm_request = { version = "0.3.0-pre.0", path = "../../request" }
 unm_selector = { version = "0.3.0-pre.0", path = "../../selector" }
 unm_types = { version = "0.3.0-pre.0", path = "../../types" }
 url = "2.2.2"
-log = "0.4.16"
+log = "0.4.17"
 serde = { version = "1.0.137", features = ["derive"] }
 
 [dev-dependencies]
