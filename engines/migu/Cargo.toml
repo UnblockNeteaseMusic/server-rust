@@ -13,7 +13,7 @@ edition = "2021"
 anyhow = "1.0.57"
 async-trait = "0.1.53"
 http = "0.2.7"
-serde_json = "1.0.80"
+serde_json = "1.0.81"
 serde = { version = "1.0.137", features = ["derive"] }
 url = "2.2.2"
 unm_engine = { version = "0.3.0-pre.0", path = "../../engine-base" }
