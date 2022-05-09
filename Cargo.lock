@@ -764,6 +764,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5916d2ae698f6de9bfb891ad7a8d65c09d232dc58cc4ac433c7da3b2fd84bc2b"
 
 [[package]]
+name = "libloading"
+version = "0.7.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "efbc0f03f9a775e9f6aed295c6a1ba2253c5757a9e03d55c6caa46a681abcddd"
+dependencies = [
+ "cfg-if",
+ "winapi",
+]
+
+[[package]]
 name = "libmimalloc-sys"
 version = "0.1.25"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -864,9 +874,9 @@ dependencies = [
 
 [[package]]
 name = "napi"
-version = "2.3.3"
+version = "2.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4c7806930f3d742fade085524e131dd4407c5bd68dff77086cf6b8ef300e0b12"
+checksum = "2c43e69205d47ab5e43e5c98d63bd8a75d379d6631739b05dac26d5bcfb1a6ab"
 dependencies = [
  "chrono",
  "ctor",
@@ -876,7 +886,6 @@ dependencies = [
  "serde",
  "serde_json",
  "tokio",
- "windows",
 ]
 
 [[package]]
@@ -914,9 +923,12 @@ dependencies = [
 
 [[package]]
 name = "napi-sys"
-version = "2.1.0"
+version = "2.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8a385494dac3c52cbcacb393bb3b42669e7db8ab240c7ad5115f549eb061f2cc"
+checksum = "91c795d73a38586eadcb9bfda5be786b45620e3fe5fae04e5d3623d7d6abb3d0"
+dependencies = [
+ "libloading",
+]
 
 [[package]]
 name = "native-tls"
@@ -2150,19 +2162,6 @@ name = "winapi-x86_64-pc-windows-gnu"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "712e227841d057c1ee1cd2fb22fa7e5a5461ae8e48fa2ca79ec42cfc1931183f"
-
-[[package]]
-name = "windows"
-version = "0.36.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e53b97a83176b369b0eb2fd8158d4ae215357d02df9d40c1e1bf1879c5482c80"
-dependencies = [
- "windows_aarch64_msvc",
- "windows_i686_gnu",
- "windows_i686_msvc",
- "windows_x86_64_gnu",
- "windows_x86_64_msvc",
-]
 
 [[package]]
 name = "windows-sys"
