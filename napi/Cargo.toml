@@ -21,4 +21,4 @@ mimalloc = "0.1.29"
 unm_api_utils = { version = "0.3.0-pre.0", path = "../api-utils" }
 
 [build-dependencies]
-napi-build = "1.2.1"
+napi-build = "2.0.0"
