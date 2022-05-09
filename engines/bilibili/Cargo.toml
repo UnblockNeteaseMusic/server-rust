@@ -22,5 +22,5 @@ log = "0.4.17"
 serde = { version = "1.0.137", features = ["derive"] }
 
 [dev-dependencies]
-tokio = { version = "1.18.1", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "1.18.2", features = ["macros", "rt-multi-thread"] }
 unm_test_utils = { path = "../../test-utils" }
