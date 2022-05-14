@@ -42,7 +42,7 @@
     }
   },
   "devDependencies": {
-    "@napi-rs/cli": "^2.7.0",
+    "@napi-rs/cli": "^2.9.0",
     "ava": "^4.0.1"
   },
   "engines": {
