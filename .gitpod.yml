@@ -7,11 +7,29 @@ tasks:
       # 將 /bin/sh 綁定為 /bin/bash (workaround 無法 scripts/check.sh 的問題)
       sudo ln -fs /bin/bash /bin/sh
 
-      # 安裝 beta toolchain
-      rustup install beta
-      rustup update
+      # 安裝 2022-05-23 測試可用的 nightly
+      rustup install nightly-2022-05-23
+
+      # 安裝 cargo-workspace 和 cargo-udeps
+      cargo install cargo-workspace cargo-udeps
 
       # 組建檢查檔案，以及 development 和 release 的編譯檔案
       cargo check
       cargo build
       cargo build --release
+
+vscode:
+  extensions:
+    # Rust
+    - "rust-lang.rust-analyzer"
+    - "Zerotaskx.rust-extension-pack"
+
+    # Git
+    - "cschleiden.vscode-github-actions"
+    - "eamodio.gitlens"
+    - "donjayamanne.githistory"
+    - "mhutchie.git-graph"
+
+    # Pan's development tools
+    - "GitHub.copilot"
+    - "felipe.nasc-touchbar"
