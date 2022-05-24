@@ -1,3 +1,4 @@
 [toolchain]
 channel = "beta"
+components = ["rust-src"]  # rust-analyzer
 profile = "default"
