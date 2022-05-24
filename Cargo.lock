@@ -1713,7 +1713,7 @@ checksum = "957e51f3646910546462e67d5f7599b9e4fb8acdd304b087a6494730f9eebf04"
 
 [[package]]
 name = "unm_api_utils"
-version = "0.3.0-pre.1"
+version = "0.3.0"
 dependencies = [
  "concat-idents",
  "log",
@@ -1749,7 +1749,7 @@ dependencies = [
 
 [[package]]
 name = "unm_engine"
-version = "0.3.0-pre.0"
+version = "0.3.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1761,7 +1761,7 @@ dependencies = [
 
 [[package]]
 name = "unm_engine_bilibili"
-version = "0.3.0-pre.1"
+version = "0.3.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1791,7 +1791,7 @@ dependencies = [
 
 [[package]]
 name = "unm_engine_joox"
-version = "0.3.0-pre.1"
+version = "0.3.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1812,7 +1812,7 @@ dependencies = [
 
 [[package]]
 name = "unm_engine_kugou"
-version = "0.3.0-pre.1"
+version = "0.3.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1833,7 +1833,7 @@ dependencies = [
 
 [[package]]
 name = "unm_engine_kuwo"
-version = "0.3.0-pre.1"
+version = "0.3.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1854,7 +1854,7 @@ dependencies = [
 
 [[package]]
 name = "unm_engine_migu"
-version = "0.3.0-pre.1"
+version = "0.3.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1874,7 +1874,7 @@ dependencies = [
 
 [[package]]
 name = "unm_engine_pyncm"
-version = "0.3.0-pre.1"
+version = "0.3.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1889,7 +1889,7 @@ dependencies = [
 
 [[package]]
 name = "unm_engine_qq"
-version = "0.3.0-pre.1"
+version = "0.3.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1916,7 +1916,7 @@ dependencies = [
 
 [[package]]
 name = "unm_engine_ytdl"
-version = "0.3.0-pre.1"
+version = "0.3.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1947,7 +1947,7 @@ dependencies = [
 
 [[package]]
 name = "unm_request"
-version = "0.3.0-pre.0"
+version = "0.3.0"
 dependencies = [
  "async-trait",
  "cached",
@@ -1962,7 +1962,7 @@ dependencies = [
 
 [[package]]
 name = "unm_rest_api"
-version = "0.3.0-pre.1"
+version = "0.3.0"
 dependencies = [
  "anyhow",
  "axum",
@@ -1990,7 +1990,7 @@ dependencies = [
 
 [[package]]
 name = "unm_selector"
-version = "0.3.0-pre.1"
+version = "0.3.0"
 dependencies = [
  "once_cell",
  "serde",
@@ -2011,7 +2011,7 @@ dependencies = [
 
 [[package]]
 name = "unm_types"
-version = "0.3.0-pre.0"
+version = "0.3.0"
 dependencies = [
  "derive_builder",
  "reqwest",
