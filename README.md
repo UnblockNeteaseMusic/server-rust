@@ -6,6 +6,12 @@ Rust 版本的 [UnblockNeteaseMusic/server](https://github.com/UnblockNeteaseMus
 
 > 目前使用者文件及開發文件 **仍在撰寫**，在此之前有任何問題，歡迎開 Discussion 詢問。
 
+## ⚠️ 免責聲明 Disclaimer
+
+- 本函式庫僅供 **個人學習及研究** Rust 網路服務之使用，並 **未用於營利用途**。
+- 除授權條款列載之事項，您亦已知將此函式庫用於商業或其他競爭行為上，**有可能會引來法律風險**。
+- 若您認為本函式庫侵犯您的智慧財產權，**請發出 PR、Issue 或 DMCA 請求，表達您想移除相關引擎或程式碼之意願**。
+
 ## 架構
 
 > 註：目前 UnblockNeteaseMusic/server 只實作 engine/resolver 的部分。
