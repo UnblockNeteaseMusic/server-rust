@@ -1,7 +1,7 @@
 {
   "name": "@unblockneteasemusic/rust-napi",
   "description": "Node.js binding for UNM Rust",
-  "version": "0.3.0-pre.1",
+  "version": "0.3.0",
   "keywords": [
     "unm",
     "unblockneteasemusic",
