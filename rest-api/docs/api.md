@@ -7,7 +7,7 @@
 - Schema 是這個 API 回應的資料結構。
   - 使用 [JSON Schema (Draft-07)](https://json-schema.org) 定義。
 
-## `/`：檢視目前 API 的一般性資訊
+## `GET /`：檢視目前 API 的一般性資訊
 
 這個 Endpoint 除了代表著這個 API 是否可以接受請求，亦可從中檢視目前 API 的一般性資訊。
 
@@ -32,7 +32,7 @@ curl --location --request GET '<api_address>/'
 }
 ```
 
-## `/docs/…`：本 REST API 的文件
+## `GET /docs/…`：本 REST API 的文件
 
 這個 Endpoint 包含適用於本 REST API 版本的文件。
 
@@ -52,12 +52,12 @@ curl --location --request GET '<api_address>/docs/readme'
 
 回傳此文件的純文字版本。
 
-## `/schema/…`：擺放各 API 回應的資料結構
+## `GET /schema/…`：擺放各 API 回應的資料結構
 
 請參閱各 API 之〈⋯⋯的 Schema 路徑〉一節。相關範例請見 codebase 根目錄中
 `src/schema/v1` 的 JSON 檔案。
 
-## `/api/v1/search`：搜尋音樂並取回本資源的識別物件
+## `POST /api/v1/search`：搜尋音樂並取回本資源的識別物件
 
 這個 Endpoint 為 UNM (Rust) Executor 的封裝。
 
@@ -142,7 +142,7 @@ curl --location --request POST '<api_address>/api/v1/search' \
 }
 ```
 
-## `/api/v1/retrieve`：取回某個資源
+## `POST /api/v1/retrieve`：取回某個資源
 
 這個 Endpoint 為 UNM (Rust) Executor 的封裝。
 
