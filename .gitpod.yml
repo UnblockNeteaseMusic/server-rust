@@ -8,7 +8,7 @@ tasks:
       # 這個做法有點 hacky⋯⋯讓 rustup 根據
       # rust-toolchain.toml 下載需要的版本。
       cargo -V
-      gh sync-done rust-installation
+      gp sync-done rust-installation
 
   - name: Binding /bin/bash
     before: |
@@ -17,14 +17,14 @@ tasks:
 
   - name: Install cargo utilities
     init: |
-      gh sync-await rust-installation
+      gp sync-await rust-installation
 
       # 安裝 cargo-workspace 和 cargo-udeps
       cargo install cargo-workspace cargo-udeps
 
   - name: Prebuild server-rust
     init: |
-      gh sync-await rust-installation
+      gp sync-await rust-installation
 
       # 組建檢查檔案，以及 development 和 release 的編譯檔案
       cargo check
