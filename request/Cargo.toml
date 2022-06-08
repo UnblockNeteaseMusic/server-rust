@@ -10,9 +10,9 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-async-trait = "0.1.53"
+async-trait = "0.1.56"
 cached = "0.34.0"
-http = "0.2.7"
+http = "0.2.8"
 reqwest = { version = "0.11.10", features = [
     "json",
     "brotli",

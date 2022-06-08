@@ -11,7 +11,7 @@ readme = "../README.md"
 
 [dependencies]
 anyhow = "1.0.57"
-async-trait = "0.1.53"
+async-trait = "0.1.56"
 futures = "0.3.21"
 log = "0.4.17"
 thiserror = "1.0.31"

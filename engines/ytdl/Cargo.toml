@@ -13,14 +13,14 @@ edition = "2021"
 serde = { version = "1.0.137", features = ["derive"] }
 unm_engine = { version = "0.3.0-pre.0", path = "../../engine-base" }
 unm_types = { version = "0.3.0-pre.0", path = "../../types" }
-async-trait = "0.1.53"
+async-trait = "0.1.56"
 anyhow = "1.0.57"
-tokio = { version = "1.18.2", features = ["process"] }
+tokio = { version = "1.19.2", features = ["process"] }
 serde_json = "1.0.81"
 log = "0.4.17"
 concat-string = "1.0.1"
 winapi = "0.3.9"
 
 [dev-dependencies]
-tokio = { version = "1.18.2", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "1.19.2", features = ["macros", "rt-multi-thread"] }
 unm_test_utils = { path = "../../test-utils" }
