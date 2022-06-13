@@ -12,7 +12,7 @@ publish = false
 crate-type = ["cdylib"]
 
 [dependencies]
-napi = { version = "2.4.3", features = ["full"] }
+napi = { version = "2.5.0", features = ["full"] }
 napi-derive = "2.4.1"
 unm_engine = { version = "0.3.0-pre.0", path = "../engine-base" }
 unm_types = { version = "0.3.0-pre.0", path = "../types" }
