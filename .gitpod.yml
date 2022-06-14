@@ -2,6 +2,7 @@
 # Please adjust to your needs (see https://www.gitpod.io/docs/config-gitpod-file)
 # and commit this file to your remote git repository to share the goodness with others.
 
+image: "pan93412/gitpod-fast-rust-image:main"
 tasks:
   - name: Install Rust
     before: |
@@ -9,18 +10,6 @@ tasks:
       # rust-toolchain.toml 下載需要的版本。
       cargo -V
       gp sync-done rust-installation
-
-  - name: Binding /bin/bash
-    before: |
-      # 將 /bin/sh 綁定為 /bin/bash (workaround 無法 scripts/check.sh 的問題)
-      sudo ln -fs /bin/bash /bin/sh
-
-  - name: Install cargo utilities
-    init: |
-      gp sync-await rust-installation
-
-      # 安裝 cargo-workspace 和 cargo-udeps
-      cargo install cargo-workspace cargo-udeps
 
   - name: Prebuild server-rust
     init: |
