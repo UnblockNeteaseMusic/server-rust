@@ -11,9 +11,9 @@ edition = "2021"
 
 [dependencies]
 async-trait = "0.1.56"
-cached = "0.34.0"
+cached = "0.34.1"
 http = "0.2.8"
-reqwest = { version = "0.11.10", features = [
+reqwest = { version = "0.11.11", features = [
     "json",
     "brotli",
     "deflate",

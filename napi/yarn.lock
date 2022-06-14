@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@napi-rs/cli@^2.9.0":
-  version "2.9.0"
-  resolved "https://registry.yarnpkg.com/@napi-rs/cli/-/cli-2.9.0.tgz#3db950b97ea8f2823021383b89cd2f05addeac3a"
-  integrity sha512-qZ49ORZJ8rsHlvnnLsJCg9Ik+KfhiIgSea1HDMf6A9KBVxwWCijNhSO8zFvvBr7m1m44cx9WWhnQDnwPqSDeLA==
+"@napi-rs/cli@^2.10.0":
+  version "2.10.0"
+  resolved "https://registry.yarnpkg.com/@napi-rs/cli/-/cli-2.10.0.tgz#05edb7618992c256048f9f415a9947a66796b4a5"
+  integrity sha512-pK/VLOdo690FEItPJ9T5PLEfzmDTHgXjzuVChnsKvqI9vPg+rH12iyoxOrux6PAqg/pImJTd4CCabRqEfLt/sA==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -501,9 +501,9 @@ globby@^11.0.1:
     slash "^3.0.0"
 
 globby@^13.1.1:
-  version "13.1.1"
-  resolved "https://registry.yarnpkg.com/globby/-/globby-13.1.1.tgz#7c44a93869b0b7612e38f22ed532bfe37b25ea6f"
-  integrity sha512-XMzoDZbGZ37tufiv7g0N4F/zp3zkwdFtVbV3EHsVl1KQr4RPLfNoT068/97RPshz2J5xYNEjLKKBKaGHifBd3Q==
+  version "13.1.2"
+  resolved "https://registry.yarnpkg.com/globby/-/globby-13.1.2.tgz#29047105582427ab6eca4f905200667b056da515"
+  integrity sha512-LKSDZXToac40u8Q1PQtZihbNdTYSNMuWe+K5l+oa6KgDzSvVrHXlJy40hUP522RjAIoNLJYBJi7ow+rbFpIhHQ==
   dependencies:
     dir-glob "^3.0.1"
     fast-glob "^3.2.11"
@@ -775,9 +775,9 @@ p-map@^4.0.0:
     aggregate-error "^3.0.0"
 
 p-map@^5.4.0:
-  version "5.4.0"
-  resolved "https://registry.yarnpkg.com/p-map/-/p-map-5.4.0.tgz#59b1b931b8c832b5ee5a5cf7274d031e8f4f1624"
-  integrity sha512-obHraaWkwl4y1NHR4vW5D5k+33+S5QrkFqsNrrvK0R7lilXdzo/DZgnloDvYUaRT+Sk6vVK47JUQMQY6cjPMXg==
+  version "5.5.0"
+  resolved "https://registry.yarnpkg.com/p-map/-/p-map-5.5.0.tgz#054ca8ca778dfa4cf3f8db6638ccb5b937266715"
+  integrity sha512-VFqfGDHlx87K66yZrNdI4YGtD70IRyd+zSvgks6mzHPRNkoKy+9EKP4SFC77/vTTQYmRmti7dvqC+m5jBrBAcg==
   dependencies:
     aggregate-error "^4.0.0"
 
@@ -921,7 +921,7 @@ slice-ansi@^5.0.0:
 sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
-  integrity sha1-BOaSb2YolTVPPdAVIDYzuFcpfiw=
+  integrity sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==
 
 stack-utils@^2.0.5:
   version "2.0.5"
@@ -980,7 +980,7 @@ temp-dir@^2.0.0:
 time-zone@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/time-zone/-/time-zone-1.0.0.tgz#99c5bf55958966af6d06d83bdf3800dc82faec5d"
-  integrity sha1-mcW/VZWJZq9tBtg73zgA3IL67F0=
+  integrity sha512-TIsDdtKo6+XrPtiTm1ssmMngN1sAhyKnTO2kunQWqNPWIVvCm15Wmw4SWInwTVgJ5u/Tr04+8Ei9TNcw4x4ONA==
 
 to-regex-range@^5.0.1:
   version "5.0.1"
@@ -1011,7 +1011,7 @@ wrap-ansi@^7.0.0:
 wrappy@1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/wrappy/-/wrappy-1.0.2.tgz#b5243d8f3ec1aa35f1364605bc0d1036e30ab69f"
-  integrity sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8=
+  integrity sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==
 
 write-file-atomic@^4.0.1:
   version "4.0.1"

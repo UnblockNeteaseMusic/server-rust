@@ -12,12 +12,12 @@ edition = "2021"
 [dependencies]
 anyhow = "1.0.57"
 async-trait = "0.1.56"
-cached = "0.34.0"
+cached = "0.34.1"
 concat-string = "1.0.1"
 http = "0.2.8"
 log = "0.4.17"
 random-string = "1.0.0"
-reqwest = { version = "0.11.10", features = ["native-tls-vendored"] }
+reqwest = { version = "0.11.11", features = ["native-tls-vendored"] }
 serde = { version = "1.0.137", features = ["derive"] }
 unm_engine = { version = "0.3.0-pre.0", path = "../../engine-base" }
 unm_request = { version = "0.3.0-pre.0", path = "../../request" }
