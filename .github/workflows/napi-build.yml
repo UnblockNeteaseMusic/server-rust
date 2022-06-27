@@ -101,7 +101,7 @@ jobs:
               export AR="ar"
               export PATH="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin:${PATH}"
               yarn build --target aarch64-linux-android
-              ${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android-strip *.node
+              strip *.node
           - host: ubuntu-latest
             architecture: x64
             target: armv7-linux-androideabi
@@ -113,7 +113,7 @@ jobs:
               export AR="ar"
               export PATH="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin:${PATH}"
               yarn build --target armv7-linux-androideabi
-              ${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/arm-linux-androideabi-strip *.node
+              strip *.node
           - host: ubuntu-latest
             architecture: x64
             target: aarch64-unknown-linux-musl
