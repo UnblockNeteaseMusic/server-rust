@@ -16,7 +16,7 @@ openssl = { version = "0.10.40", features = ["vendored"] }
 thiserror = "1.0.31"
 
 serde = { version = "1.0.137", features = ["derive"] }
-serde_json = "1.0.81"
+serde_json = "1.0.82"
 
 regex = "1.5.6"
 md5 = "0.7.0"
@@ -24,7 +24,7 @@ url = "2.2.2"
 concat-string = "1.0.1"
 faster-hex = "0.6.1"
 base64 = "0.13.0"
-smallvec = { version = "1.8.1", features = ["union", "const_generics", "const_new"] }
+smallvec = { version = "1.9.0", features = ["union", "const_generics", "const_new"] }
 log = "0.4.17"
 once_cell = "1.12.0"
 
