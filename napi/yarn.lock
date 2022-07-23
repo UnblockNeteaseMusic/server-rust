@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@napi-rs/cli@^2.10.0":
-  version "2.10.0"
-  resolved "https://registry.yarnpkg.com/@napi-rs/cli/-/cli-2.10.0.tgz#05edb7618992c256048f9f415a9947a66796b4a5"
-  integrity sha512-pK/VLOdo690FEItPJ9T5PLEfzmDTHgXjzuVChnsKvqI9vPg+rH12iyoxOrux6PAqg/pImJTd4CCabRqEfLt/sA==
+"@napi-rs/cli@^2.10.1":
+  version "2.10.1"
+  resolved "https://registry.yarnpkg.com/@napi-rs/cli/-/cli-2.10.1.tgz#1f332778e9c7aa18c2f59977cb90027f77d47d26"
+  integrity sha512-Rscrg0BO4AKqFX2mKd8C68Wh3TkSHXqF2PZp+utVoLV+PTQnGVMwHedtIHBcFoq1Ij3I4yETMgSFSdAR+lp++Q==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -34,9 +34,9 @@ acorn-walk@^8.2.0:
   integrity sha512-k+iyHEuPgSw6SbuDpGQM+06HQUa04DZ3o+F6CSzXMvvI5KMvnaEqXe+YVe555R9nn6GPt404fos4wcgpw12SDA==
 
 acorn@^8.7.1:
-  version "8.7.1"
-  resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.7.1.tgz#0197122c843d1bf6d0a5e83220a788f278f63c30"
-  integrity sha512-Xx54uLJQZ19lKygFXOWsscKUbsBZW0CPykPhVQdhIeIwrbPmJzqeASDInc8nKBnp/JT6igTs82qPXz069H8I/A==
+  version "8.8.0"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.8.0.tgz#88c0187620435c7f6015803f5539dae05a9dbea8"
+  integrity sha512-QOxyigPVrpZ2GXT+PFyZTl6TtOFc5egxHIP9IlQ+RbupQuX4RkT/Bee4/kQuC02Xkzg84JcT7oLYtDIQxp+v7w==
 
 aggregate-error@^3.0.0:
   version "3.1.0"
@@ -111,10 +111,10 @@ arrify@^3.0.0:
   resolved "https://registry.yarnpkg.com/arrify/-/arrify-3.0.0.tgz#ccdefb8eaf2a1d2ab0da1ca2ce53118759fd46bc"
   integrity sha512-tLkvA81vQG/XqE2mjDkGQHoOINtMHtysSnemrmoGe6PydDPMRbVugqyk4A6V/WDWEfm3l+0d8anA9r8cv/5Jaw==
 
-ava@^4.3.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/ava/-/ava-4.3.0.tgz#e9466990caba63789eac3a0013714ea76dd82463"
-  integrity sha512-Ap0u8rp8wOBN6CxshgxrPSe191e8g52RWGoXeDB57ubo4fyZyStfI6OxQi/bl0yxIDEOYHhCiGwihbzlMNJw3Q==
+ava@^4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/ava/-/ava-4.3.1.tgz#376a788a5a863c39a9dd2dab9fcbbbcf94bf6c38"
+  integrity sha512-zdSp9QxRTmN5hJeGmg+ZjUKL5yHFLMcP/0KBla8GH25XD8Xm7Uc34CDFlwqGL6JXtjNbVkJ0Zw+DqcTf4ggCCA==
   dependencies:
     acorn "^8.7.1"
     acorn-walk "^8.2.0"
