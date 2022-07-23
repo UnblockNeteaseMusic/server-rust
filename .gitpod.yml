@@ -9,6 +9,7 @@ tasks:
       # 這個做法有點 hacky⋯⋯讓 rustup 根據
       # rust-toolchain.toml 下載需要的版本。
       cargo -V
+      curl -LsSf https://get.nexte.st/latest/linux | tar zxf - -C ${CARGO_HOME:-~/.cargo}/bin
       gp sync-done rust-installation
 
   - name: Prebuild server-rust
