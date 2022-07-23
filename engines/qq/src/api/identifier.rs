@@ -1,6 +1,6 @@
 use std::{error::Error, fmt::Display};
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct QQResourceIdentifier<'a> {
     pub mid: &'a str,
     pub file: &'a str,

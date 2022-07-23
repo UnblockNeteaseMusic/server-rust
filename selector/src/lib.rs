@@ -13,9 +13,15 @@ use unm_types::Song;
 /// vec![Some(Song::default()), None].iter().find(optional_selector);
 /// ```
 pub struct SimilarSongSelector {
-    pub selector: Box<dyn Fn(&&Song) -> bool>,
-    pub optional_selector: Box<dyn Fn(&&Option<Song>) -> bool>,
+    pub selector: SSSelector,
+    pub optional_selector: SSOSelector,
 }
+
+/// The type of a similar song selector which can pass to `Iterator<Item = &Song>`.
+pub type SSSelector = Box<dyn Fn(&&Song) -> bool>;
+
+/// The type of a similar song selector which can pass to `Iterator<Item = &Option<Song>>`.
+pub type SSOSelector = Box<dyn Fn(&&Option<Song>) -> bool>;
 
 impl SimilarSongSelector {
     /// Construct a "similar song selector" to pass to `.find()`.
