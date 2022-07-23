@@ -25,7 +25,7 @@ unm_types = { version = "0.3.0-pre.0", path = "../../types" }
 log = "0.4.17"
 derive_builder = "0.11.2"
 thiserror = "1.0.31"
-regex = "1.5.6"
+regex = "1.6.0"
 once_cell = "1.13.0"
 fastrand = "1.7.0"
 concat-string = "1.0.1"
