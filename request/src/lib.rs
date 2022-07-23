@@ -53,8 +53,8 @@ pub fn build_client(proxy: Option<&str>) -> RequestModuleResult<Client> {
     // Set the proxy if the user specified it.
     if let Some(proxy) = proxy {
         if !proxy.is_empty() {
-            builder = builder
-                .proxy(Proxy::all(proxy).map_err(RequestModuleError::ProxyConstructFailed)?);
+            builder =
+                builder.proxy(Proxy::all(proxy).map_err(RequestModuleError::ProxyConstructFailed)?);
         }
     }
 
