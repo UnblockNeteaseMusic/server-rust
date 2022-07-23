@@ -875,15 +875,15 @@ dependencies = [
 
 [[package]]
 name = "napi"
-version = "2.5.0"
+version = "2.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ec369bd2ae196a21bb08fb53761e637862c3c0699da9cd21b6d954e32dda04b3"
+checksum = "4ab98a3f0790b3488cfef37e356e54afa9251ab2555e4e270671775d419f3749"
 dependencies = [
  "chrono",
  "ctor",
  "encoding_rs",
- "lazy_static",
  "napi-sys",
+ "once_cell",
  "serde",
  "serde_json",
  "thread_local",
