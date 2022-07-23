@@ -13,7 +13,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 napi = { version = "2.5.0", features = ["full"] }
-napi-derive = "2.5.0"
+napi-derive = "2.6.0"
 unm_engine = { version = "0.3.0-pre.0", path = "../engine-base" }
 unm_types = { version = "0.3.0-pre.0", path = "../types" }
 simple_logger = "2.1.0"
