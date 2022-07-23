@@ -104,6 +104,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     async fn qq_search() {
         let info = get_info_1();
         let info = QQEngine
