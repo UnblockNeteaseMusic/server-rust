@@ -26,23 +26,9 @@ jobs:
             target: aarch64-unknown-linux-gnu
     steps:
       - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
-          toolchain: beta
-          profile: default
           target: ${{ matrix.target }}
-      - uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-          key: v1-${{ matrix.os }}-${{ matrix.target }}-rest-api-cargo-build-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            v1-${{ matrix.os }}-${{ matrix.target }}-rest-api-cargo-build-${{ hashFiles('**/Cargo.lock') }}
-            v1-${{ matrix.os }}-${{ matrix.target }}-rest-api-cargo-build-
       - uses: actions-rs/cargo@v1
         with:
           use-cross: true
