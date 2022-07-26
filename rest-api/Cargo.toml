@@ -21,7 +21,7 @@ reqwest = { version = "0.11.11", features = ["native-tls-vendored", "gzip", "def
 serde = { version = "1.0.140", features = ["derive"] }
 serde_json = "1.0.82"
 thiserror = "1.0.31"
-tokio = { version = "1.20.0", features = ["full"] }
+tokio = { version = "1.20.1", features = ["full"] }
 toml = "0.5.9"
 tower = { version = "0.4.13", features = ["buffer", "limit", "load-shed"] }
 tower-http = { version = "0.3.4", features = ["cors"] }
