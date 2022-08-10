@@ -11,7 +11,7 @@ readme = "./README.md"
 
 [dependencies]
 anyhow = "1.0.58"
-axum = "0.5.13"
+axum = "0.5.15"
 bytes = "1.2.0"
 futures = "0.3.21"
 http = "0.2.8"
