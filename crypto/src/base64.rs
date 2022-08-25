@@ -1,5 +1,6 @@
-use crate::error::CryptoResult;
 pub use base64::{decode, encode};
+
+use crate::error::CryptoResult;
 
 pub fn encode_crypto_base64(src: &[u8]) -> String {
     encode(src).replace('+', "-").replace('/', "_")

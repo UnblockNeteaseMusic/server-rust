@@ -25,8 +25,13 @@ use concat_string::concat_string;
 use log::{debug, info};
 use serde::Deserialize;
 use unm_engine::interface::Engine;
+use unm_types::config::ConfigManager;
 use unm_types::{
-    config::ConfigManager, Artist, Context, RetrievedSongInfo, SerializedIdentifier, Song,
+    Artist,
+    Context,
+    RetrievedSongInfo,
+    SerializedIdentifier,
+    Song,
     SongSearchInformation,
 };
 

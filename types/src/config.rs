@@ -1,5 +1,8 @@
+use std::borrow::Cow;
+use std::collections::HashMap;
+use std::ops::Deref;
+
 use serde::{Deserialize, Serialize};
-use std::{borrow::Cow, collections::HashMap, ops::Deref};
 use thiserror::Error;
 
 pub type ConfigKey = Cow<'static, str>;
@@ -83,7 +86,8 @@ pub type ConfigManagerResult<T> = Result<T, ConfigManagerError>;
 
 #[cfg(test)]
 mod tests {
-    use std::{borrow::Cow, collections::HashMap};
+    use std::borrow::Cow;
+    use std::collections::HashMap;
 
     use super::ConfigManagerBuilder;
 

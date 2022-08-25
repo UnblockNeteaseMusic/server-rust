@@ -64,10 +64,11 @@ impl SimilarSongSelector {
 
 #[cfg(test)]
 mod tests {
-    use crate::SimilarSongSelector;
     use once_cell::sync::Lazy;
     use serde_json::json;
     use unm_types::Song;
+
+    use crate::SimilarSongSelector;
 
     static TESTDATA: Lazy<Vec<Song>> = Lazy::new(|| {
         let testdata = json!([

@@ -5,7 +5,9 @@ pub(crate) mod engine;
 pub(crate) mod retrieve;
 pub(crate) mod search;
 
-use axum::{http::StatusCode, response::IntoResponse, Json};
+use axum::http::StatusCode;
+use axum::response::IntoResponse;
+use axum::Json;
 use once_cell::sync::OnceCell;
 use serde_json::json;
 use thiserror::Error;

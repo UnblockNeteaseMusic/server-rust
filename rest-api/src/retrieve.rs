@@ -2,7 +2,8 @@
 
 use std::time::Duration;
 
-use axum::{response::IntoResponse, Json};
+use axum::response::IntoResponse;
+use axum::Json;
 use http::{HeaderMap, StatusCode};
 use once_cell::sync::Lazy;
 use reqwest::{Client, Url};

@@ -4,11 +4,14 @@
 
 use std::sync::Arc;
 
-use axum::{body::StreamBody, response::IntoResponse, Extension, Json};
+use axum::body::StreamBody;
+use axum::response::IntoResponse;
+use axum::{Extension, Json};
 use tracing::info;
 use unm_types::Context;
 
-use crate::{executor::retrieve::RetrievePayload, retrieve::request_as_stream};
+use crate::executor::retrieve::RetrievePayload;
+use crate::retrieve::request_as_stream;
 
 pub async fn retrieve_v1(
     Json(payload): Json<RetrievePayload>,

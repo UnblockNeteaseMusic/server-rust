@@ -1,7 +1,8 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize, Serialize};
-use tracing::{instrument, log::trace};
+use tracing::instrument;
+use tracing::log::trace;
 
 use super::get_unm_executor;
 

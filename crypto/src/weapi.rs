@@ -4,11 +4,9 @@
 //! Thanks to Binaryify!
 
 use once_cell::sync::OnceCell;
-use openssl::{
-    pkey::Public,
-    rand::rand_bytes,
-    rsa::{Padding, Rsa},
-};
+use openssl::pkey::Public;
+use openssl::rand::rand_bytes;
+use openssl::rsa::{Padding, Rsa};
 use serde::Serialize;
 use serde_json::Value;
 use smallvec::SmallVec;

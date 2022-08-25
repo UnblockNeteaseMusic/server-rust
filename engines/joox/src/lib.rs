@@ -22,22 +22,25 @@
 
 use std::borrow::Cow;
 
-use http::{
-    header::{COOKIE, ORIGIN, REFERER},
-    HeaderValue,
-};
+use http::header::{COOKIE, ORIGIN, REFERER};
+use http::HeaderValue;
 use once_cell::sync::OnceCell;
 use regex::Regex;
-use reqwest::{header::HeaderMap, Url};
+use reqwest::header::HeaderMap;
+use reqwest::Url;
 use unm_engine::interface::Engine;
-use unm_request::{
-    build_client,
-    ext::ResponseExt,
-    json::{Json, UnableToExtractJson},
-};
+use unm_request::build_client;
+use unm_request::ext::ResponseExt;
+use unm_request::json::{Json, UnableToExtractJson};
 use unm_selector::SimilarSongSelector;
 use unm_types::{
-    Album, Artist, Context, RetrievedSongInfo, SerializedIdentifier, Song, SongSearchInformation,
+    Album,
+    Artist,
+    Context,
+    RetrievedSongInfo,
+    SerializedIdentifier,
+    Song,
+    SongSearchInformation,
 };
 
 static REPLACE_AUDIO_URL_REGEX: OnceCell<Regex> = OnceCell::new();

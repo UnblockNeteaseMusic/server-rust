@@ -2,11 +2,10 @@ pub mod typing;
 
 use cached::proc_macro::once;
 use concat_string::concat_string;
-use http::{
-    header::{COOKIE, REFERER},
-    HeaderValue,
-};
-use reqwest::{header::HeaderMap, Url};
+use http::header::{COOKIE, REFERER};
+use http::HeaderValue;
+use reqwest::header::HeaderMap;
+use reqwest::Url;
 use unm_request::build_client;
 use unm_types::Context;
 

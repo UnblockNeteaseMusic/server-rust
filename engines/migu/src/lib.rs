@@ -4,12 +4,14 @@
 
 mod types;
 
+use std::collections::HashMap;
+
 use anyhow::Ok;
 use async_trait::async_trait;
-use std::collections::HashMap;
 use types::MiguResponse;
 use unm_engine::interface::Engine;
-use unm_request::{build_client, json::Json};
+use unm_request::build_client;
+use unm_request::json::Json;
 use unm_selector::SimilarSongSelector;
 use unm_types::{Context, RetrievedSongInfo, SerializedIdentifier, Song, SongSearchInformation};
 use url::Url;
@@ -128,8 +130,9 @@ fn find_match(info: &Song, data: Vec<MiguResponse>) -> Option<Song> {
 
 #[cfg(test)]
 mod tests {
-    use crate::construct_search_api;
     use reqwest::Url;
+
+    use crate::construct_search_api;
 
     #[test]
     fn construct_search_api_test() {

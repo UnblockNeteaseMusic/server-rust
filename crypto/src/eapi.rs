@@ -1,7 +1,6 @@
+use concat_string::concat_string;
 use regex::Regex;
 use serde::Serialize;
-
-use concat_string::concat_string;
 
 use crate::aes_128;
 use crate::aes_128::AesResult;

@@ -1,7 +1,10 @@
+use std::future::Future;
+use std::pin::Pin;
+use std::time::Duration;
+
 use futures::FutureExt;
 use log::LevelFilter;
 use simple_logger::SimpleLogger;
-use std::{future::Future, pin::Pin, time::Duration};
 use unm_engine::interface::Engine;
 use unm_types::{Artist, ContextBuilder, Song};
 

@@ -6,10 +6,8 @@ pub mod typing;
 
 use std::borrow::Cow;
 
-use http::{
-    header::{COOKIE, ORIGIN, REFERER},
-    HeaderMap, HeaderValue,
-};
+use http::header::{COOKIE, ORIGIN, REFERER};
+use http::{HeaderMap, HeaderValue};
 use log::{debug, trace};
 use once_cell::sync::Lazy;
 use regex::Regex;
@@ -17,16 +15,14 @@ use reqwest::Url;
 use serde::Deserialize;
 use serde_json::json;
 use thiserror::Error;
-use unm_request::{
-    build_client,
-    json::{Json, UnableToExtractJson},
-    RequestModuleError,
-};
+use unm_request::json::{Json, UnableToExtractJson};
+use unm_request::{build_client, RequestModuleError};
 use unm_types::Context;
 
+use self::format::QQFormat;
+use self::identifier::QQResourceIdentifier;
+use self::typing::QQSongData;
 use crate::api::typing::QQSingleResponseRoot;
-
-use self::{format::QQFormat, identifier::QQResourceIdentifier, typing::QQSongData};
 
 /// Search for the specified keyword.
 pub async fn search_by_keyword(keyword: &str, ctx: &Context) -> QQApiModuleResult<QQSongData> {

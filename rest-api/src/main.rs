@@ -4,15 +4,16 @@ pub(crate) mod executor;
 pub(crate) mod retrieve;
 pub(crate) mod schema;
 
-use axum::{
-    error_handling::HandleErrorLayer,
-    routing::{get, post},
-    Extension, Json, Router,
-};
+use std::net::SocketAddr;
+use std::sync::Arc;
+use std::time::Duration;
+
+use axum::error_handling::HandleErrorLayer;
+use axum::routing::{get, post};
+use axum::{Extension, Json, Router};
 use http::{HeaderMap, Method, StatusCode};
 use mimalloc::MiMalloc;
 use serde_json::{json, Value};
-use std::{net::SocketAddr, sync::Arc, time::Duration};
 use tower::ServiceBuilder;
 use tower_http::cors::{Any, CorsLayer};
 use tracing::{debug, info, warn};

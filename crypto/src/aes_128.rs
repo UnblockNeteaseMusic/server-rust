@@ -1,8 +1,9 @@
 //! The AES-128 utilities, including the encryption and decryption methods
 //! of AES-128-ECB and AES-128-CBC.
 
-use crate::error::CryptoResult;
 use openssl::symm::{decrypt as symm_decrypt, encrypt as symm_encrypt, Cipher};
+
+use crate::error::CryptoResult;
 
 pub type AesResult = CryptoResult<Vec<u8>>;
 

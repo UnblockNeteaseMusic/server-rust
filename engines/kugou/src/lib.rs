@@ -2,7 +2,8 @@
 //!
 //! It can fetch audio from Kugou Music.
 
-use std::{collections::HashMap, sync::Arc};
+use std::collections::HashMap;
+use std::sync::Arc;
 
 use async_trait::async_trait;
 use concat_string::concat_string;
@@ -11,13 +12,16 @@ use log::{debug, info};
 use reqwest::Url;
 use serde::{Deserialize, Serialize};
 use unm_engine::interface::Engine;
-use unm_request::{
-    build_client,
-    json::{Json, UnableToExtractJson},
-};
+use unm_request::build_client;
+use unm_request::json::{Json, UnableToExtractJson};
 use unm_selector::SimilarSongSelector;
 use unm_types::{
-    Album, Context, RetrievedSongInfo, SerializedIdentifier, Song, SongSearchInformation,
+    Album,
+    Context,
+    RetrievedSongInfo,
+    SerializedIdentifier,
+    Song,
+    SongSearchInformation,
 };
 
 pub const ENGINE_ID: &str = "kugou";
@@ -124,7 +128,7 @@ impl Engine for KugouEngine {
             let song = song.clone();
 
             async move {
-                let response = single(&*song, format, ctx).await;
+                let response = single(&song, format, ctx).await;
                 match response {
                     Ok(response) => match response {
                         Some(response) => Ok(response),

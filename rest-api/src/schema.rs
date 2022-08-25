@@ -1,5 +1,6 @@
 use axum::response::IntoResponse;
-use http::{header::CONTENT_TYPE, StatusCode};
+use http::header::CONTENT_TYPE;
+use http::StatusCode;
 
 pub async fn schema_v1_index() -> impl IntoResponse {
     (

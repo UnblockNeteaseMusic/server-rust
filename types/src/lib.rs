@@ -1,10 +1,12 @@
 pub mod config;
 
+use std::borrow::Cow;
+use std::collections::HashMap;
+
 use config::ConfigManager;
 use derive_builder::Builder;
 use reqwest::Proxy;
 use serde::{Deserialize, Serialize};
-use std::{borrow::Cow, collections::HashMap};
 use typed_builder::TypedBuilder;
 
 /// The serialized identifier for passing to `retrieve()`.

@@ -3,7 +3,8 @@ pub mod ext;
 // FIXME: separate to a crate.
 pub mod json;
 
-use std::{collections::HashMap, time::Duration};
+use std::collections::HashMap;
+use std::time::Duration;
 
 use cached::proc_macro::cached;
 use http::header::{HeaderMap, HeaderValue};
@@ -105,8 +106,9 @@ pub type RequestModuleResult<T> = Result<T, RequestModuleError>;
 
 #[cfg(test)]
 mod tests {
-    use once_cell::sync::Lazy;
     use std::collections::HashMap;
+
+    use once_cell::sync::Lazy;
 
     static TRANSLATE_MAP: Lazy<HashMap<&str, &str>> = Lazy::new(|| {
         let mut map = HashMap::with_capacity(2);
