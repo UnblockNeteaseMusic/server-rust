@@ -81,8 +81,12 @@ jobs:
             target: 'aarch64-unknown-linux-gnu'
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
             build: >-
-              set -e &&\n
-              yarn build --target aarch64-unknown-linux-gnu &&\n
+              set -e &&
+              export CC_aarch64_unknown_linux_gnu=aarch64-linux-gnu-gcc &&
+              export CC=aarch64-linux-gnu-gcc &&
+              sudo apt install -y gcc-aarch64-linux-gnu &&
+              rustup target add aarch64-unknown-linux-gnu &&
+              yarn build --target aarch64-unknown-linux-gnu &&
               aarch64-unknown-linux-gnu-strip *.node
           - host: ubuntu-latest
             architecture: x64
