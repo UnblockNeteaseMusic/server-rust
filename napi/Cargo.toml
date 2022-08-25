@@ -12,11 +12,11 @@ publish = false
 crate-type = ["cdylib"]
 
 [dependencies]
-napi = { version = "2.6.3", features = ["full"] }
-napi-derive = "2.6.0"
+napi = { version = "2.9.0", features = ["full"] }
+napi-derive = "2.9.0"
 unm_engine = { version = "0.3.0-pre.0", path = "../engine-base" }
 unm_types = { version = "0.3.0-pre.0", path = "../types" }
-simple_logger = "2.2.0"
+simple_logger = "2.3.0"
 mimalloc = "0.1.29"
 unm_api_utils = { version = "0.3.0-pre.0", path = "../api-utils" }
 
