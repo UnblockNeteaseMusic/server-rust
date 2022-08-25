@@ -1,4 +1,4 @@
 [toolchain]
-channel = "beta"
+channel = "nightly-2022-08-27"
 components = ["rust-src"]  # rust-analyzer
 profile = "default"
