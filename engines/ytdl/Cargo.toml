@@ -16,7 +16,7 @@ unm_types = { version = "0.3.0-pre.0", path = "../../types" }
 async-trait = "0.1.56"
 anyhow = "1.0.58"
 tokio = { version = "1.20.0", features = ["process"] }
-serde_json = "1.0.82"
+serde_json = "1.0.85"
 log = "0.4.17"
 concat-string = "1.0.1"
 winapi = "0.3.9"
