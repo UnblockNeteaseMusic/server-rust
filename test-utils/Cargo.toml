@@ -14,5 +14,5 @@ publish = false
 futures = "0.3.23"
 log = "0.4.17"
 simple_logger = "2.3.0"
-unm_engine = { version = "0.3.0-pre.0", path = "../engine-base" }
-unm_types = { version = "0.3.0-pre.0", path = "../types" }
+unm_engine = { version = "0.3.0", path = "../engine-base" }
+unm_types = { version = "0.3.0", path = "../types" }

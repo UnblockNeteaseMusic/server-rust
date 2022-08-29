@@ -18,10 +18,10 @@ serde = { version = "1.0.144", features = ["derive"] }
 reqwest = "0.11.11"
 futures = "0.3.23"
 url = "2.2.2"
-unm_engine = { version = "0.3.0-pre.0", path = "../../engine-base" }
-unm_request = { version = "0.3.0-pre.0", path = "../../request" }
-unm_selector = { version = "0.3.0-pre.0", path = "../../selector" }
-unm_types = { version = "0.3.0-pre.0", path = "../../types" }
+unm_engine = { version = "0.3.0", path = "../../engine-base" }
+unm_request = { version = "0.3.0", path = "../../request" }
+unm_selector = { version = "0.3.0", path = "../../selector" }
+unm_types = { version = "0.3.0", path = "../../types" }
 log = "0.4.17"
 derive_builder = "0.11.2"
 thiserror = "1.0.32"
