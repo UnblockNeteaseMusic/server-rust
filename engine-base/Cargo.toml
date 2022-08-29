@@ -10,9 +10,9 @@ readme = "../README.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0.58"
-async-trait = "0.1.56"
-futures = "0.3.21"
+anyhow = "1.0.62"
+async-trait = "0.1.57"
+futures = "0.3.24"
 log = "0.4.17"
-thiserror = "1.0.31"
+thiserror = "1.0.32"
 unm_types = { version = "0.3.0-pre.0", path = "../types" }
