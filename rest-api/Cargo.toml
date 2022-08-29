@@ -27,8 +27,8 @@ tower = { version = "0.4.13", features = ["buffer", "limit", "load-shed"] }
 tower-http = { version = "0.3.4", features = ["cors"] }
 tracing = "0.1.36"
 tracing-subscriber = "0.3.15"
-unm_api_utils = { version = "0.3.0-pre.0", path = "../api-utils" }
-unm_engine = { version = "0.3.0-pre.0", path = "../engine-base" }
-unm_engine_bilibili = { version = "0.3.0-pre.0", path = "../engines/bilibili" }
-unm_types = { version = "0.3.0-pre.0", path = "../types" }
+unm_api_utils = { version = "0.3.0", path = "../api-utils" }
+unm_engine = { version = "0.3.0", path = "../engine-base" }
+unm_engine_bilibili = { version = "0.3.0", path = "../engines/bilibili" }
+unm_types = { version = "0.3.0", path = "../types" }
 url = "2.2.2"
