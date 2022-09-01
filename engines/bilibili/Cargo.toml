@@ -10,7 +10,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0.62"
+anyhow = "1.0.63"
 async-trait = "0.1.57"
 http = "0.2.8"
 unm_engine = { version = "0.3.0", path = "../../engine-base" }
