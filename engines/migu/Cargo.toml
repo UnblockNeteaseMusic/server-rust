@@ -24,5 +24,5 @@ log = "0.4.17"
 
 [dev-dependencies]
 reqwest = { version = "0.11.11", features = ["native-tls-vendored"] }
-tokio = { version = "1.20.1", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "1.21.0", features = ["macros", "rt-multi-thread"] }
 unm_test_utils = { path = "../../test-utils" }
