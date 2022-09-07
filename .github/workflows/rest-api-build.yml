@@ -44,7 +44,7 @@ jobs:
           use-cross: true
           command: build
           args: --target ${{ matrix.target }} --release --bin unm_rest_api
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: unm-rest-api-${{ matrix.os }}-${{ matrix.target }}
           path: |
