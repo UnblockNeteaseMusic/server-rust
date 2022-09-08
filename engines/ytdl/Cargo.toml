@@ -6,19 +6,18 @@ version = "0.3.0"
 repository = "https://github.com/UnblockNeteaseMusic/server-rust"
 readme = "../../README.md"
 edition = "2021"
-
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+anyhow = "1.0.64"
+async-trait = "0.1.57"
+concat-string = "1.0.1"
+log = "0.4.17"
 serde = { version = "1.0.144", features = ["derive"] }
+serde_json = "1.0.85"
+tokio = { version = "1.21.0", features = ["process"] }
 unm_engine = { version = "0.3.0", path = "../../engine-base" }
 unm_types = { version = "0.3.0", path = "../../types" }
-async-trait = "0.1.57"
-anyhow = "1.0.64"
-tokio = { version = "1.21.0", features = ["process"] }
-serde_json = "1.0.85"
-log = "0.4.17"
-concat-string = "1.0.1"
 winapi = "0.3.9"
 
 [dev-dependencies]

@@ -7,13 +7,12 @@ edition = "2021"
 repository = "https://github.com/UnblockNeteaseMusic/server-rust"
 readme = "../README.md"
 publish = false
-
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-unm_test_utils = { version = "0.1.0", path = "../test-utils" }
-tokio = { version = "1.21.0", features = ["macros", "rt-multi-thread"] }
 futures = "0.3.24"
-unm_types = { version = "0.3.0", path = "../types" }
 mimalloc = "0.1.29"
+tokio = { version = "1.21.0", features = ["macros", "rt-multi-thread"] }
 unm_api_utils = { version = "0.3.0", path = "../api-utils" }
+unm_test_utils = { version = "0.1.0", path = "../test-utils" }
+unm_types = { version = "0.3.0", path = "../types" }
