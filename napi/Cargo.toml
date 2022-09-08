@@ -12,13 +12,13 @@ publish = false
 crate-type = ["cdylib"]
 
 [dependencies]
+mimalloc = "0.1.29"
 napi = { version = "2.9.0", features = ["full"] }
 napi-derive = "2.9.0"
+simple_logger = "2.3.0"
+unm_api_utils = { version = "0.3.0", path = "../api-utils" }
 unm_engine = { version = "0.3.0", path = "../engine-base" }
 unm_types = { version = "0.3.0", path = "../types" }
-simple_logger = "2.3.0"
-mimalloc = "0.1.29"
-unm_api_utils = { version = "0.3.0", path = "../api-utils" }
 
 [build-dependencies]
 napi-build = "2.0.1"
