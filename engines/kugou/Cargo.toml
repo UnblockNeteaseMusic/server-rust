@@ -10,7 +10,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0.63"
+anyhow = "1.0.64"
 async-trait = "0.1.57"
 http = "0.2.8"
 serde_json = "1.0.85"
@@ -25,5 +25,5 @@ log = "0.4.17"
 concat-string = "1.0.1"
 
 [dev-dependencies]
-tokio = { version = "1.20.1", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "1.21.0", features = ["macros", "rt-multi-thread"] }
 unm_test_utils = { path = "../../test-utils" }
