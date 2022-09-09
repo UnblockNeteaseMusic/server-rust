@@ -30,4 +30,4 @@ unm_api_utils = { version = "0.3.0", path = "../api-utils" }
 unm_engine = { version = "0.3.0", path = "../engine-base" }
 unm_engine_bilibili = { version = "0.3.0", path = "../engines/bilibili" }
 unm_types = { version = "0.3.0", path = "../types" }
-url = "2.3.0"
+url = "2.3.1"

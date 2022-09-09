@@ -25,7 +25,7 @@ serde_json = "1.0.85"
 smallvec = { version = "1.9.0", features = ["union", "const_generics", "const_new"] }
 
 thiserror = "1.0.34"
-url = "2.3.0"
+url = "2.3.1"
 
 [features]
 
