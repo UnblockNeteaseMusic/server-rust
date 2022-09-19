@@ -4,7 +4,7 @@
 echo "Checking before publishing…"
 
 echo "  → Updating dependencies"
-cargo update && cargo upgrade --workspace --to-lockfile || exit 1
+cargo update && cargo upgrade || exit 1
 
 echo "  → Check & Test"
 cargo check && cargo test || exit 1
