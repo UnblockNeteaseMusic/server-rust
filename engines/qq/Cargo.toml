@@ -9,7 +9,7 @@ readme = "../../README.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0.64"
+anyhow = "1.0.65"
 async-trait = "0.1.57"
 concat-string = "1.0.1"
 derive_builder = "0.11.2"
@@ -22,15 +22,15 @@ regex = "1.6.0"
 reqwest = "0.11.11"
 serde = { version = "1.0.144", features = ["derive"] }
 serde_json = "1.0.85"
-thiserror = "1.0.34"
+thiserror = "1.0.35"
 unm_engine = { version = "0.3.0", path = "../../engine-base" }
 unm_request = { version = "0.3.0", path = "../../request" }
 unm_selector = { version = "0.3.0", path = "../../selector" }
 unm_types = { version = "0.3.0", path = "../../types" }
-url = "2.3.0"
+url = "2.3.1"
 
 [dev-dependencies]
-tokio = { version = "1.21.0", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "1.21.1", features = ["macros", "rt-multi-thread"] }
 unm_test_utils = { path = "../../test-utils" }
 
 [features]
