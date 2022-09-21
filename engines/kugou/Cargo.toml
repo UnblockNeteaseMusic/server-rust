@@ -15,7 +15,7 @@ concat-string = "1.0.1"
 futures = "0.3.24"
 http = "0.2.8"
 log = "0.4.17"
-reqwest = { version = "0.11.11", features = ["native-tls-vendored"] }
+reqwest = { version = "0.11.12", features = ["native-tls-vendored"] }
 serde = { version = "1.0.144", features = ["derive"] }
 serde_json = "1.0.85"
 unm_engine = { version = "0.3.0", path = "../../engine-base" }
