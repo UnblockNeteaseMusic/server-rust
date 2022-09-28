@@ -12,5 +12,5 @@ edition = "2021"
 derive_builder = "0.11.2"
 reqwest = { version = "0.11.12", features = ["native-tls-vendored"] }
 serde = { version = "1.0.145", features = ["derive"] }
-thiserror = "1.0.35"
+thiserror = "1.0.37"
 typed-builder = "0.10.0"
