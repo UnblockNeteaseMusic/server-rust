@@ -11,7 +11,7 @@ publish = false
 
 [dependencies]
 futures = "0.3.25"
-mimalloc = "0.1.30"
+mimalloc = "0.1.31"
 tokio = { version = "1.21.2", features = ["macros", "rt-multi-thread"] }
 unm_api_utils = { version = "0.3.0", path = "../api-utils" }
 unm_test_utils = { version = "0.1.0", path = "../test-utils" }
