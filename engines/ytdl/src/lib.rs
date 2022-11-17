@@ -141,11 +141,11 @@ async fn fetch_from_youtube(
     debug!("Receiving the search result from {exe}…");
 
     // <cmd> -f bestaudio --dumpjson
-    cmd.args(&["-f", "bestaudio", "--dump-json"]);
+    cmd.args(["-f", "bestaudio", "--dump-json"]);
 
     // --proxy <proxy>
     if let Some(proxy) = proxy {
-        cmd.args(&["--proxy", proxy]);
+        cmd.args(["--proxy", proxy]);
     }
 
     // search query
