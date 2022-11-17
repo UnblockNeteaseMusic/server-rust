@@ -90,7 +90,11 @@ async fn fetch_song_info(id: &str, ctx: &Context) -> anyhow::Result<PyNCMRespons
     )?;
 
     let client = build_client(ctx.proxy_uri.as_deref())?;
-    let response = client.get(url).header(HOST, "music.163-my-beloved.com").send().await?;
+    let response = client
+        .get(url)
+        .header(HOST, "music.163-my-beloved.com")
+        .send()
+        .await?;
     Ok(response.json::<PyNCMResponse>().await?)
 }
 

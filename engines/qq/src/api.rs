@@ -50,10 +50,12 @@ pub async fn search_by_keyword(keyword: &str, ctx: &Context) -> QQApiModuleResul
         .await
         .map_err(QQApiModuleError::ResponseJsonDeserializeFailed)?;
 
-    let data = QQSongData::deserialize(json.pointer("/search/data/body/song").ok_or(UnableToExtractJson {
-        json_pointer: "/search/data/body/song",
-        expected_type: "QQSongData",
-    })?)
+    let data = QQSongData::deserialize(json.pointer("/search/data/body/song").ok_or(
+        UnableToExtractJson {
+            json_pointer: "/search/data/body/song",
+            expected_type: "QQSongData",
+        },
+    )?)
     .map_err(QQApiModuleError::JsonDeserializeFailed)?;
 
     Ok(data)
@@ -140,9 +142,7 @@ fn construct_search_url(keyword: &str) -> QQApiModuleResult<Url> {
 
     Ok(Url::parse_with_params(
         "https://u.y.qq.com/cgi-bin/musicu.fcg",
-        &[
-            ("data", data.to_string()),
-        ]
+        &[("data", data.to_string())],
     )?)
 }
 
