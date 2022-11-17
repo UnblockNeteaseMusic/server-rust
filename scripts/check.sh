@@ -7,7 +7,7 @@ echo "  → Updating dependencies"
 cargo update && cargo upgrade || exit 1
 
 echo "  → Check & Test"
-cargo check && cargo test || exit 1
+cargo check && cargo nextest run && cargo test --doc || exit 1
 
 echo "  → Format"
 cargo fmt || exit 1
