@@ -10,7 +10,7 @@ use unm_engine::executor::Executor;
 
 /// Build an [`Executor`] with all the official engines registered.
 ///
-/// Currently, it includes `bilibili`, `kugou`, `migu`, `pyncm`,
+/// Currently, it includes `bilibili`, `kugou`, `pyncm`,
 /// `ytdl`, `kuwo`, and `joox`.
 ///
 /// # Example
@@ -36,7 +36,6 @@ pub fn build_full_executor() -> Executor {
 
     push_engine!(bilibili: BilibiliEngine);
     push_engine!(kugou: KugouEngine);
-    push_engine!(migu: MiguEngine);
     push_engine!(pyncm: PyNCMEngine);
     push_engine!(ytdl: YtDlEngine);
     push_engine!(kuwo: KuwoEngine);

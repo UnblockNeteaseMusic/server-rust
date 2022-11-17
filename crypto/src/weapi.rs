@@ -134,7 +134,7 @@ mod tests {
         let encrypted_bytes = encrypt_with_weapi_rsa(b"a1b2c3d4", &mut buf).unwrap();
         assert_eq!(encrypted_bytes, 128);
 
-        let encrypted_base64 = base64::encode(&buf);
+        let encrypted_base64 = base64::encode(buf);
         assert_eq!(
             encrypted_base64,
             r#"nknIprgQgDE2Ana3dka2qYhwE4ch/My68kTk0pGZmtkeWCTslpn9Co32as7sd5fyitf5lyXwMff/g/kDzaz6IVA/tMAtbbzkgWPDMivRy5b8z1Ypd7UV7r6aM6OgNT1bFjPo4jEAkmUl6UxCBAsrsMaaYqmW6rZl0BdJdb0/Tq0="#

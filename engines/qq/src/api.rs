@@ -50,10 +50,12 @@ pub async fn search_by_keyword(keyword: &str, ctx: &Context) -> QQApiModuleResul
         .await
         .map_err(QQApiModuleError::ResponseJsonDeserializeFailed)?;
 
-    let data = QQSongData::deserialize(json.pointer("/data/song").ok_or(UnableToExtractJson {
-        json_pointer: "/data/song",
-        expected_type: "QQSongData",
-    })?)
+    let data = QQSongData::deserialize(json.pointer("/search/data/body/song").ok_or(
+        UnableToExtractJson {
+            json_pointer: "/search/data/body/song",
+            expected_type: "QQSongData",
+        },
+    )?)
     .map_err(QQApiModuleError::JsonDeserializeFailed)?;
 
     Ok(data)
@@ -125,31 +127,22 @@ fn construct_header(cookie: Option<&str>) -> QQApiModuleResult<HeaderMap> {
 fn construct_search_url(keyword: &str) -> QQApiModuleResult<Url> {
     trace!("Constructing search URL with parameters…");
 
+    let data = json!({
+        "search": {
+            "method": "DoSearchForQQMusicDesktop",
+            "module": "music.search.SearchCgiService",
+            "param": {
+                "num_per_page": 5,
+                "page_num": 1,
+                "query": keyword,
+                "search_type": 0
+            }
+        }
+    });
+
     Ok(Url::parse_with_params(
-        "https://c.y.qq.com/soso/fcgi-bin/client_search_cp",
-        &[
-            ("ct", "24"),
-            ("qqmusic_ver", "1298"),
-            ("remoteplace", "txt.yqq.center"),
-            ("t", "0"),
-            ("aggr", "1"),
-            ("cr", "1"),
-            ("catZhida", "1"),
-            ("lossless", "1"),
-            ("flag_qc", "0"),
-            ("p", "1"),
-            ("n", "20"),
-            ("w", keyword),
-            ("g_tk", "5381"),
-            ("loginUin", "0"),
-            ("hostUin", "0"),
-            ("format", "json"),
-            ("inCharset", "utf8"),
-            ("outCharset", "utf-8"),
-            ("notice", "0"),
-            ("platform", "yqq"),
-            ("needNewCode", "0"),
-        ],
+        "https://u.y.qq.com/cgi-bin/musicu.fcg",
+        &[("data", data.to_string())],
     )?)
 }
 
