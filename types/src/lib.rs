@@ -147,13 +147,13 @@ impl Context {
 
 impl std::fmt::Display for Song {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.keyword())
+        write!(f, "{}", self.display_name())
     }
 }
 
 impl Song {
-    /// Generate the keyword of this song.
-    pub fn keyword(&self) -> String {
+    /// Generate the name of this song.
+    fn get_name(&self, has_separator: bool) -> String {
         // {Song Name}
         let mut keyword = self.name.to_string();
 
@@ -164,20 +164,39 @@ impl Song {
         let max_idx = self.artists.len() - 1;
 
         // Add hyphen between the song name and the following artist name.
-        keyword.push_str(" - ");
+        if has_separator {
+            keyword.push_str(" - ");
+        } else {
+            keyword.push(' ');
+        }
 
         for (idx, artist) in self.artists.iter().enumerate() {
             // "[keyword] {artist.name}"
             keyword.push_str(&artist.name);
 
             if idx != max_idx {
-                // ", " if this is not the last item.
-                keyword.push_str(", ");
+                if has_separator {
+                    // ", " if this is not the last item.
+                    keyword.push_str(", ");
+                } else {
+                    keyword.push(' ');
+                }
             }
         }
 
-        // {Song name} - {Artist 1's name}, {Artist 2's name}[, ...]
+        // (has_separator) {Song name} - {Artist 1's name}, {Artist 2's name}[, ...]
+        // (!has_separator) {Song name} {Artist 1's name} {Artist 2's name}[ ...]
         keyword
+    }
+
+    /// Generate the display name of this song.
+    pub fn display_name(&self) -> String {
+        self.get_name(true)
+    }
+
+    /// Generate the keyword of this song.
+    pub fn keyword(&self) -> String {
+        self.get_name(false)
     }
 }
 
@@ -186,7 +205,7 @@ mod tests {
     use crate::{Artist, Song};
 
     #[test]
-    fn test_keyword_with_no_artist() {
+    fn test_name_with_no_artist() {
         let s = Song {
             id: "114514".to_string(),
             name: "Lost River".to_string(),
@@ -194,11 +213,13 @@ mod tests {
             ..Default::default()
         };
 
+        assert_eq!(s.display_name(), "Lost River");
         assert_eq!(s.keyword(), "Lost River");
+        assert_eq!(format!("{s}"), "Lost River");
     }
 
     #[test]
-    fn test_keyword_with_single_artist() {
+    fn test_name_with_single_artist() {
         let s = Song {
             id: "123".to_string(),
             name: "TT".to_string(),
@@ -209,11 +230,13 @@ mod tests {
             ..Default::default()
         };
 
-        assert_eq!(s.keyword(), "TT - Twice");
+        assert_eq!(s.display_name(), "TT - Twice");
+        assert_eq!(s.keyword(), "TT Twice");
+        assert_eq!(format!("{s}"), "TT - Twice");
     }
 
     #[test]
-    fn test_keyword_with_multiple_artist() {
+    fn test_display_name_with_multiple_artist() {
         let s = Song {
             id: "123".to_string(),
             name: "Hope for Tomorrow - Melchi Remix".to_string(),
@@ -235,7 +258,15 @@ mod tests {
         };
 
         assert_eq!(
+            s.display_name(),
+            "Hope for Tomorrow - Melchi Remix - Alex H, Z8phyR, Melchi"
+        );
+        assert_eq!(
             s.keyword(),
+            "Hope for Tomorrow - Melchi Remix Alex H Z8phyR Melchi"
+        );
+        assert_eq!(
+            format!("{s}"),
             "Hope for Tomorrow - Melchi Remix - Alex H, Z8phyR, Melchi"
         );
     }
