@@ -104,11 +104,13 @@ N-API 和 RESTful API 支援的引擎（以下簡稱「預設引擎集」）與�
 | Bilbili Music    | `bilibili` |                                                                 | ✅         |
 | 酷狗音乐         | `kugou`    |                                                                 | ✅         |
 | 酷我音乐         | `kuwo`     | 目前僅支援 320kbps MP3                                          | ✅         |
-| 咪咕音乐         | `migu`     |                                                                 | ✅         |
+| 咪咕音乐         | `migu`     |                                                                 |            |
 | JOOX             | `joox`     | 需要設定 `joox:cookie`，見引擎文件。                            | ✅         |
 | YtDl             | `ytdl`     | 預設使用的 `youtube-dl` 後端是 `yt-dlp`，可設定 `ytdl:exe` 調整 | ✅         |
 | 第三方網易雲 API | `pyncm`    |                                                                 | ✅         |
 | QQ音乐          | `qq`       | 需要設定 `qq:cookie`，見引擎文件。                              | ✅         |
+
+- `migu` 的 API 壞掉了。等到有更好的 API 會再更新。
 
 #### 引擎文件
 

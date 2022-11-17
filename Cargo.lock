@@ -1818,7 +1818,6 @@ dependencies = [
  "unm_engine_joox",
  "unm_engine_kugou",
  "unm_engine_kuwo",
- "unm_engine_migu",
  "unm_engine_pyncm",
  "unm_engine_qq",
  "unm_engine_ytdl",
