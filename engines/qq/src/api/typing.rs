@@ -9,8 +9,6 @@ use super::identifier::QQResourceIdentifier;
 #[derive(Debug, Deserialize)]
 #[non_exhaustive]
 pub struct QQSongData {
-    pub curnum: i32,
-    pub curpage: i32,
     pub list: Vec<QQSongEntry>,
 }
 
@@ -18,35 +16,38 @@ pub struct QQSongData {
 #[non_exhaustive]
 pub struct QQSongEntry {
     /// The ID of this song entry.
-    pub songid: i64,
+    pub id: i64,
     /// The name of this song entry.
-    pub songname: String,
+    pub name: String,
     /// The duration of this song entry, in seconds.
     pub interval: i64,
 
-    /// The album ID of this song entry.
-    pub albumid: i64,
-    /// The album name of this song entry.
-    pub albumname: String,
+    /// The album of this song entry.
+    pub album: QQSongAlbumEntry,
 
     /// The singers of this song entry.
     pub singer: Vec<QQSongSinger>,
 
-    /// The media ID of this song entry.
-    ///
-    /// If no `media_mid` is provided, we return an empty string.
-    /// You may want to filter it with [`Iterator::filter`].
-    #[serde(default)]
-    pub media_mid: String,
     /// The song MID of this song entry.
-    pub songmid: String,
+    pub mid: String,
+}
+
+#[derive(Debug, Deserialize)]
+#[non_exhaustive]
+pub struct QQSongAlbumEntry {
+    /// The ID of this album entry.
+    pub id: i64,
+    /// The MID of this album entry.
+    pub mid: String,
+    /// The name of this album entry.
+    pub name: String,
 }
 
 #[derive(Debug, Deserialize)]
 #[non_exhaustive]
 pub struct QQSongSinger {
     pub id: i64,
-    // pub mid: String,
+    pub mid: String,
     pub name: String,
 }
 
@@ -83,20 +84,20 @@ pub struct QQSingleUrlInfo {
 impl From<QQSongEntry> for Song {
     fn from(entry: QQSongEntry) -> Self {
         Song::builder()
-            .id(entry.songid.to_string())
-            .name(entry.songname)
+            .id(entry.id.to_string())
+            .name(entry.name)
             .duration(Some(entry.interval * 1000))
             .album(Some(
                 Album::builder()
-                    .id(entry.albumid.to_string())
-                    .name(entry.albumname)
+                    .id(entry.album.id.to_string())
+                    .name(entry.album.name)
                     .build(),
             ))
             .artists(entry.singer.into_iter().map(Into::into).collect())
             .context({
                 let mut ctx = HashMap::new();
-                let songmid = entry.songmid;
-                let media_mid = entry.media_mid;
+                let songmid = entry.mid.clone();
+                let media_mid = entry.mid;
 
                 ctx.insert(
                     "identifier".into(),

@@ -45,7 +45,7 @@ impl Engine for QQEngine {
         let mut song_iterator = response
             .list
             .into_iter()
-            .filter(|song| !song.media_mid.is_empty())
+            .filter(|song| !song.mid.is_empty())
             .map(Song::from);
 
         debug!("Matching the song…");
