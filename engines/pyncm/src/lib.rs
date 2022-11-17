@@ -107,3 +107,25 @@ fn find_match(data: &[PyNCMResponseEntry], song_id: &str) -> anyhow::Result<Opti
         .map(|v| v.url.clone())
         .ok_or_else(|| anyhow::anyhow!("no matched song"))
 }
+
+#[cfg(test)]
+mod tests {
+    use unm_types::ContextBuilder;
+
+    #[tokio::test]
+    async fn test_fetch_song_info() {
+        use super::fetch_song_info;
+
+        let song_id = "1939601619"; // Madeon – Love You Back
+        let result = fetch_song_info(song_id, &ContextBuilder::default().build().unwrap()).await;
+
+        if let Ok(response) = result {
+            assert_eq!(response.code, 200);
+            assert_eq!(response.data.len(), 1);
+            assert_eq!(response.data[0].id.to_string(), song_id);
+            assert!(response.data[0].url.is_some());
+        } else {
+            panic!("failed to fetch song info");
+        }
+    }
+}
