@@ -20,5 +20,5 @@ unm_types = { version = "0.3.0", path = "../../types" }
 url = "2.3.1"
 
 [dev-dependencies]
-tokio = { version = "1.21.2", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "1.22.0", features = ["macros", "rt-multi-thread"] }
 unm_test_utils = { path = "../../test-utils" }
