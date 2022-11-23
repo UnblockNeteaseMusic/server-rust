@@ -14,7 +14,7 @@ async-trait = "0.1.58"
 http = "0.2.8"
 log = "0.4.17"
 serde = { version = "1.0.147", features = ["derive"] }
-serde_json = "1.0.87"
+serde_json = "1.0.89"
 unm_engine = { version = "0.3.0", path = "../../engine-base" }
 unm_request = { version = "0.3.0", path = "../../request" }
 unm_selector = { version = "0.3.0", path = "../../selector" }
