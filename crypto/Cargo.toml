@@ -16,7 +16,7 @@ faster-hex = "0.6.1"
 log = "0.4.17"
 md5 = "0.7.0"
 once_cell = "1.16.0"
-openssl = { version = "0.10.42", features = ["vendored"] }
+openssl = { version = "0.10.44", features = ["vendored"] }
 
 regex = "1.7.0"
 
