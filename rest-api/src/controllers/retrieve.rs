@@ -14,8 +14,8 @@ use crate::executor::retrieve::RetrievePayload;
 use crate::retrieve::request_as_stream;
 
 pub async fn retrieve_v1(
-    Json(payload): Json<RetrievePayload>,
     Extension(default_context): Extension<Arc<Context>>,
+    Json(payload): Json<RetrievePayload>,
 ) -> impl IntoResponse {
     info!(
         "[v1][Retrieve] Retrieving the song with the engine “{}”",
