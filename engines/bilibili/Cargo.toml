@@ -9,11 +9,11 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0.66"
-async-trait = "0.1.58"
+anyhow = "1.0.68"
+async-trait = "0.1.60"
 http = "0.2.8"
 log = "0.4.17"
-serde = { version = "1.0.147", features = ["derive"] }
+serde = { version = "1.0.151", features = ["derive"] }
 unm_engine = { version = "0.3.0", path = "../../engine-base" }
 unm_request = { version = "0.3.0", path = "../../request" }
 unm_selector = { version = "0.3.0", path = "../../selector" }
@@ -21,5 +21,5 @@ unm_types = { version = "0.3.0", path = "../../types" }
 url = "2.3.1"
 
 [dev-dependencies]
-tokio = { version = "1.21.2", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "1.23.0", features = ["macros", "rt-multi-thread"] }
 unm_test_utils = { path = "../../test-utils" }
