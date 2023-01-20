@@ -9,17 +9,17 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0.66"
-async-trait = "0.1.58"
+anyhow = "1.0.68"
+async-trait = "0.1.61"
 concat-string = "1.0.1"
 log = "0.4.17"
-serde = { version = "1.0.147", features = ["derive"] }
-serde_json = "1.0.87"
-tokio = { version = "1.21.2", features = ["process"] }
+serde = { version = "1.0.152", features = ["derive"] }
+serde_json = "1.0.91"
+tokio = { version = "1.24.2", features = ["process"] }
 unm_engine = { version = "0.3.0", path = "../../engine-base" }
 unm_types = { version = "0.3.0", path = "../../types" }
 winapi = "0.3.9"
 
 [dev-dependencies]
-tokio = { version = "1.21.2", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "1.24.2", features = ["macros", "rt-multi-thread"] }
 unm_test_utils = { path = "../../test-utils" }

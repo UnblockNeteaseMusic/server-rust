@@ -12,8 +12,8 @@ use unm_types::Context;
 use crate::executor::search::SearchPayload;
 
 pub async fn search_v1(
-    Json(payload): Json<SearchPayload>,
     Extension(default_context): Extension<Arc<Context>>,
+    Json(payload): Json<SearchPayload>,
 ) -> impl IntoResponse {
     info!(
         "[v1][Search] Searching the song “{}” with the engines “{:?}”",

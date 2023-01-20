@@ -42,7 +42,7 @@ impl IntoResponse for ApiExecutorError {
     fn into_response(self) -> axum::response::Response {
         debug!("Converting ApiExecutorError to Response…");
 
-        let error_response = format!("{}", self);
+        let error_response = format!("{self}");
 
         let code = match self {
             ApiExecutorError::SearchFailed(executor_error) => match executor_error {

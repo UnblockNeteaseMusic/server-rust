@@ -39,7 +39,7 @@ impl JsExecutor {
       .search(&engines, &song.into(), &ctx.into())
       .await
       .map(|v| v.into())
-      .map_err(|e| Error::new(Status::GenericFailure, format!("Unable to search: {:?}", e)))
+      .map_err(|e| Error::new(Status::GenericFailure, format!("Unable to search: {e:?}")))
   }
 
   #[napi]
@@ -53,12 +53,7 @@ impl JsExecutor {
       .retrieve(&song.into(), &ctx.into())
       .await
       .map(|v| v.into())
-      .map_err(|e| {
-        Error::new(
-          Status::GenericFailure,
-          format!("Unable to retrieve: {:?}", e),
-        )
-      })
+      .map_err(|e| Error::new(Status::GenericFailure, format!("Unable to retrieve: {e:?}")))
   }
 }
 

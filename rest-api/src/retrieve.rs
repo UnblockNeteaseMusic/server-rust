@@ -83,7 +83,7 @@ impl IntoResponse for RetrieveError {
     fn into_response(self) -> axum::response::Response {
         debug!("Convert RetrieveError to Response…");
 
-        let error_response = format!("{}", self);
+        let error_response = format!("{self}");
 
         (
             StatusCode::INTERNAL_SERVER_ERROR,

@@ -47,8 +47,5 @@ async fn main() {
         "[Retrieved] 周杰伦 - 青花瓷: {} (from {})",
         retrieved_result.url, retrieved_result.source
     );
-    println!(
-        "Search taken {:?} while retrieve tooke {:?}.",
-        search_time_taken, retrieve_time_taken
-    );
+    println!("Search taken {search_time_taken:?} while retrieve tooke {retrieve_time_taken:?}.");
 }

@@ -69,8 +69,5 @@ pub async fn engine_example_wrapper(engine: impl Engine) {
         "[Retrieved] 周杰伦 - 青花瓷: {} (from {})",
         retrieved_result.url, retrieved_result.source
     );
-    println!(
-        "Search taken {:?} while retrieve took {:?}.",
-        search_time_taken, retrieve_time_taken
-    );
+    println!("Search taken {search_time_taken:?} while retrieve took {retrieve_time_taken:?}.");
 }

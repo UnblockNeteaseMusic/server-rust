@@ -73,7 +73,7 @@ pub fn translate_host<'a>(map: &'a HashMap<&str, &str>, host: &'a str) -> &'a st
 }
 
 /// The [`translate_host`] wrapper for [`Url`].
-pub fn translate_url<'a>(map: &'a HashMap<&str, &str>, url: &mut Url) -> RequestModuleResult<()> {
+pub fn translate_url(map: &HashMap<&str, &str>, url: &mut Url) -> RequestModuleResult<()> {
     let host = url.host_str();
 
     if let Some(host) = host {

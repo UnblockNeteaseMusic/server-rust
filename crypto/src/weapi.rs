@@ -11,6 +11,7 @@ use serde::Serialize;
 use serde_json::Value;
 use smallvec::SmallVec;
 
+use crate::base64::encode;
 use crate::error::{CryptoError, CryptoResult};
 
 const BASE62_CHARSET: &str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -97,9 +98,7 @@ pub fn construct_weapi_payload<S: Serialize>(object: &S) -> CryptoResult<Value> 
     let mut buf = [0; 128];
 
     let aes_128_b64 = |data, key| -> CryptoResult<String> {
-        Ok(base64::encode(crate::aes_128::encrypt_cbc(
-            data, key, WEAPI_IV,
-        )?))
+        Ok(encode(&crate::aes_128::encrypt_cbc(data, key, WEAPI_IV)?))
     };
 
     // Reverse the secret key since it is the requirement of `enc_sec_key` (?)
@@ -122,6 +121,7 @@ pub fn construct_weapi_payload<S: Serialize>(object: &S) -> CryptoResult<Value> 
 #[cfg(test)]
 mod tests {
     use super::encrypt_with_weapi_rsa;
+    use crate::base64::encode;
 
     #[test]
     fn encrypt_with_weapi_rsa_test() {
@@ -134,7 +134,7 @@ mod tests {
         let encrypted_bytes = encrypt_with_weapi_rsa(b"a1b2c3d4", &mut buf).unwrap();
         assert_eq!(encrypted_bytes, 128);
 
-        let encrypted_base64 = base64::encode(buf);
+        let encrypted_base64 = encode(&buf);
         assert_eq!(
             encrypted_base64,
             r#"nknIprgQgDE2Ana3dka2qYhwE4ch/My68kTk0pGZmtkeWCTslpn9Co32as7sd5fyitf5lyXwMff/g/kDzaz6IVA/tMAtbbzkgWPDMivRy5b8z1Ypd7UV7r6aM6OgNT1bFjPo4jEAkmUl6UxCBAsrsMaaYqmW6rZl0BdJdb0/Tq0="#

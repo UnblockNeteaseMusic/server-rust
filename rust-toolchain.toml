@@ -1,4 +1,4 @@
 [toolchain]
-channel = "nightly-2022-11-17"
-components = ["rust-src"]  # rust-analyzer
+channel = "nightly-2023-01-20"
+components = ["rust-src"]      # rust-analyzer
 profile = "default"
