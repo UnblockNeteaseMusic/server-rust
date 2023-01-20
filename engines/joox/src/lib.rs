@@ -22,6 +22,8 @@
 
 use std::borrow::Cow;
 
+use base64::prelude::*;
+use base64::Engine as B64Engine;
 use http::header::{COOKIE, ORIGIN, REFERER};
 use http::HeaderValue;
 use once_cell::sync::OnceCell;
@@ -216,7 +218,7 @@ fn format(item: &Json) -> anyhow::Result<Song> {
 
     let b64_opt_decode = |data: Option<&str>| -> anyhow::Result<String> {
         if let Some(data) = data {
-            let bytes = &base64::decode(data).unwrap()[..];
+            let bytes = &BASE64_STANDARD.decode(data).unwrap()[..];
             Ok(String::from_utf8_lossy(bytes).to_string())
         } else {
             Ok("".to_string())
