@@ -9,7 +9,7 @@ permissions:
   actions: write
   contents: read
 
-concurrency: 
+concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
@@ -26,9 +26,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions-rust-lang/setup-rust-toolchain@v1
-      - uses: rui314/setup-mold@v1
-      - uses: taiki-e/install-action@nextest
-      - run: cargo nextest run && cargo test --doc
+      - if: runner.os != 'Windows'
+        uses: rui314/setup-mold@v1
+      - if: runner.os != 'Windows'
+        uses: taiki-e/install-action@nextest
+      - if: runner.os != 'Windows'
+        run: cargo nextest run && cargo test --doc
+      - if: runner.os == 'Windows'
+        run: cargo test
 
   cargo-fmt:
     runs-on: ubuntu-latest
