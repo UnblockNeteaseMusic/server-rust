@@ -10,7 +10,7 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.68"
-async-trait = "0.1.61"
+async-trait = "0.1.62"
 http = "0.2.8"
 log = "0.4.17"
 serde = { version = "1.0.152", features = ["derive"] }

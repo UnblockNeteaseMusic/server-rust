@@ -10,7 +10,7 @@ readme = "../../README.md"
 
 [dependencies]
 anyhow = "1.0.68"
-async-trait = "0.1.61"
+async-trait = "0.1.62"
 concat-string = "1.0.1"
 derive_builder = "0.12.0"
 fastrand = "1.8.0"
