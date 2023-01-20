@@ -10,19 +10,19 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.68"
-async-trait = "0.1.60"
-cached = "0.41.0"
+async-trait = "0.1.61"
+cached = "0.42.0"
 concat-string = "1.0.1"
 http = "0.2.8"
 log = "0.4.17"
 random-string = "1.0.0"
-reqwest = { version = "0.11.13", features = ["native-tls-vendored"] }
-serde = { version = "1.0.151", features = ["derive"] }
+reqwest = { version = "0.11.14", features = ["native-tls-vendored"] }
+serde = { version = "1.0.152", features = ["derive"] }
 unm_engine = { version = "0.3.0", path = "../../engine-base" }
 unm_request = { version = "0.3.0", path = "../../request" }
 unm_selector = { version = "0.3.0", path = "../../selector" }
 unm_types = { version = "0.3.0", path = "../../types" }
 
 [dev-dependencies]
-tokio = { version = "1.23.0", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "1.24.2", features = ["macros", "rt-multi-thread"] }
 unm_test_utils = { path = "../../test-utils" }
