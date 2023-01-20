@@ -2,7 +2,7 @@
 name = "unm_engine_qq"
 description = "The QQ engine for UnblockNeteaseMusic."
 license = "LGPL-3.0-or-later"
-version = "0.3.0"
+version = "0.4.0"
 edition = "2021"
 repository = "https://github.com/UnblockNeteaseMusic/server-rust"
 readme = "../../README.md"
@@ -23,10 +23,10 @@ reqwest = "0.11.14"
 serde = { version = "1.0.152", features = ["derive"] }
 serde_json = "1.0.91"
 thiserror = "1.0.38"
-unm_engine = { version = "0.3.0", path = "../../engine-base" }
-unm_request = { version = "0.3.0", path = "../../request" }
-unm_selector = { version = "0.3.0", path = "../../selector" }
-unm_types = { version = "0.3.0", path = "../../types" }
+unm_engine = { version = "0.4.0", path = "../../engine-base" }
+unm_request = { version = "0.4.0", path = "../../request" }
+unm_selector = { version = "0.4.0", path = "../../selector" }
+unm_types = { version = "0.4.0", path = "../../types" }
 url = "2.3.1"
 
 [dev-dependencies]

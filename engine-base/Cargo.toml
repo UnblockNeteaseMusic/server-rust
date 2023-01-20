@@ -2,7 +2,7 @@
 name = "unm_engine"
 description = "The engine base for UnblockNeteaseMusic, including the executor and the Engine trait."
 license = "LGPL-3.0-or-later"
-version = "0.3.0"
+version = "0.4.0"
 edition = "2021"
 repository = "https://github.com/UnblockNeteaseMusic/server-rust"
 readme = "../README.md"
@@ -14,4 +14,4 @@ async-trait = "0.1.61"
 futures = "0.3.25"
 log = "0.4.17"
 thiserror = "1.0.38"
-unm_types = { version = "0.3.0", path = "../types" }
+unm_types = { version = "0.4.0", path = "../types" }
