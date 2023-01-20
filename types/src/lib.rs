@@ -13,7 +13,7 @@ use typed_builder::TypedBuilder;
 pub type SerializedIdentifier = String;
 
 /// The search mode.
-#[derive(Clone, Copy, Serialize, Deserialize)]
+#[derive(Clone, Copy, Serialize, Deserialize, Default)]
 #[non_exhaustive]
 pub enum SearchMode {
     /// Return the first response.
@@ -23,6 +23,7 @@ pub enum SearchMode {
     ///
     /// This is the default mode.
     #[serde(alias = "fast_first")]
+    #[default]
     FastFirst,
     /// Return according to the order of the response.
     ///
@@ -31,12 +32,6 @@ pub enum SearchMode {
     /// we return `"b"`.
     #[serde(alias = "order_first")]
     OrderFirst,
-}
-
-impl Default for SearchMode {
-    fn default() -> Self {
-        SearchMode::FastFirst
-    }
 }
 
 /// The metadata of the artist of a song.
