@@ -42,8 +42,8 @@
     }
   },
   "devDependencies": {
-    "@napi-rs/cli": "^2.14.0",
-    "ava": "^5.1.0"
+    "@napi-rs/cli": "^2.14.3",
+    "ava": "^5.1.1"
   },
   "engines": {
     "node": ">= 10"
