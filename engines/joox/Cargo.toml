@@ -11,7 +11,7 @@ include = ["src/lib.rs"]
 
 [dependencies]
 anyhow = "1.0.68"
-async-trait = "0.1.61"
+async-trait = "0.1.63"
 base64 = "0.21.0"
 http = "0.2.8"
 log = "0.4.17"

@@ -11,7 +11,7 @@ include = ["src/**/*"]
 
 [dependencies]
 anyhow = "1.0.68"
-async-trait = "0.1.61"
+async-trait = "0.1.63"
 cached = "0.42.0"
 concat-string = "1.0.1"
 http = "0.2.8"
