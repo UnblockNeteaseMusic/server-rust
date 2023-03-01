@@ -14,6 +14,7 @@ permissions:
   push:
     branches:
       - main
+      - "gh-readonly-queue/**"
     tags-ignore:
       - '**'
     paths-ignore:
