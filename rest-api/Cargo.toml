@@ -11,7 +11,7 @@ include = ["src/**/*", "README.md", "docs/api.md", "docs/configure.md"]
 
 [dependencies]
 anyhow = "1.0.68"
-axum = "0.6.3"
+axum = "0.6.7"
 bytes = "1.3.0"
 futures = "0.3.25"
 http = "0.2.8"
