@@ -10,7 +10,7 @@ include = ["src/**/*"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0.68"
+anyhow = "1.0.69"
 async-trait = "0.1.63"
 cached = "0.42.0"
 concat-string = "1.0.1"
