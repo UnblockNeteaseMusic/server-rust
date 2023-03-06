@@ -13,5 +13,5 @@ anyhow = "1.0.68"
 async-trait = "0.1.63"
 futures = "0.3.25"
 log = "0.4.17"
-thiserror = "1.0.38"
+thiserror = "1.0.39"
 unm_types = { version = "0.4.0", path = "../types" }
