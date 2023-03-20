@@ -10,7 +10,7 @@ include = ["src/lib.rs"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0.68"
+anyhow = "1.0.70"
 async-trait = "0.1.63"
 base64 = "0.21.0"
 http = "0.2.8"
