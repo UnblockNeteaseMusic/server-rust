@@ -18,7 +18,7 @@ http = "0.2.9"
 log = "0.4.17"
 reqwest = { version = "0.11.14", features = ["native-tls-vendored"] }
 serde = { version = "1.0.152", features = ["derive"] }
-serde_json = "1.0.91"
+serde_json = "1.0.95"
 unm_engine = { version = "0.4.0", path = "../../engine-base" }
 unm_request = { version = "0.4.0", path = "../../request" }
 unm_selector = { version = "0.4.0", path = "../../selector" }
