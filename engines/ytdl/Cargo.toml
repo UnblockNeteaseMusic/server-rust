@@ -15,7 +15,7 @@ async-trait = "0.1.63"
 concat-string = "1.0.1"
 log = "0.4.17"
 serde = { version = "1.0.152", features = ["derive"] }
-serde_json = "1.0.91"
+serde_json = "1.0.95"
 tokio = { version = "1.25.0", features = ["process"] }
 unm_engine = { version = "0.4.0", path = "../../engine-base" }
 unm_types = { version = "0.4.0", path = "../../types" }
