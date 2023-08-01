@@ -98,11 +98,11 @@ impl Executor {
         let mut futures = match ctx.search_mode {
             SearchMode::FastFirst => {
                 debug!("Use SearchMode::FastFirst mode!");
-                futures::stream::FuturesUnordered::from_iter(futures.into_iter()).boxed()
+                futures::stream::FuturesUnordered::from_iter(futures).boxed()
             }
             SearchMode::OrderFirst => {
                 debug!("Use SearchMode::OrderFirst mode!");
-                futures::stream::FuturesOrdered::from_iter(futures.into_iter()).boxed()
+                futures::stream::FuturesOrdered::from_iter(futures).boxed()
             }
             _ => unimplemented!(),
         };

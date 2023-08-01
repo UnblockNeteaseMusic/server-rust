@@ -3,7 +3,6 @@
 //! It can fetch audio from the unofficial
 //! Netease Cloud Music API.
 
-use http::header::HOST;
 use log::{debug, info};
 use serde::Deserialize;
 use unm_engine::interface::Engine;
