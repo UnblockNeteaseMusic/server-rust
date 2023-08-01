@@ -9,8 +9,8 @@ readme = "./README.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-concat-idents = "1.1.4"
-log = "0.4.17"
+concat-idents = "1.1.5"
+log = "0.4.19"
 unm_engine = { version = "0.4.0", path = "../engine-base" }
 unm_engine_bilibili = { version = "0.4.0", path = "../engines/bilibili" }
 unm_engine_joox = { version = "0.4.0", path = "../engines/joox" }

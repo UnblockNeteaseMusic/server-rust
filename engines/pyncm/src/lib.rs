@@ -3,7 +3,6 @@
 //! It can fetch audio from the unofficial
 //! Netease Cloud Music API.
 
-use http::header::HOST;
 use log::{debug, info};
 use serde::Deserialize;
 use unm_engine::interface::Engine;
@@ -85,16 +84,12 @@ async fn fetch_song_info(id: &str, ctx: &Context) -> anyhow::Result<PyNCMRespons
 
     let bitrate = if ctx.enable_flac { 999000 } else { 320000 };
     let url = Url::parse_with_params(
-        "http://76.76.21.21/api/pyncm?module=track&method=GetTrackAudio",
+        "https://pyncmd.apis.imouto.in/api/pyncm?module=track&method=GetTrackAudio",
         &[("song_ids", id), ("bitrate", &bitrate.to_string())],
     )?;
 
     let client = build_client(ctx.proxy_uri.as_deref())?;
-    let response = client
-        .get(url)
-        .header(HOST, "music.163-my-beloved.com")
-        .send()
-        .await?;
+    let response = client.get(url).send().await?;
     Ok(response.json::<PyNCMResponse>().await?)
 }
 

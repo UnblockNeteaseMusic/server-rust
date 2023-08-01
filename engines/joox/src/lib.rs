@@ -121,7 +121,7 @@ impl Engine for JooxEngine {
         log::debug!("Retrieving with Joox Engine…");
 
         let replace_audio_url_regex = REPLACE_AUDIO_URL_REGEX
-            .get_or_init(|| Regex::new(r#"M\d00([\w]+).mp3"#).expect("should be constructable"));
+            .get_or_init(|| Regex::new(r"M\d00([\w]+)\.mp3").expect("should be constructable"));
         let joox_cookie = get_cookie(ctx);
 
         let client = build_client(ctx.proxy_uri.as_deref())?;
