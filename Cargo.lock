@@ -2018,7 +2018,7 @@ dependencies = [
  "async-trait",
  "concat-string",
  "derive_builder",
- "fastrand 1.9.0",
+ "fastrand 2.0.0",
  "futures",
  "http",
  "log",
