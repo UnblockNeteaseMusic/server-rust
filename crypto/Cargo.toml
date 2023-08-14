@@ -12,7 +12,7 @@ publish = false
 [dependencies]
 base64 = "0.21.2"
 concat-string = "1.0.1"
-faster-hex = "0.6.1"
+faster-hex = "0.8.0"
 log = "0.4.19"
 md5 = "0.7.0"
 once_cell = "1.18.0"
