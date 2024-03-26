@@ -13,16 +13,6 @@ use url::Url;
 #[derive(Deserialize)]
 #[non_exhaustive]
 struct PyNCMResponse {
-    /// The status code of this response.
-    pub code: i32,
-    pub data: Vec<PyNCMResponseEntry>,
-}
-
-#[derive(Deserialize)]
-#[non_exhaustive]
-struct PyNCMResponseEntry {
-    /// The NCM ID of this song.
-    pub id: i64,
     /// The URL of this song.
     pub url: Option<String>,
 }
@@ -43,24 +33,13 @@ impl Engine for PyNCMEngine {
         info!("Searching with PyNCM engine…");
 
         let response = fetch_song_info(&info.id, ctx).await?;
-
-        if response.code == 200 {
-            // We return the URL we got from PyNCM as the song identifier,
-            // so we can return the URL in retrieve() easily.
-            let match_result = find_match(&response.data, &info.id)?.map(|url| {
-                SongSearchInformation::builder()
-                    .source(ENGINE_ID.into())
-                    .identifier(url)
-                    .build()
-            });
-
-            Ok(match_result)
-        } else {
-            Err(anyhow::anyhow!(
-                "failed to request. code: {}",
-                response.code
-            ))
-        }
+        let match_result = response.url.map(|url| {
+            SongSearchInformation::builder()
+                .source(ENGINE_ID.into())
+                .identifier(url)
+                .build()
+        });
+        Ok(match_result)
     }
 
     async fn retrieve<'a>(
@@ -82,31 +61,15 @@ impl Engine for PyNCMEngine {
 async fn fetch_song_info(id: &str, ctx: &Context) -> anyhow::Result<PyNCMResponse> {
     debug!("Fetching the song information…");
 
-    let bitrate = if ctx.enable_flac { 999000 } else { 320000 };
+    let bitrate = if ctx.enable_flac { 999 } else { 320 };
     let url = Url::parse_with_params(
-        "https://pyncmd.apis.imouto.in/api/pyncm?module=track&method=GetTrackAudio",
-        &[("song_ids", id), ("bitrate", &bitrate.to_string())],
+        "https://music.gdstudio.xyz/api.php?types=url&source=netease",
+        &[("id", id), ("br", &bitrate.to_string())],
     )?;
-
     let client = build_client(ctx.proxy_uri.as_deref())?;
     let response = client.get(url).send().await?;
     Ok(response.json::<PyNCMResponse>().await?)
 }
-
-/// Find the matched song from an array of [`PyNCMResponseEntry`].
-fn find_match(data: &[PyNCMResponseEntry], song_id: &str) -> anyhow::Result<Option<String>> {
-    info!("Finding the matched song…");
-
-    data.iter()
-        .find(|entry| {
-            // Test if the ID of this entry matched what we want to fetch,
-            // and there is content in its URL.
-            entry.id.to_string() == song_id && entry.url.is_some()
-        })
-        .map(|v| v.url.clone())
-        .ok_or_else(|| anyhow::anyhow!("no matched song"))
-}
-
 #[cfg(test)]
 mod tests {
     use unm_types::ContextBuilder;
@@ -119,10 +82,7 @@ mod tests {
         let result = fetch_song_info(song_id, &ContextBuilder::default().build().unwrap()).await;
 
         if let Ok(response) = result {
-            assert_eq!(response.code, 200);
-            assert_eq!(response.data.len(), 1);
-            assert_eq!(response.data[0].id.to_string(), song_id);
-            assert!(response.data[0].url.is_some());
+            assert!(response.url.is_some());
         } else {
             panic!("failed to fetch song info");
         }
